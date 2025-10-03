@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package Protocol;
+import "google/protobuf/timestamp.proto";
+option csharp_namespace = "Google.Protobuf.Protocol";
+
+enum MsgId {
+  S_ENTER_GAME = 0;
+  S_LEAVE_GAME = 1;
+  S_SPAWN = 2;
+  S_DESPAWN = 3;
+  C_MOVE = 4;
+  S_MOVE = 5;
+  C_ENTER_GAME = 6;
+}
+
+enum CreatureState {
+  IDLE = 0;
+  MOVE = 1;
+  ATTACK = 2;
+  ON_DAMAGED = 3;
+  SKILL = 4;
+  DIE = 5;
+}
+
+enum GameObjectType{
+  NONE = 0;
+  PLAYER = 1;
+  MONSTER = 2;
+}
+
+message S_EnterGame {
+  ObjectInfo objectInfo = 1;
+}
+
+message C_EnterGame {
+  ObjectInfo objectInfo = 1;
+}
+
+message S_LeaveGame {
+  int32 playerCount = 1;
+  bool isAttacked = 2;
+}
+
+message S_Spawn {
+  repeated ObjectInfo objectInfos = 1;
+}
+
+message S_Despawn {
+  repeated int32 objectIds = 1;
+  int32 playerCount = 2;
+  bool canRespawn = 3;
+} 
+
+message C_Move {
+  PositionInfo positionInfo = 1;
+  CreatureState creatureState = 2;
+}
+
+message S_Move {
+  int32 objectId = 1;
+  PositionInfo positionInfo = 2;
+  CreatureState creatureState = 3;
+}
+
+message ObjectInfo {
+  int32 objectId = 1;
+  string name = 2;
+  PositionInfo positionInfo = 3;
+  Stat stat = 4;
+  CreatureState creatureState = 5;
+}
+
+message PositionInfo {
+  float posX = 1;
+  float posY = 2;
+  float posZ = 3;
+  float rotY = 4;
+}
+
+message Stat{
+  float hp = 1;
+  float maxHp = 2;
+  float attack = 3;
+  float defense = 4;
+  float speed = 5;
+  float cameraSize = 6;
+  int32 cost = 7;
+  float coolTime = 8;
+}
