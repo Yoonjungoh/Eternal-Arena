@@ -1,13 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class UIManager
 {
-    int _order = 10;
+    private int _order = 10;
 
-    Stack<UI_Popup> _popupStack = new Stack<UI_Popup>();
-    UI_Scene _sceneUI = null;
+    private Stack<UI_Popup> _popupStack = new Stack<UI_Popup>();
+    private UI_Scene _sceneUI = null;
+
     public GameObject Root
     {
         get
@@ -52,6 +54,7 @@ public class UIManager
 		return Util.GetOrAddComponent<T>(go);
 	}
 
+    // action은 Lazy Init을 위함
 	public T MakeSubItem<T>(Transform parent = null, string name = null) where T : UI_Base
 	{
 		if (string.IsNullOrEmpty(name))
@@ -59,10 +62,12 @@ public class UIManager
 
 		GameObject go = Managers.Resource.Instantiate($"UI/SubItem/{name}");
 		if (parent != null)
-			go.transform.SetParent(parent);
+            go.transform.SetParent(parent);
 
-		return Util.GetOrAddComponent<T>(go);
-	}
+        T subItem = Util.GetOrAddComponent<T>(go);
+        subItem.Init();
+        return subItem;
+    }
 
 	public T ShowSceneUI<T>(string name = null) where T : UI_Scene
 	{
