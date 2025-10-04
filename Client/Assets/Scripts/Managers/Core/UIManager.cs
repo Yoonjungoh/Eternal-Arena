@@ -54,7 +54,6 @@ public class UIManager
 		return Util.GetOrAddComponent<T>(go);
 	}
 
-    // action은 Lazy Init을 위함
 	public T MakeSubItem<T>(Transform parent = null, string name = null) where T : UI_Base
 	{
 		if (string.IsNullOrEmpty(name))
@@ -90,6 +89,7 @@ public class UIManager
 
         GameObject go = Managers.Resource.Instantiate($"UI/Popup/{name}");
         T popup = Util.GetOrAddComponent<T>(go);
+        popup.Init();
         _popupStack.Push(popup);
 
         go.transform.SetParent(Root.transform);

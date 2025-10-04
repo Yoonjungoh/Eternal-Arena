@@ -29,12 +29,16 @@ public class Lobby_SubItem : UI_SubItem<LobbySubItemData>
         Bind<Button>(typeof(Buttons));
         Bind<TextMeshProUGUI>(typeof(Texts));
 
-        GetButton((int)Buttons.EnterRoomButton).GetComponent<Button>().onClick.AddListener(OnClickEnterRoom);
-        _initialized = true;
+        GetButton((int)Buttons.EnterRoomButton).onClick.AddListener(OnClickEnterRoom);
     }
 
     private void OnClickEnterRoom()
     {
+        UI_Confirm confirmUI = Managers.UI.ShowPopupUI<UI_Confirm>();
+        confirmUI.SetData(new ConfirmPopupData
+        {
+            RoomName = _data.RoomName,
+        });
         Debug.Log($"{_data.RoomName} πÊ ¿‘¿Â");
     }
 
@@ -43,8 +47,8 @@ public class Lobby_SubItem : UI_SubItem<LobbySubItemData>
         base.SetData(data);
         UpdateUI();
     }
-    
-    private void UpdateUI()
+
+    protected override void UpdateUI()
     {
         GetTextMeshProUGUI((int)Texts.RoomNameText).text = _data.RoomName;
         GetTextMeshProUGUI((int)Texts.PlayerCountText).text = $"{_data.CurrentPlayerCount} / {_data.MaxPlayerCount}";
