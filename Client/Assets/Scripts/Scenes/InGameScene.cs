@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StartMenuScene : BaseScene
+public class InGameScene : BaseScene
 {
     protected override void Init()
     {

@@ -108,15 +108,10 @@ public class SoundManager
     public void ChangeBgmWhenSceneLoaded()
     {
         AudioClip willPlayingClip = _audioSources[(int)Define.Sound.Bgm].clip;
-        AudioClip currentPlayingClip;
-        switch (Managers.Scene.CurrentScene)
-        {
-            case (Define.Scene.StartMenu):
-                currentPlayingClip = GetOrAddAudioClip("Bgm/Lobby", Define.Sound.Bgm);
-                if (willPlayingClip != currentPlayingClip)
-                    Play(currentPlayingClip, Define.Sound.Bgm);
-                break;
-        }
+        AudioClip currentPlayingClip = null;
+        currentPlayingClip = GetOrAddAudioClip($"Bgm/{Managers.Scene.CurrentScene}", Define.Sound.Bgm);
+        if (willPlayingClip != currentPlayingClip)
+            Play(currentPlayingClip, Define.Sound.Bgm);
     }
     public void PlayHitSound(int id)
     {
