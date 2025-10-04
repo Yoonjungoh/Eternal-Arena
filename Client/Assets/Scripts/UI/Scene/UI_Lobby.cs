@@ -7,21 +7,31 @@ using UnityEngine.UI;
 
 public class UI_Lobby : UI_Scene
 {
+    enum Buttons
+    {
+        MakeRoomButton,
+    }
+    int i = 0;
     private GameObject _roomPanel;
 
     public override void Init()
     {
         base.Init();
+        
+        Bind<Button>(typeof(Buttons));
+        GetButton((int)Buttons.MakeRoomButton).onClick.AddListener(OnClickMakeRoomButton);
+
         _roomPanel = Util.FindChild(gameObject, "Content", recursive: true);
-        for (int i = 0; i < 10; ++i)
+    }
+
+    private void OnClickMakeRoomButton()
+    {
+        Lobby_SubItem lobbyItem = Managers.UI.MakeSubItem<Lobby_SubItem>(_roomPanel.transform);
+        lobbyItem.SetData(new LobbySubItemData
         {
-            Lobby_SubItem lobbyItem = Managers.UI.MakeSubItem<Lobby_SubItem>(_roomPanel.transform);
-            lobbyItem.SetData(new LobbySubItemData
-            {
-                RoomName = "방 이름 " + i.ToString(),
-                CurrentPlayerCount = 1,
-                MaxPlayerCount = 5
-            });
-        }
+            RoomName = "방 이름 " + i++.ToString(),
+            CurrentPlayerCount = 1,
+            MaxPlayerCount = 5
+        });
     }
 }
