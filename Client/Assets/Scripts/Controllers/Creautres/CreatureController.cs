@@ -5,10 +5,9 @@ using UnityEngine;
 
 public class CreatureController : MonoBehaviour
 {
+    protected Animator _anim;
     public int Id;
-
     protected CreatureState _creatureState = CreatureState.Idle;
-
     public GameObjectType GameObjectType;
 
     protected PositionInfo _positionInfo = new PositionInfo();
@@ -35,27 +34,14 @@ public class CreatureController : MonoBehaviour
         get { return _creatureState; }
         set
         {
-            _creatureState = value;
+            if (_creatureState == value)
+                return;
 
-            //Animator anim = GetComponent<Animator>();
-            switch (_creatureState)
-            {
-                case CreatureState.Die:
-                    break;
-                case CreatureState.Idle:
-                    //anim.CrossFade("WAIT", 0.1f);
-                    break;
-                case CreatureState.Move:
-                    //anim.CrossFade("RUN", 0.1f);
-                    break;
-                case CreatureState.Attack:
-                    //anim.CrossFade("ATTACK", 0.1f, -1, 0);
-                    break;
-            }
+            _creatureState = value;
         }
     }
 
-    void Update()
+    protected virtual void OnUpdate()
     {
         switch (CreatureState)
         {
@@ -63,7 +49,7 @@ public class CreatureController : MonoBehaviour
                 UpdateDie();
                 break;
             case CreatureState.Move:
-                UpdateMoving();
+                UpdateMove();
                 break;
             case CreatureState.Idle:
                 UpdateIdle();
@@ -77,10 +63,13 @@ public class CreatureController : MonoBehaviour
         }
     }
 
-    public virtual void Init() { }
+    public virtual void Init()
+    {
+        _anim = GetComponent<Animator>();
+    }
 
     protected virtual void UpdateDie() { }
-    protected virtual void UpdateMoving() { }
+    protected virtual void UpdateMove() { }
     protected virtual void UpdateIdle() { }
     protected virtual void UpdateAttack() { }
     protected virtual void UpdateSkill() { }

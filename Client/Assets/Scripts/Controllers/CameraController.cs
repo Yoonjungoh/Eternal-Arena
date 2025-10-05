@@ -4,33 +4,27 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public Define.CameraMode Mode = Define.CameraMode.QuarterView;
+    public Define.CameraMode Mode;
 
-    [SerializeField] Vector3 _delta = new Vector3(0.0f, 6.0f, -37.0f);
+    [SerializeField] Vector3 _delta = new Vector3(0.0f, 0.0f, 0.0f);
 
-    public GameObject Player;
+    private Transform _target;
 
     void LateUpdate()
     {
-        if (Mode == Define.CameraMode.QuarterView)
+        if (Mode == Define.CameraMode.FirstPersonView && _target != null)
         {
-            RaycastHit hit;
-            if (Physics.Raycast(Player.transform.position, _delta, out hit, _delta.magnitude, LayerMask.GetMask("Wall")))
-            {
-                float dist = (hit.point - Player.transform.position).magnitude * 0.8f;
-                transform.position = Player.transform.position + _delta.normalized * dist;
-            }
-            else
-            {
-                transform.position = Player.transform.position + _delta;
-                transform.LookAt(Player.transform);
-            }
+            transform.position = _target.position + _delta;
+            transform.rotation = _target.rotation;
         }
     }
 
-    public void SetQuarterView(Vector3 delta)
+    public void SetFirstPersonView()
     {
-        //_mode = Define.CameraMode.QuarterView;
-        //_delta = delta;
+        if (_target == null)
+        {
+            _target = Util.FindChild(Managers.Object.MyPlayer.gameObject, "Head", recursive: true).transform;
+        }
+        Mode = Define.CameraMode.FirstPersonView;
     }
 }

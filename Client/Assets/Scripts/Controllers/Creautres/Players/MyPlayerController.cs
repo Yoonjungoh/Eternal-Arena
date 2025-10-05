@@ -5,7 +5,12 @@ using UnityEngine;
 
 public class MyPlayerController : PlayerController
 {
-    [SerializeField] float _speed = 10.0f;
+    [SerializeField] float _moveSpeed = 5.0f;
+    [SerializeField] float _mouseRotationSpeed = 2.0f; // 마우스 회전 감도 // TODO-설정 매니저로 빼기
+
+    private float _rotationX = 0f; // 상하 회전 (카메라)
+    private float _rotationY = 0f; // 좌우 회전 (캐릭터)
+    private Transform _headTransform; // 상하일 때는 머리만 돌아감
 
     public override void Init()
     {
@@ -14,6 +19,8 @@ public class MyPlayerController : PlayerController
         Managers.Input.KeyAction += OnKeyBoard;
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
+
+        _headTransform = Util.FindChild(gameObject, "Head", recursive: true).transform;
     }
 
     private void OnMouseClicked(Define.MouseEvent evt)
@@ -23,7 +30,6 @@ public class MyPlayerController : PlayerController
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Debug.DrawRay(Camera.main.transform.position, ray.direction * 100.0f, Color.red, 1.0f);
-
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 100.0f))
         {
@@ -32,31 +38,61 @@ public class MyPlayerController : PlayerController
     }
 
     private void OnKeyBoard()
-    {
-        if (Input.GetKey(KeyCode.W))
+    {   
+        // 이동 입력 체크
+        bool hasInput = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D);
+        
+        // 이동 처리
+        if (hasInput)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.forward), 0.2f);
-            transform.position += Vector3.forward * Time.deltaTime * _speed;
+            Vector3 moveDir = Vector3.zero;
+
+            if (Input.GetKey(KeyCode.W))
+            {
+                moveDir += transform.forward;
+            }
+            if (Input.GetKey(KeyCode.S))
+            {
+                moveDir += -transform.forward;
+            }
+            if (Input.GetKey(KeyCode.A))
+            {
+                moveDir += -transform.right;
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+                moveDir += transform.right;
+            }
+
+            moveDir.Normalize();
+            transform.position += moveDir * Time.deltaTime * _moveSpeed;
+
+            CreatureState = CreatureState.Move;
         }
-        if (Input.GetKey(KeyCode.S))
+        else
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.back), 0.2f);
-            transform.position += Vector3.back * Time.deltaTime * _speed;
+            CreatureState = CreatureState.Idle;
         }
-        if (Input.GetKey(KeyCode.A))
+
+        // 회전 처리
+        if (Input.GetMouseButton(1) && _headTransform)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.left), 0.2f);
-            transform.position += Vector3.left * Time.deltaTime * _speed;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), 0.2f);
-            transform.position += Vector3.right * Time.deltaTime * _speed;
+            float mouseX = Input.GetAxis("Mouse X") * _mouseRotationSpeed;
+            float mouseY = Input.GetAxis("Mouse Y") * _mouseRotationSpeed;
+            
+            _rotationY += mouseX;
+            transform.rotation = Quaternion.Euler(0f, _rotationY, 0f);
+
+            _rotationX -= mouseY;
+            _rotationX = Mathf.Clamp(_rotationX, -90f, 90f);
+            
+            _headTransform.localRotation = Quaternion.Euler(_rotationX, 0f, 0f);
         }
     }
 
     private void Update()
     {
+        base.OnUpdate();
         SendMovePacket();
     }
 

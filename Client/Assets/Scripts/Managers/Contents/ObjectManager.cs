@@ -27,12 +27,9 @@ public class ObjectManager
 
             PositionInfo positionInfo = objectInfo.PositionInfo;
             MyPlayer.PositionInfo = positionInfo;
-
             MyPlayer.Id = objectInfo.ObjectId;
 
-            // 카메라 부착
-            CameraController cameraController = Camera.main.AddComponent<CameraController>();
-            cameraController.Player = MyPlayer.gameObject;
+            Camera.main.GetComponent<CameraController>().SetFirstPersonView();
 
             _objects.Add(objectInfo.ObjectId, MyPlayer.gameObject);
         }

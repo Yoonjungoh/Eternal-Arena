@@ -3433,6 +3433,7 @@ MonoBehaviour:
   Id: 0
   GameObjectType: 0
   _speed: 10
+  _mouseSensitivity: 2
 --- !u!1 &5440183364849003393
 GameObject:
   m_ObjectHideFlags: 0

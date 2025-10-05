@@ -6,7 +6,8 @@ public class Define
 {
     public enum CameraMode
     {
-        QuarterView
+        FirstPersonView,
+        QuarterView,
     }
     public enum UIEvent
     {
