@@ -1,12 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "NephQkoB4UI=",
+  "dgSpecHash": "HN+tmBuI0yK1gqSCAhSz/vhk9fso/w7tR8MtGSU3wN4F2mRWYWZiP1WphhHbcdLIe0suMCGVZVppPeUHlwtC4A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\ServerCore\\ServerCore.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\user\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.1.0\\microsoft.windowsdesktop.app.ref.3.1.0.nupkg.sha512",
-    "C:\\Users\\user\\.nuget\\packages\\microsoft.netcore.app.ref\\3.1.0\\microsoft.netcore.app.ref.3.1.0.nupkg.sha512",
-    "C:\\Users\\user\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512"
-  ],
+  "projectFilePath": "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\ServerCore\\ServerCore.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }

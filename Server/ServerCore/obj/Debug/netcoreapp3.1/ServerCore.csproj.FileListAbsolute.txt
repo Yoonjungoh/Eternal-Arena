@@ -184,3 +184,13 @@ C:\Users\user\Desktop\Development\Unity\Project-J\Server\ServerCore\obj\Debug\ne
 C:\Users\user\Desktop\Development\Unity\Project-J\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.sourcelink.json
 C:\Users\user\Desktop\Development\Unity\Project-J\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.dll
 C:\Users\user\Desktop\Development\Unity\Project-J\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.pdb
+C:\Users\user\Desktop\Development\EternalArena\Server\ServerCore\bin\Debug\netcoreapp3.1\ServerCore.deps.json
+C:\Users\user\Desktop\Development\EternalArena\Server\ServerCore\bin\Debug\netcoreapp3.1\ServerCore.dll
+C:\Users\user\Desktop\Development\EternalArena\Server\ServerCore\bin\Debug\netcoreapp3.1\ServerCore.pdb
+C:\Users\user\Desktop\Development\EternalArena\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.csproj.AssemblyReference.cache
+C:\Users\user\Desktop\Development\EternalArena\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\Desktop\Development\EternalArena\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.AssemblyInfoInputs.cache
+C:\Users\user\Desktop\Development\EternalArena\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.AssemblyInfo.cs
+C:\Users\user\Desktop\Development\EternalArena\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\Development\EternalArena\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.dll
+C:\Users\user\Desktop\Development\EternalArena\Server\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.pdb

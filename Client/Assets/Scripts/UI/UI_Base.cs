@@ -8,20 +8,9 @@ using UnityEngine.UI;
 
 public abstract class UI_Base : MonoBehaviour
 {
-    protected bool _initialized;
     protected Dictionary<Type, UnityEngine.Object[]> _objects = new Dictionary<Type, UnityEngine.Object[]>();
-	public virtual void Init()
-	{
-		_initialized = true;
-    }
-    // 멱동적으로 Lazy Init 해결
-    private void Start()
-    {
-        if (_initialized)
-            return;
+	public abstract void Init();
 
-        Init();
-    }
     protected void Bind<T>(Type type) where T : UnityEngine.Object
 	{
 		string[] names = Enum.GetNames(type);

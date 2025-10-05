@@ -9,6 +9,7 @@ public class LobbyScene : BaseScene
         base.Init();
         SceneType = Define.Scene.Lobby;
         // TODO - UI_Lobby 어드레서블로 불러오기
+        Managers.UI.ShowSceneUI<UI_Lobby>();
     }
 
     private void Awake()

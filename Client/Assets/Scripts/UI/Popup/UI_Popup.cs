@@ -6,7 +6,6 @@ public abstract class UI_Popup : UI_Base
 {
     public override void Init()
     {
-        base.Init();
         Managers.UI.SetCanvas(gameObject, true);
     }
 
@@ -26,7 +25,7 @@ public abstract class UI_Popup<TData> : UI_Popup
         _data = data;
     }
     protected abstract void UpdateUI();
-
+    
     public override void Init()
     {
         base.Init();

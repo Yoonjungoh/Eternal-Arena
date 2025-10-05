@@ -25,10 +25,9 @@ public class Lobby_SubItem : UI_SubItem<LobbySubItemData>
 
     public override void Init()
     {
-        base.Init();
         Bind<Button>(typeof(Buttons));
         Bind<TextMeshProUGUI>(typeof(Texts));
-
+        
         GetButton((int)Buttons.EnterRoomButton).onClick.AddListener(OnClickEnterRoom);
     }
 

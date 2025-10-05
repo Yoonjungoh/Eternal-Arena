@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\PacketGenerator\\PacketGenerator.csproj": {}
+    "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\PacketGenerator\\PacketGenerator.csproj": {}
   },
   "projects": {
-    "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\PacketGenerator\\PacketGenerator.csproj": {
+    "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\PacketGenerator\\PacketGenerator.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\PacketGenerator\\PacketGenerator.csproj",
+        "projectUniqueName": "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\PacketGenerator\\PacketGenerator.csproj",
         "projectName": "PacketGenerator",
-        "projectPath": "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\PacketGenerator\\PacketGenerator.csproj",
+        "projectPath": "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\PacketGenerator\\PacketGenerator.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\PacketGenerator\\obj\\",
+        "outputPath": "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\PacketGenerator\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -39,11 +39,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -74,30 +69,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.10, 3.1.10]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[3.1.32, 3.1.32]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[3.1.0, 3.1.0]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[3.1.0, 3.1.0]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }
