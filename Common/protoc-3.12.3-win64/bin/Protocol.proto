@@ -6,6 +6,8 @@ option csharp_namespace = "Google.Protobuf.Protocol";
 
 enum MsgId {
   S_ENTER_LOBBY = 0;
+  S_LEAVE_LOBBY = 1;
+  C_LEAVE_LOBBY = 2;
   S_ENTER_GAME = 3;
   S_LEAVE_GAME = 4;
   S_SPAWN = 5;
@@ -31,6 +33,14 @@ enum GameObjectType{
 
 message S_EnterLobby {
   repeated int32 userIdList = 1;
+}
+
+message S_LeaveLobby {
+  int32 userId = 1;
+}
+
+message C_LeaveLobby {
+  int32 userId = 1;
 }
 
 message S_EnterGame {

@@ -140,4 +140,9 @@ class PacketHandler
         //    bc.IsMoving = true;
         //}
     }
+
+    internal static void S_LeaveLobbyHandler(PacketSession arg1, IMessage arg2)
+    {
+        throw new NotImplementedException();
+    }
 }
