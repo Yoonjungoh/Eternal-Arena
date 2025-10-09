@@ -1,4 +1,4 @@
-using Google.Protobuf.Protocol;
+ï»¿using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,11 +6,11 @@ using UnityEngine;
 public class MyPlayerController : PlayerController
 {
     [SerializeField] float _moveSpeed = 5.0f;
-    [SerializeField] float _mouseRotationSpeed = 2.0f; // ¸¶¿ì½º È¸Àü °¨µµ // TODO-¼³Á¤ ¸Å´ÏÀú·Î »©±â
+    [SerializeField] float _mouseRotationSpeed = 2.0f; // ë§ˆìš°ìŠ¤ íšŒì „ ê°ë„ // TODO-ì„¤ì • ë§¤ë‹ˆì €ë¡œ ë¹¼ê¸°
 
-    private float _rotationX = 0f; // »óÇÏ È¸Àü (Ä«¸Ş¶ó)
-    private float _rotationY = 0f; // ÁÂ¿ì È¸Àü (Ä³¸¯ÅÍ)
-    private Transform _headTransform; // »óÇÏÀÏ ¶§´Â ¸Ó¸®¸¸ µ¹¾Æ°¨
+    private float _rotationX = 0f; // ìƒí•˜ íšŒì „ (ì¹´ë©”ë¼)
+    private float _rotationY = 0f; // ì¢Œìš° íšŒì „ (ìºë¦­í„°)
+    private Transform _headTransform; // ìƒí•˜ì¼ ë•ŒëŠ” ë¨¸ë¦¬ë§Œ ëŒì•„ê°
 
     public override void Init()
     {
@@ -22,7 +22,7 @@ public class MyPlayerController : PlayerController
 
         _headTransform = Util.FindChild(gameObject, "Head", recursive: true).transform;
     }
-
+    
     private void OnMouseClicked(Define.MouseEvent evt)
     {
         if (evt != Define.MouseEvent.Click)
@@ -39,10 +39,10 @@ public class MyPlayerController : PlayerController
 
     private void OnKeyBoard()
     {   
-        // ÀÌµ¿ ÀÔ·Â Ã¼Å©
+        // ì´ë™ ì…ë ¥ ì²´í¬
         bool hasInput = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D);
         
-        // ÀÌµ¿ Ã³¸®
+        // ì´ë™ ì²˜ë¦¬
         if (hasInput)
         {
             Vector3 moveDir = Vector3.zero;
@@ -74,7 +74,7 @@ public class MyPlayerController : PlayerController
             CreatureState = CreatureState.Idle;
         }
 
-        // È¸Àü Ã³¸®
+        // íšŒì „ ì²˜ë¦¬
         if (Input.GetMouseButton(1) && _headTransform)
         {
             float mouseX = Input.GetAxis("Mouse X") * _mouseRotationSpeed;
@@ -96,7 +96,7 @@ public class MyPlayerController : PlayerController
         SendMovePacket();
     }
 
-    // TODO - ÆĞÅ¶ Àü¼Û ÁÖ±â Á¶ÀıÇÏ±â
+    // TODO - íŒ¨í‚· ì „ì†¡ ì£¼ê¸° ì¡°ì ˆí•˜ê¸°
     private void SendMovePacket()
     {
         C_Move movePacket = new C_Move();

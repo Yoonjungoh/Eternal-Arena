@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Server.Game
 {
-	public class RoomManager :JobSerializer
+	public class RoomManager : JobSerializer
 	{
 		// 싱글톤
 		public static RoomManager Instance { get; } = new RoomManager();
@@ -65,6 +65,7 @@ namespace Server.Game
 				}
 			}
 		}
+
 		public GameRoom Find(int roomId)
         {
             lock (_lock)
@@ -73,15 +74,10 @@ namespace Server.Game
 				if (_rooms.TryGetValue(roomId, out room))
 					return room;
 
-                ConsoleLogManager.Instance.Log($"Cant Find Room {roomId}");
-				ConsoleLogManager.Instance.Log("<Remain Room List>");
-				foreach (GameRoom r in RoomManager.Instance._rooms.Values)
-				{
-					ConsoleLogManager.Instance.Log("Remain Room " + r.RoomId);
-				}
 				return null;
 			}
         }
+
         public GameRoom FindGameRoomAndEnter(Player player)
         {
             if (player == null)

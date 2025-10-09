@@ -11,7 +11,6 @@ using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
 using Server.Game;
-using Server.Game.Room;
 using ServerCore;
 
 namespace Server
@@ -31,6 +30,8 @@ namespace Server
             //IPAddress ipAddr = ipHost.AddressList[1]; // for ec2
             IPAddress ipAddr = ipHost.AddressList[0]; // for test
             IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
+
+            LobbyManager.Instance.Init();
 
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			ConsoleLogManager.Instance.Log("Server Starting...");

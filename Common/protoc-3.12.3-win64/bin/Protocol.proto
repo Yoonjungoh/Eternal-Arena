@@ -5,13 +5,13 @@ import "google/protobuf/timestamp.proto";
 option csharp_namespace = "Google.Protobuf.Protocol";
 
 enum MsgId {
-  S_ENTER_GAME = 0;
-  S_LEAVE_GAME = 1;
-  S_SPAWN = 2;
-  S_DESPAWN = 3;
-  C_MOVE = 4;
-  S_MOVE = 5;
-  C_ENTER_GAME = 6;
+  S_ENTER_LOBBY = 0;
+  S_ENTER_GAME = 3;
+  S_LEAVE_GAME = 4;
+  S_SPAWN = 5;
+  S_DESPAWN = 6;
+  C_MOVE = 7;
+  S_MOVE = 8;
 }
 
 enum CreatureState {
@@ -27,6 +27,10 @@ enum GameObjectType{
   NONE = 0;
   PLAYER = 1;
   MONSTER = 2;
+}
+
+message S_EnterLobby {
+  repeated int32 userIdList = 1;
 }
 
 message S_EnterGame {

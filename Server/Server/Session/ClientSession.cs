@@ -9,7 +9,6 @@ using System.Net;
 using Google.Protobuf.Protocol;
 using Google.Protobuf;
 using Server.Game;
-using Server.Game.Room;
 
 namespace Server
 {
@@ -51,11 +50,11 @@ namespace Server
 		{
 			ConsoleLogManager.Instance.Log($"OnConnected : {endPoint}");
 
-            //// TODO - MSSQL 사용시 DB에서 긁어올 부분, 유저 정보
+            // TODO - MSSQL 사용시 DB에서 긁어올 부분, 유저 정보
             MyPlayer = ObjectManager.Instance.Add<Player>();
             MyPlayer.Session = this;
 
-			EnterRoom();
+            EnterLobby();
         }
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
@@ -82,12 +81,11 @@ namespace Server
 		{
 			//ConsoleLogManager.Instance.Log($"Transferred bytes: {numOfBytes}");
 		}
-		// 로비에서 멀티게임 누르면 실행되는 함수
-		public void EnterRoom()
-		{
-			GameRoom room = RoomManager.Instance.FindGameRoomAndEnter(MyPlayer);
-			RoomId = room.RoomId;
-			ConsoleLogManager.Instance.Log($"Player Connected in GameRoom {room.RoomId}");
-		}
+
+        public void EnterLobby()
+        {
+            ConsoleLogManager.Instance.Log($"Player Connected in Lobby {MyPlayer.Session.SessionId}");
+			LobbyManager.Instance.EnterLobby(1, MyPlayer);	// TODO - 1번 로비로 강제 이동
+        }
 	}
 }

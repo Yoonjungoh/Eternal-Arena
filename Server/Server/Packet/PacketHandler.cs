@@ -2,7 +2,6 @@
 using Google.Protobuf.Protocol;
 using Server;
 using Server.Game;
-using Server.Game.Room;
 using ServerCore;
 using System;
 using System.Collections.Generic;
@@ -39,4 +38,8 @@ class PacketHandler
 		room.Push(room.HandleMove, player, movePacket);
 	}
 
+    internal static void C_LeaveLobbyHandler(PacketSession session, IMessage packet)
+    {
+        throw new NotImplementedException();
+    }
 }

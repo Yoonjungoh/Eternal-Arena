@@ -23,6 +23,8 @@ class PacketManager
 
 	public void Register()
 	{		
+		_onRecv.Add((ushort)MsgId.SEnterLobby, MakePacket<S_EnterLobby>);
+		_handler.Add((ushort)MsgId.SEnterLobby, PacketHandler.S_EnterLobbyHandler);		
 		_onRecv.Add((ushort)MsgId.SEnterGame, MakePacket<S_EnterGame>);
 		_handler.Add((ushort)MsgId.SEnterGame, PacketHandler.S_EnterGameHandler);		
 		_onRecv.Add((ushort)MsgId.SLeaveGame, MakePacket<S_LeaveGame>);

@@ -4,11 +4,31 @@ using ServerCore;
 using UnityEngine;
 using System;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 
 class PacketHandler
 {
+    // 로비에 입장했을 때
+    public static void S_EnterLobbyHandler(PacketSession session, IMessage packet)
+    {
+        // UI 찾는게 더 무겁고 패킷 캐스팅이 더 가벼우니 패킷 먼저 체크
+        S_EnterLobby enterLobbyPacket = packet as S_EnterLobby;
+        if (enterLobbyPacket == null || enterLobbyPacket.UserIdList == null)
+        {
+            Debug.Log("S_EnterLobby 패킷이 null입니다");
+            return;
+        }
+        UI_Lobby lobbyUI = Managers.UI.CurrentScene.GetComponent<UI_Lobby>();
+        if (lobbyUI == null)
+        {
+            Debug.Log("현재 로비가 아닌데 로비에 입장하려고 합니다.");
+            return;
+        }
+        lobbyUI.AddLobbyUser(enterLobbyPacket.UserIdList.ToList());
+    }
+
     // 내가 게임에 입장할 때 패킷
-    // 만들고 보니까 클라 쪽에서 세션은 굳이 필요 없을듯 함
     public static void S_EnterGameHandler(PacketSession session, IMessage packet)
     {
         S_EnterGame enterGamePacket = packet as S_EnterGame;
