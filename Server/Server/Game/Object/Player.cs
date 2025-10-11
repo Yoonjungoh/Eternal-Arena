@@ -6,18 +6,17 @@ using System.Text;
 namespace Server.Game
 {
 	public class Player : GameObject
-	{
-		public ClientSession Session { get; set; }
-		public bool IsWinner { get; set; }
-		public Player()
-		{
-			Init();
-		}
-		public float BulletScaleBuff = 0f;
+    {
+        public Player()
+        {
+            Init();
+        }
 
-		public float BulletSpeedBuff = 0f;
-		// 플레이어 정보 초기화
-		public void Init()
+        public ClientSession Session { get; set; }
+        public Lobby Lobby { get; set; }
+
+        // 플레이어 정보 초기화
+        public void Init()
 		{
 			ObjectType = GameObjectType.Player;
 

@@ -1,3 +1,4 @@
+using Google.Protobuf.Collections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,12 +28,12 @@ public class UI_Lobby : UI_Scene
         _userScrollView = Util.FindChild(gameObject, "UserContent", recursive: true);
     }
 
-    public void AddLobbyUser(List<int> userIdList)
+    public void EnterLobby(RepeatedField<int> userIdList)
     {
         for (int i = 0; i < userIdList.Count; i++)
         {
             if (_userSubItemDict.ContainsKey(userIdList[i])) continue;
-            
+
             Lobby_UserSubItem lobbyUserSubItem = Managers.UI.MakeSubItem<Lobby_UserSubItem>(_userScrollView.transform);
             lobbyUserSubItem.SetData(new LobbyUserSubItemData
             {
@@ -40,6 +41,24 @@ public class UI_Lobby : UI_Scene
             });
             _userSubItemDict.TryAdd(userIdList[i], lobbyUserSubItem);
         }
+    }
+
+    public void LeaveLobby(int userId)
+    {
+        if (_userSubItemDict.ContainsKey(userId) == false)
+        {
+            Debug.Log($"UserId: {userId}가 로비에 존재하지 않습니다.");
+            return;
+        }
+        Lobby_UserSubItem lobbyUserSubItem = null;
+        _userSubItemDict.TryGetValue(userId, out lobbyUserSubItem);
+        if (lobbyUserSubItem == null)
+        {
+            Debug.Log($"UserId: {userId}의 SubItem이 로비에 존재하지 않습니다.");
+            return;
+        }
+        Destroy(lobbyUserSubItem);  // TODO - 풀링
+        _userSubItemDict.Remove(userId);
     }
 
     private void OnClickMakeRoomButton()

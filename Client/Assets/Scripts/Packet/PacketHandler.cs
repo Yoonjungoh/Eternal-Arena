@@ -19,13 +19,34 @@ class PacketHandler
             Debug.Log("S_EnterLobby 패킷이 null입니다");
             return;
         }
+
         UI_Lobby lobbyUI = Managers.UI.CurrentScene.GetComponent<UI_Lobby>();
         if (lobbyUI == null)
         {
             Debug.Log("현재 로비가 아닌데 로비에 입장하려고 합니다.");
             return;
         }
-        lobbyUI.AddLobbyUser(enterLobbyPacket.UserIdList.ToList());
+        lobbyUI.EnterLobby(enterLobbyPacket.UserIdList);
+    }
+
+    // 로비에서 누군가 퇴장했을 때
+    public static void S_LeaveLobbyHandler(PacketSession session, IMessage packet)
+    {
+        // UI 찾는게 더 무겁고 패킷 캐스팅이 더 가벼우니 패킷 먼저 체크
+        S_LeaveLobby leaveLobbyPacket = packet as S_LeaveLobby;
+        if (leaveLobbyPacket == null)
+        {
+            Debug.Log("S_LeaveLobby 패킷이 null입니다");
+            return;
+        }
+
+        UI_Lobby lobbyUI = Managers.UI.CurrentScene.GetComponent<UI_Lobby>();
+        if (lobbyUI == null)
+        {
+            Debug.Log("현재 로비가 아닌데 로비에 입장하려고 합니다.");
+            return;
+        }
+        lobbyUI.LeaveLobby(leaveLobbyPacket.UserId);
     }
 
     // 내가 게임에 입장할 때 패킷
@@ -139,10 +160,5 @@ class PacketHandler
         //    bc.Dir = new Vector3(movePacket.PosInfo.PosX, movePacket.PosInfo.PosY, 0f);
         //    bc.IsMoving = true;
         //}
-    }
-
-    internal static void S_LeaveLobbyHandler(PacketSession arg1, IMessage arg2)
-    {
-        throw new NotImplementedException();
     }
 }

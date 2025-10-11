@@ -16,37 +16,51 @@ namespace Server.Game
     {
         public int LobbyId { get; set; }
         
-        Dictionary<int, Player> _players = new Dictionary<int, Player>();
+        Dictionary<int, Player> _users = new Dictionary<int, Player>();
 
         public void Init()
         {
             // TODO
         }
 
-        public void EnterLobby(Player player)
+        public void EnterLobby(Player user)
         {
             // 입장 처리
-            _players.TryAdd(player.Id, player);
+            _users.TryAdd(user.Id, user);
 
             // 들어온 유저에게 기존 유저들 알리고
             // 기존 유저들에게도 들어온 유저 알리기
             S_EnterLobby enterLobbyPacket = new S_EnterLobby();
-            foreach (Player p in _players.Values)
+            foreach (Player u in _users.Values)
             {
-                if (p == null)
+                if (u == null)
                     continue;
                 
-                enterLobbyPacket.UserIdList.Add(p.Id);
+                enterLobbyPacket.UserIdList.Add(u.Id);
             }
             Broadcast(enterLobbyPacket);
         }
 
+        public void LeaveLobby(int userId)
+        {
+            // 퇴장 처리
+            if (_users.Remove(userId) == false)
+            {
+                ConsoleLogManager.Instance.Log($"Not Exist UserId: {userId}");
+                return;
+            }
+            
+            S_LeaveLobby leaveLobbyPacket = new S_LeaveLobby();
+            leaveLobbyPacket.UserId = userId;
+            Broadcast(leaveLobbyPacket);
+        }
+
         public Player FindPlayer(Func<GameObject, bool> condition)
         {
-            foreach (Player player in _players.Values)
+            foreach (Player user in _users.Values)
             {
-                if (condition.Invoke(player))
-                    return player;
+                if (condition.Invoke(user))
+                    return user;
             }
 
             return null;
@@ -54,9 +68,9 @@ namespace Server.Game
 
         public void Broadcast(IMessage packet)
         {
-            foreach (Player player in _players.Values)
+            foreach (Player user in _users.Values)
             {
-                player.Session.Send(packet);
+                user.Session.Send(packet);
             }
         }
 

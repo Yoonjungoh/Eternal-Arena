@@ -23,6 +23,7 @@ class PacketHandler
         Console.WriteLine($"(아이디: {enterGamePacket.ObjectInfo.ObjectId}, 이름: {enterGamePacket.ObjectInfo.Name})");
         //room.Push(room.HandleMove, player, movePacket);
     }
+
     public static void C_MoveHandler(PacketSession session, IMessage packet)
 	{
 		C_Move movePacket = packet as C_Move;
@@ -38,8 +39,19 @@ class PacketHandler
 		room.Push(room.HandleMove, player, movePacket);
 	}
 
-    internal static void C_LeaveLobbyHandler(PacketSession session, IMessage packet)
+    public static void C_LeaveLobbyHandler(PacketSession session, IMessage packet)
     {
-        throw new NotImplementedException();
+        C_LeaveLobby leaveLobbyPacket = packet as C_LeaveLobby;
+        ClientSession clientSession = session as ClientSession;
+
+        Player user = clientSession.MyPlayer;
+        if (user == null)
+            return;
+
+        Lobby lobby = user.Lobby;
+        if (lobby == null)
+            return;
+
+        lobby.Push(lobby.EnterLobby, user);
     }
 }
