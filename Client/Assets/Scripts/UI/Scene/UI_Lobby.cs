@@ -37,7 +37,7 @@ public class UI_Lobby : UI_Scene
             Lobby_UserSubItem lobbyUserSubItem = Managers.UI.MakeSubItem<Lobby_UserSubItem>(_userScrollView.transform);
             lobbyUserSubItem.SetData(new LobbyUserSubItemData
             {
-                UserId = userIdList[i],
+                UserId = userIdList[i]
             });
             _userSubItemDict.TryAdd(userIdList[i], lobbyUserSubItem);
         }
@@ -63,12 +63,10 @@ public class UI_Lobby : UI_Scene
 
     private void OnClickMakeRoomButton()
     {
-        Lobby_RoomSubItem lobbyRoomSubItem = Managers.UI.MakeSubItem<Lobby_RoomSubItem>(_roomScrollView.transform);
-        lobbyRoomSubItem.SetData(new LobbyRoomSubItemData
+        UI_MakeRoom makeRoomUI = Managers.UI.ShowPopupUI<UI_MakeRoom>();
+        makeRoomUI.SetData(new MakeRoomPopupData
         {
-            RoomName = "πÊ ¿Ã∏ß " + i++.ToString(),
-            CurrentPlayerCount = 1,
-            MaxPlayerCount = 5
+            RoomName = string.Empty
         });
     }
 }

@@ -40,7 +40,7 @@ public class Lobby_RoomSubItem : UI_SubItem<LobbyRoomSubItemData>
         });
         Debug.Log($"{_data.RoomName} πÊ ¿‘¿Â");
     }
-
+    
     public override void SetData(LobbyRoomSubItemData data)
     {
         base.SetData(data);
