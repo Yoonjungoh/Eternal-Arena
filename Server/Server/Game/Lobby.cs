@@ -43,7 +43,7 @@ namespace Server.Game
             S_AddRoom addRoomPacket = new S_AddRoom();
             addRoomPacket.RoomId = newRoom.RoomId;
             addRoomPacket.RoomName = roomName;
-
+            // TODO - 생성한 본인은 어차피 바로 방으로 가니까 나중에 본인 제외시키기
             Broadcast(addRoomPacket);
         }
 
