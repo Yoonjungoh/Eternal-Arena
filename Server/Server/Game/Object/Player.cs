@@ -12,8 +12,10 @@ namespace Server.Game
             Init();
         }
 
+        public int LobbyId;
+
+        public int RoomId;
         public ClientSession Session { get; set; }
-        public Lobby Lobby { get; set; }
 
         // 플레이어 정보 초기화
         public void Init()

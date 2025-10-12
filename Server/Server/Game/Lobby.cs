@@ -25,8 +25,19 @@ namespace Server.Game
 
         public void EnterLobby(Player user)
         {
+            if (user == null)
+            {
+                ConsoleLogManager.Instance.Log("User is Null in EnterLobby");
+            }
             // 입장 처리
-            _users.TryAdd(user.Id, user);
+            if (_users.TryAdd(user.Id, user) == false)
+            {
+                ConsoleLogManager.Instance.Log($"Can't Add UserId: {user.Id} to Lobby {LobbyId}");
+            }
+
+            // 로비 아이디 할당
+            user.LobbyId = LobbyId;
+            ConsoleLogManager.Instance.Log($"Lobby: Enter UserId: {user.Id}");
 
             // 들어온 유저에게 기존 유저들 알리고
             // 기존 유저들에게도 들어온 유저 알리기
@@ -49,7 +60,8 @@ namespace Server.Game
                 ConsoleLogManager.Instance.Log($"Not Exist UserId: {userId}");
                 return;
             }
-            
+            ConsoleLogManager.Instance.Log($"Lobby: Remove UserId: {userId}");
+
             S_LeaveLobby leaveLobbyPacket = new S_LeaveLobby();
             leaveLobbyPacket.UserId = userId;
             Broadcast(leaveLobbyPacket);

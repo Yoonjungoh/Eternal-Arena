@@ -15,8 +15,6 @@ namespace Server
 	public class ClientSession : PacketSession
 	{
 		public Player MyPlayer { get; set; }
-
-		public int RoomId;
 		public int SessionId { get; set; }
 		
 		public void Send(IMessage packet)
@@ -63,20 +61,37 @@ namespace Server
 		}
 
 		public override void OnDisconnected(EndPoint endPoint)
-		{
-			GameRoom room = RoomManager.Instance.Find(RoomId);
-			if (room == null)
+        {
+            if (MyPlayer == null)
 			{
-                ConsoleLogManager.Instance.Log("Cant Leave the game because room is null");
-				return;
-			}
-			if (MyPlayer == null)
-				return;
-			room.Push(room.LeaveGame, MyPlayer.ObjectInfo.ObjectId, true);
-			SessionManager.Instance.Remove(this);
+                ConsoleLogManager.Instance.Log("Can't Find MyPlayer");
+                return;
+            }
+			
+            GameRoom room = RoomManager.Instance.Find(MyPlayer.RoomId);
+			if (room != null)
+            {
+                room.Push(room.LeaveGame, MyPlayer.ObjectInfo.ObjectId, true);
+            }
+			else
+            {
+                ConsoleLogManager.Instance.Log($"Can't Find Room {MyPlayer.RoomId} -> UserId: {MyPlayer.Id}");
+            }
+
+            Lobby lobby = LobbyManager.Instance.Find(MyPlayer.LobbyId);
+            if (lobby != null)
+            {
+                lobby.Push(lobby.LeaveLobby, MyPlayer.Id);
+            }
+            else
+            {
+                ConsoleLogManager.Instance.Log($"Can't Find Lobby {MyPlayer.LobbyId} -> UserId: {MyPlayer.Id}");
+            }
+
+            SessionManager.Instance.Remove(this);
 			ConsoleLogManager.Instance.Log($"OnDisconnected : {endPoint}");
 		}
-
+		
 		public override void OnSend(int numOfBytes)
 		{
 			//ConsoleLogManager.Instance.Log($"Transferred bytes: {numOfBytes}");

@@ -48,10 +48,10 @@ class PacketHandler
         if (user == null)
             return;
 
-        Lobby lobby = user.Lobby;
+        Lobby lobby = LobbyManager.Instance.Find(user.LobbyId);
         if (lobby == null)
             return;
 
-        lobby.Push(lobby.EnterLobby, user);
+        lobby.Push(lobby.LeaveLobby, user.Id);
     }
 }

@@ -57,7 +57,7 @@ public class UI_Lobby : UI_Scene
             Debug.Log($"UserId: {userId}의 SubItem이 로비에 존재하지 않습니다.");
             return;
         }
-        Destroy(lobbyUserSubItem);  // TODO - 풀링
+        Destroy(lobbyUserSubItem.gameObject);  // TODO - 풀링
         _userSubItemDict.Remove(userId);
     }
 

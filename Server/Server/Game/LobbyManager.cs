@@ -55,6 +55,18 @@ namespace Server.Game
             }
         }
 
+        public Lobby Find(int lobbyId)
+        {
+            lock (_lock)
+            {
+                Lobby lobby = null;
+                if (_lobbies.TryGetValue(lobbyId, out lobby))
+                    return lobby;
+
+                return null;
+            }
+        }
+
         public void Init()
         {
             ConsoleLogManager.Instance.Log("LobbyData Donwload Complete");
