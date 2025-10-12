@@ -1,102 +1,89 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Server.Game
 {
 	public class RoomManager : JobSerializer
-	{
-		// 싱글톤
-		public static RoomManager Instance { get; } = new RoomManager();
+    {
+        object _lock = new object();
+        Dictionary<int, GameRoom> _rooms = new Dictionary<int, GameRoom>();
+        int _roomId = 1;
+        public Dictionary<int, GameRoom> Rooms { get { return _rooms; } }
+        List<System.Timers.Timer> _timers = new List<System.Timers.Timer>();
+        
+        public RoomManager(int lobbyId)
+        {
+            ConsoleLogManager.Instance.Log($"RoomManager created for Lobby {lobbyId}");
+        }
 
-		object _lock = new object();
-		Dictionary<int, GameRoom> _rooms = new  Dictionary<int, GameRoom>();
-		int _roomId = 1;
-		public Dictionary<int, GameRoom> Rooms { get { return _rooms; } }
+        public void TickRoom(GameRoom room, int tick = 50)
+        {
+            var timer = new System.Timers.Timer();
+            timer.Interval = tick;
+            timer.Elapsed += ((s, e) => { room.Update(); });
+            timer.AutoReset = true;
+            timer.Enabled = true;
+            _timers.Add(timer);
+        }
 
-		static List<System.Timers.Timer> _timers = new List<System.Timers.Timer>();
+        public GameRoom Add(string roomName)
+        {
+            lock (_lock)
+            {
+                GameRoom newRoom = new GameRoom();
+                newRoom.Push(newRoom.Init);
+                TickRoom(newRoom);
 
-		// 방 업데이트 틱 설정
-		 public void TickRoom(GameRoom room, int tick = 50)
-		 {
-			var timer = new System.Timers.Timer();
-			timer.Interval = tick;
-			timer.Elapsed += ((s, e) => { room.Update(); });
-			timer.AutoReset = true;
-			timer.Enabled = true;
-
-			_timers.Add(timer);
-		 }
-
-		// 룸 생성	
-		public GameRoom Add()
-		{
-			lock (_lock)
-			{
-				GameRoom newRoom = new GameRoom();
-				newRoom.Push(newRoom.Init);
-				RoomManager.Instance.TickRoom(newRoom);
-
-				// 이미 방이 있을 때
-				if (_rooms.ContainsKey(_roomId))
+                if (_rooms.ContainsKey(_roomId))
                 {
                     ConsoleLogManager.Instance.Log($"That room already exist {_roomId}");
-					return null;
-				}
-
-				newRoom.RoomId = _roomId;
-				_rooms.Add(_roomId, newRoom);
-				_roomId++;
-
-				return newRoom;
-			}
-        }
-		// 룸 삭제
-		public bool Remove(int roomId)
-        {
-            lock (_lock)
-			{
-				if (_rooms.ContainsKey(roomId))
-					return _rooms.Remove(roomId);
-				else
-				{
-					ConsoleLogManager.Instance.Log($"That room already removed {_roomId}");
-					return false;
-				}
-			}
-		}
-
-		public GameRoom Find(int roomId)
-        {
-            lock (_lock)
-			{
-				GameRoom room = null;
-				if (_rooms.TryGetValue(roomId, out room))
-					return room;
-
-				return null;
-			}
-        }
-
-        public GameRoom FindGameRoomAndEnter(Player player)
-        {
-            if (player == null)
-                return null;
-
-            lock (_lock)
-			{
-				foreach (GameRoom room in RoomManager.Instance._rooms.Values)
-                {
-                    ConsoleLogManager.Instance.Log("Find Room! " + room.RoomId);
-                    room.Push(room.EnterGame, player);
-                    return room;
+                    return null;
                 }
-				// 활성화된 방이 없으면 방 하나 새로 만들기
-				ConsoleLogManager.Instance.Log($"Make new Room {RoomManager.Instance._roomId}");
-				GameRoom newRoom = RoomManager.Instance.Add();
-				newRoom.Push(newRoom.EnterGame, player);
-				return newRoom;
-			}
+                
+                newRoom.RoomId = _roomId;
+                newRoom.RoomName = roomName;
+                _rooms.Add(_roomId, newRoom);
+                _roomId++;
+                
+                return newRoom;
+            }
+        }
+
+        public bool Remove(int roomId)
+        {
+            lock (_lock)
+            {
+                if (_rooms.ContainsKey(roomId))
+                    return _rooms.Remove(roomId);
+                else
+                {
+                    ConsoleLogManager.Instance.Log($"That room already removed {roomId}");
+                    return false;
+                }
+            }
+        }
+
+        public GameRoom Find(int roomId)
+        {
+            lock (_lock)
+            {
+                GameRoom room = null;
+                if (_rooms.TryGetValue(roomId, out room))
+                    return room;
+                return null;
+            }
+        }
+
+        public void DisposeTimer()
+        {
+            foreach (var timer in _timers)
+            {
+                timer.Stop();
+                timer.Dispose();
+            }
+            _timers.Clear();
         }
     }
 }

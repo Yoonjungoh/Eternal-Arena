@@ -5,7 +5,9 @@ using Server.Game;
 using ServerCore;
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Text;
+using static System.Collections.Specialized.BitVector32;
 
 class PacketHandler
 {
@@ -53,5 +55,21 @@ class PacketHandler
             return;
 
         lobby.Push(lobby.LeaveLobby, user.Id);
+    }
+
+    public static void C_AddRoomHandler(PacketSession session, IMessage packet)
+    {
+        C_AddRoom addRoomPacket = packet as C_AddRoom;
+        ClientSession clientSession = session as ClientSession;
+
+        Player user = clientSession.MyPlayer;
+        if (user == null)
+            return;
+
+        Lobby lobby = LobbyManager.Instance.Find(user.LobbyId);
+        if (lobby == null || lobby.RoomManager == null)
+            return;
+        
+        lobby.Push(lobby.HandleAddRoom, user, addRoomPacket.RoomName);
     }
 }

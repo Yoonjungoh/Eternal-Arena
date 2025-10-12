@@ -10,11 +10,12 @@ public class UI_Lobby : UI_Scene
 {
     enum Buttons
     {
-        MakeRoomButton,
+        AddRoomButton,
     }
     int i = 0;  // TODO
     private GameObject _roomScrollView;
     private GameObject _userScrollView;
+    Dictionary<int, Lobby_RoomSubItem> _roomSubItemDict = new Dictionary<int, Lobby_RoomSubItem>();
     Dictionary<int, Lobby_UserSubItem> _userSubItemDict = new Dictionary<int, Lobby_UserSubItem>();
 
     public override void Init()
@@ -22,7 +23,7 @@ public class UI_Lobby : UI_Scene
         base.Init();
         
         Bind<Button>(typeof(Buttons));
-        GetButton((int)Buttons.MakeRoomButton).onClick.AddListener(OnClickMakeRoomButton);
+        GetButton((int)Buttons.AddRoomButton).onClick.AddListener(OnClickAddRoomButton);
 
         _roomScrollView = Util.FindChild(gameObject, "RoomContent", recursive: true);
         _userScrollView = Util.FindChild(gameObject, "UserContent", recursive: true);
@@ -61,12 +62,31 @@ public class UI_Lobby : UI_Scene
         _userSubItemDict.Remove(userId);
     }
 
-    private void OnClickMakeRoomButton()
+    public void OnClickAddRoomButton()
     {
-        UI_MakeRoom makeRoomUI = Managers.UI.ShowPopupUI<UI_MakeRoom>();
-        makeRoomUI.SetData(new MakeRoomPopupData
+        UI_AddRoom addRoomUI = Managers.UI.ShowPopupUI<UI_AddRoom>();
+        addRoomUI.SetData(new AddRoomPopupData
         {
             RoomName = string.Empty
         });
+    }
+
+    public void AddRoom(int roomId, string roomName)
+    {
+        if (_userSubItemDict.ContainsKey(roomId))
+        {
+            Debug.Log($"같은 RoomId가 이미 존재합니다. RoomId: {roomId}, RoomName: {roomName}");
+            return;
+        }
+
+        Lobby_RoomSubItem lobbyRoomSubItem = Managers.UI.MakeSubItem<Lobby_RoomSubItem>(_roomScrollView.transform);
+        lobbyRoomSubItem.SetData(new LobbyRoomSubItemData
+        {
+            RoomId= roomId,
+            RoomName = roomName,
+            MaxPlayerCount = 4,  // TODO 
+            CurrentPlayerCount = 1, // TODO - 본인
+        });
+        _roomSubItemDict.TryAdd(roomId, lobbyRoomSubItem);
     }
 }

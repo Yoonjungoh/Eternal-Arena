@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 7985699233560053971}
   - component: {fileID: 661692967091709401}
   m_Layer: 5
-  m_Name: MakeRoomButton
+  m_Name: AddRoomButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

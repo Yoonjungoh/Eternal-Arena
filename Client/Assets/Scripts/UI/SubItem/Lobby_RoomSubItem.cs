@@ -5,9 +5,10 @@ using UnityEngine;
 using UnityEngine.UI;
 public struct LobbyRoomSubItemData
 {
+    public int RoomId;
+    public string RoomName;
     public int CurrentPlayerCount;
     public int MaxPlayerCount;
-    public string RoomName;
 }
 
 public class Lobby_RoomSubItem : UI_SubItem<LobbyRoomSubItemData>
@@ -39,6 +40,7 @@ public class Lobby_RoomSubItem : UI_SubItem<LobbyRoomSubItemData>
             RoomName = _data.RoomName,
         });
         Debug.Log($"{_data.RoomName} 방 입장");
+        // TODO - 패킷
     }
     
     public override void SetData(LobbyRoomSubItemData data)

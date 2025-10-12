@@ -17,10 +17,34 @@ namespace Server.Game
         public int LobbyId { get; set; }
         
         Dictionary<int, Player> _users = new Dictionary<int, Player>();
+        public RoomManager RoomManager;
 
         public void Init()
         {
-            // TODO
+            RoomManager = new RoomManager(LobbyId);
+        }
+
+        public void HandleAddRoom(Player user, string roomName)
+        {
+            if (user == null || RoomManager == null)
+                return;
+            
+            // 방 생성
+            GameRoom newRoom = RoomManager.Add(roomName);
+
+            if (newRoom == null)
+            {
+                ConsoleLogManager.Instance.Log($"Failed to create room: {roomName}");
+                return;
+            }
+
+            ConsoleLogManager.Instance.Log($"Room created: {newRoom.RoomId}, Name: {roomName}");
+
+            S_AddRoom addRoomPacket = new S_AddRoom();
+            addRoomPacket.RoomId = newRoom.RoomId;
+            addRoomPacket.RoomName = roomName;
+
+            Broadcast(addRoomPacket);
         }
 
         public void EnterLobby(Player user)

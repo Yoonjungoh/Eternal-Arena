@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Server.Game
 {
@@ -9,31 +10,46 @@ namespace Server.Game
     {
         // 실행하는 거 따로 만들어주기
         void Execute();
+        string GetJobName();
     }
     class Job : IJob
     {
         Action _action;
+
         public Job(Action action)
         {
             _action = action;
         }
+
         public void Execute()
         {
             _action.Invoke();
+        }
+
+        public string GetJobName()
+        {
+            return _action.Method.Name;
         }
     }
     class Job<T1> : IJob
     {
         Action<T1> _action;
         T1 _t1;
+
         public Job(Action<T1> action, T1 t1)
         {
             _action = action;
             _t1 = t1;
         }
+
         public void Execute()
         {
             _action.Invoke(_t1);
+        }
+
+        public string GetJobName()
+        {
+            return _action.Method.Name;
         }
     }
     class Job<T1, T2> : IJob
@@ -41,15 +57,22 @@ namespace Server.Game
         Action<T1, T2> _action;
         T1 _t1;
         T2 _t2;
+
         public Job(Action<T1, T2> action, T1 t1, T2 t2)
         {
             _action = action;
             _t1 = t1;
             _t2 = t2;
         }
+
         public void Execute()
         {
             _action.Invoke(_t1, _t2);
+        }
+
+        public string GetJobName()
+        {
+            return _action.Method.Name;
         }
     }
     class Job<T1, T2, T3> : IJob
@@ -65,9 +88,15 @@ namespace Server.Game
             _t2 = t2;
             _t3 = t3;
         }
+
         public void Execute()
         {
             _action.Invoke(_t1, _t2, _t3);
+        }
+
+        public string GetJobName()
+        {
+            return _action.Method.Name;
         }
     }
     class Job<T1, T2, T3, T4> : IJob
@@ -77,6 +106,7 @@ namespace Server.Game
         T2 _t2;
         T3 _t3;
         T4 _t4;
+
         public Job(Action<T1, T2, T3, T4> action, T1 t1, T2 t2, T3 t3, T4 t4)
         {
             _action = action;
@@ -85,9 +115,15 @@ namespace Server.Game
             _t3 = t3;
             _t4 = t4;
         }
+
         public void Execute()
         {
             _action.Invoke(_t1, _t2, _t3, _t4);
+        }
+
+        public string GetJobName()
+        {
+            return _action.Method.Name;
         }
     }
 }

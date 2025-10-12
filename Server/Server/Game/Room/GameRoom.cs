@@ -14,6 +14,7 @@ namespace Server.Game
     public class GameRoom : JobSerializer
     {
         public int RoomId { get; set; }
+        public string RoomName { get; set; }
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
         public void Init()
         {

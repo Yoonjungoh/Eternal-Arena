@@ -49,6 +49,25 @@ class PacketHandler
         lobbyUI.LeaveLobby(leaveLobbyPacket.UserId);
     }
 
+    public static void S_AddRoomHandler(PacketSession session, IMessage packet)
+    {
+        // UI 찾는게 더 무겁고 패킷 캐스팅이 더 가벼우니 패킷 먼저 체크
+        S_AddRoom addRoomPacket = packet as S_AddRoom;
+        if (addRoomPacket == null)
+        {
+            Debug.Log("S_AddRoom 패킷이 null입니다");
+            return;
+        }
+
+        UI_Lobby lobbyUI = Managers.UI.CurrentScene.GetComponent<UI_Lobby>();
+        if (lobbyUI == null)
+        {
+            Debug.Log("현재 로비가 아닌데 로비에 입장하려고 합니다.");
+            return;
+        }
+        lobbyUI.AddRoom(addRoomPacket.RoomId, addRoomPacket.RoomName);
+    }
+
     // 내가 게임에 입장할 때 패킷
     public static void S_EnterGameHandler(PacketSession session, IMessage packet)
     {

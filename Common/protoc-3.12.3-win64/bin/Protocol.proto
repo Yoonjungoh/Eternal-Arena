@@ -8,12 +8,14 @@ enum MsgId {
   S_ENTER_LOBBY = 0;
   S_LEAVE_LOBBY = 1;
   C_LEAVE_LOBBY = 2;
-  S_ENTER_GAME = 3;
-  S_LEAVE_GAME = 4;
-  S_SPAWN = 5;
-  S_DESPAWN = 6;
-  C_MOVE = 7;
-  S_MOVE = 8;
+  C_ADD_ROOM = 3;
+  S_ADD_ROOM = 4;
+  S_ENTER_GAME = 90;
+  S_LEAVE_GAME = 100;
+  S_SPAWN = 101;
+  S_DESPAWN = 102;
+  C_MOVE = 103;
+  S_MOVE = 104;
 }
 
 enum CreatureState {
@@ -41,6 +43,15 @@ message S_LeaveLobby {
 
 message C_LeaveLobby {
   int32 userId = 1;
+}
+
+message C_AddRoom {
+  string roomName = 1;
+}
+
+message S_AddRoom {
+  int32 roomId = 1;
+  string roomName = 2;
 }
 
 message S_EnterGame {

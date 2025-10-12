@@ -68,24 +68,24 @@ namespace Server
                 return;
             }
 			
-            GameRoom room = RoomManager.Instance.Find(MyPlayer.RoomId);
-			if (room != null)
-            {
-                room.Push(room.LeaveGame, MyPlayer.ObjectInfo.ObjectId, true);
-            }
-			else
-            {
-                ConsoleLogManager.Instance.Log($"Can't Find Room {MyPlayer.RoomId} -> UserId: {MyPlayer.Id}");
-            }
-
             Lobby lobby = LobbyManager.Instance.Find(MyPlayer.LobbyId);
-            if (lobby != null)
+            if (lobby == null)
             {
-                lobby.Push(lobby.LeaveLobby, MyPlayer.Id);
+                ConsoleLogManager.Instance.Log($"Can't Find Lobby {MyPlayer.LobbyId} -> UserId: {MyPlayer.Id}");
             }
             else
             {
-                ConsoleLogManager.Instance.Log($"Can't Find Lobby {MyPlayer.LobbyId} -> UserId: {MyPlayer.Id}");
+                lobby.Push(lobby.LeaveLobby, MyPlayer.Id);
+                GameRoom room = lobby.RoomManager.Find(MyPlayer.RoomId);
+                if (room != null)
+                {
+                    room.Push(room.LeaveGame, MyPlayer.ObjectInfo.ObjectId, true);
+                }
+                else
+                {
+                    ConsoleLogManager.Instance.Log($"Can't Find Room {MyPlayer.RoomId} -> UserId: {MyPlayer.Id}");
+                }
+
             }
 
             SessionManager.Instance.Remove(this);

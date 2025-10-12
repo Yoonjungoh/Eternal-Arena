@@ -47,9 +47,16 @@ namespace Server.Game
 				IJob job = Pop();
 				if (job == null)
 					return;
-
-				job.Execute();
-			}
+                ConsoleLogManager.Instance.Log($"{job.GetJobName()}");
+                try
+                {
+                    job.Execute();
+                }
+                catch (Exception ex)
+                {
+                    ConsoleLogManager.Instance.Log($"Job execution failed: {ex}");
+                }
+            }
 		}
 
 		IJob Pop()

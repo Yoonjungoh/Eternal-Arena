@@ -25,6 +25,8 @@ class PacketManager
 	{		
 		_onRecv.Add((ushort)MsgId.CLeaveLobby, MakePacket<C_LeaveLobby>);
 		_handler.Add((ushort)MsgId.CLeaveLobby, PacketHandler.C_LeaveLobbyHandler);		
+		_onRecv.Add((ushort)MsgId.CAddRoom, MakePacket<C_AddRoom>);
+		_handler.Add((ushort)MsgId.CAddRoom, PacketHandler.C_AddRoomHandler);		
 		_onRecv.Add((ushort)MsgId.CMove, MakePacket<C_Move>);
 		_handler.Add((ushort)MsgId.CMove, PacketHandler.C_MoveHandler);
 	}

@@ -69,11 +69,11 @@ namespace Server.Game
 
         public void Init()
         {
-            ConsoleLogManager.Instance.Log("LobbyData Donwload Complete");
             for (int i = 0; i < DataManager.Instance.MaxLobbyCount; ++i)
             {
                 MakeLobby();
             }
+            ConsoleLogManager.Instance.Log("LobbyData Donwload Complete");
         }
     }
 }
