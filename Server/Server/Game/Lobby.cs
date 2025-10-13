@@ -37,12 +37,13 @@ namespace Server.Game
                 ConsoleLogManager.Instance.Log($"Failed to create room: {roomName}");
                 return;
             }
-
+            
             ConsoleLogManager.Instance.Log($"Room created: {newRoom.RoomId}, Name: {roomName}");
-
+            
             S_AddRoom addRoomPacket = new S_AddRoom();
-            addRoomPacket.RoomId = newRoom.RoomId;
-            addRoomPacket.RoomName = roomName;
+            addRoomPacket.RoomInfo = new RoomInfo();
+            addRoomPacket.RoomInfo.RoomId = newRoom.RoomId;
+            addRoomPacket.RoomInfo.RoomName = roomName;
             // TODO - 생성한 본인은 어차피 바로 방으로 가니까 나중에 본인 제외시키기
             Broadcast(addRoomPacket);
         }
@@ -72,6 +73,18 @@ namespace Server.Game
                     continue;
                 
                 enterLobbyPacket.UserIdList.Add(u.Id);
+            }
+            
+            foreach (GameRoom gameRoom in RoomManager.Rooms.Values)
+            {
+                if (gameRoom == null)
+                    continue;
+                
+                RoomInfo roomInfo = new RoomInfo();
+                roomInfo.RoomId = gameRoom.RoomId;
+                roomInfo.RoomName = gameRoom.RoomName;
+
+                enterLobbyPacket.RoomInfoList.Add(roomInfo);
             }
             Broadcast(enterLobbyPacket);
         }

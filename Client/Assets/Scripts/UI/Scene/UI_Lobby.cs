@@ -1,4 +1,5 @@
 using Google.Protobuf.Collections;
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -31,7 +32,8 @@ public class UI_Lobby : UI_Scene
 
     public void EnterLobby(RepeatedField<int> userIdList)
     {
-        for (int i = 0; i < userIdList.Count; i++)
+        int userIdListCount = userIdList.Count;
+        for (int i = 0; i < userIdListCount; i++)
         {
             if (_userSubItemDict.ContainsKey(userIdList[i])) continue;
 
@@ -71,22 +73,28 @@ public class UI_Lobby : UI_Scene
         });
     }
 
-    public void AddRoom(int roomId, string roomName)
+    public void AddRoom(RepeatedField<RoomInfo> roomInfoList)
     {
-        if (_userSubItemDict.ContainsKey(roomId))
+        int roomInfoListCount = roomInfoList.Count;
+        for (int i = 0; i < roomInfoListCount; i++)
         {
-            Debug.Log($"같은 RoomId가 이미 존재합니다. RoomId: {roomId}, RoomName: {roomName}");
-            return;
+            int roomId = roomInfoList[i].RoomId;
+            string roomName = roomInfoList[i].RoomName;
+            if (_roomSubItemDict.ContainsKey(roomId))
+            {
+                Debug.Log($"같은 RoomId가 이미 존재합니다. RoomId: {roomId}, RoomName: {roomName}");
+                return;
+            }
+            
+            Lobby_RoomSubItem lobbyRoomSubItem = Managers.UI.MakeSubItem<Lobby_RoomSubItem>(_roomScrollView.transform);
+            lobbyRoomSubItem.SetData(new LobbyRoomSubItemData
+            {
+                RoomId = roomId,
+                RoomName = roomName,
+                MaxPlayerCount = 4,  // TODO 
+                CurrentPlayerCount = 1, // TODO - 본인
+            });
+            _roomSubItemDict.TryAdd(roomId, lobbyRoomSubItem);
         }
-
-        Lobby_RoomSubItem lobbyRoomSubItem = Managers.UI.MakeSubItem<Lobby_RoomSubItem>(_roomScrollView.transform);
-        lobbyRoomSubItem.SetData(new LobbyRoomSubItemData
-        {
-            RoomId= roomId,
-            RoomName = roomName,
-            MaxPlayerCount = 4,  // TODO 
-            CurrentPlayerCount = 1, // TODO - 본인
-        });
-        _roomSubItemDict.TryAdd(roomId, lobbyRoomSubItem);
     }
 }

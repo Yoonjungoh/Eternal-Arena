@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using Google.Protobuf.Collections;
 
 class PacketHandler
 {
@@ -27,6 +28,7 @@ class PacketHandler
             return;
         }
         lobbyUI.EnterLobby(enterLobbyPacket.UserIdList);
+        lobbyUI.AddRoom(enterLobbyPacket.RoomInfoList);
     }
 
     // 로비에서 누군가 퇴장했을 때
@@ -48,7 +50,7 @@ class PacketHandler
         }
         lobbyUI.LeaveLobby(leaveLobbyPacket.UserId);
     }
-
+    
     public static void S_AddRoomHandler(PacketSession session, IMessage packet)
     {
         // UI 찾는게 더 무겁고 패킷 캐스팅이 더 가벼우니 패킷 먼저 체크
@@ -65,7 +67,9 @@ class PacketHandler
             Debug.Log("현재 로비가 아닌데 로비에 입장하려고 합니다.");
             return;
         }
-        lobbyUI.AddRoom(addRoomPacket.RoomId, addRoomPacket.RoomName);
+        RepeatedField<RoomInfo> roomInfoList = new RepeatedField<RoomInfo>();
+        roomInfoList.Add(addRoomPacket.RoomInfo);
+        lobbyUI.AddRoom(roomInfoList);
     }
 
     // 내가 게임에 입장할 때 패킷
@@ -75,6 +79,7 @@ class PacketHandler
         Managers.Object.Add(enterGamePacket.ObjectInfo, isMyPlayer: true);
         Debug.Log($"(아이디: {enterGamePacket.ObjectInfo.ObjectId}, 이름: {enterGamePacket.ObjectInfo.Name})");
     }
+
     // 게임에서 죽었을 때
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
     {
