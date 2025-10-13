@@ -76,6 +76,13 @@ public class UI_Lobby : UI_Scene
     public void AddRoom(RepeatedField<RoomInfo> roomInfoList)
     {
         int roomInfoListCount = roomInfoList.Count;
+        // 내가 방 주인인지 확인
+        if (roomInfoListCount == 1 && roomInfoList[0].RoomOwnerId == Managers.Object.UserId)
+        {
+            Managers.Scene.LoadScene(Define.Scene.WaitingRoom);
+            return;    
+        }
+
         for (int i = 0; i < roomInfoListCount; i++)
         {
             int roomId = roomInfoList[i].RoomId;

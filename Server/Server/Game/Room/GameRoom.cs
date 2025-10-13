@@ -15,6 +15,7 @@ namespace Server.Game
     {
         public int RoomId { get; set; }
         public string RoomName { get; set; }
+        public int RoomOwnerId { get; set; }
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
         public void Init()
         {

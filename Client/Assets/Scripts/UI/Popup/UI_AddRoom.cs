@@ -50,7 +50,7 @@ public class UI_AddRoom : UI_Popup<AddRoomPopupData>
     {
         ClosePopupUI();
     }
-
+    
     public override void SetData(AddRoomPopupData data)
     {
         base.SetData(data);

@@ -5,11 +5,13 @@ import "google/protobuf/timestamp.proto";
 option csharp_namespace = "Google.Protobuf.Protocol";
 
 enum MsgId {
-  S_ENTER_LOBBY = 0;
-  S_LEAVE_LOBBY = 1;
-  C_LEAVE_LOBBY = 2;
-  C_ADD_ROOM = 3;
-  S_ADD_ROOM = 4;
+  S_ASSIGN_USER_ID = 0;
+  C_ASSIGN_USER_ID = 1;
+  S_ENTER_LOBBY = 2;
+  S_LEAVE_LOBBY = 3;
+  C_LEAVE_LOBBY = 4;
+  C_ADD_ROOM = 5;
+  S_ADD_ROOM = 6;
   S_ENTER_GAME = 90;
   S_LEAVE_GAME = 100;
   S_SPAWN = 101;
@@ -31,6 +33,14 @@ enum GameObjectType{
   NONE = 0;
   PLAYER = 1;
   MONSTER = 2;
+}
+
+message S_AssignUserId {
+  int32 userId = 1;
+}
+
+message C_AssignUserId {
+	
 }
 
 message S_EnterLobby {
@@ -91,6 +101,7 @@ message S_Move {
 message RoomInfo {
   int32 roomId = 1;
   string roomName = 2;
+  int32 roomOwnerId = 3;
 }
 
 message ObjectInfo {

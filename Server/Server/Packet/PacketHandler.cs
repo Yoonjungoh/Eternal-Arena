@@ -11,6 +11,18 @@ using static System.Collections.Specialized.BitVector32;
 
 class PacketHandler
 {
+    public static void C_AssignUserIdHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession == null)
+            return;
+
+        S_AssignUserId s_AssignUserId = new S_AssignUserId();
+        s_AssignUserId.UserId = clientSession.MyPlayer.Id;
+        clientSession.Send(s_AssignUserId);
+    }
+
     public static void C_EnterGameHandler(PacketSession session, IMessage packet)
     {
         C_EnterGame enterGamePacket = packet as C_EnterGame;
@@ -22,7 +34,6 @@ class PacketHandler
         //GameRoom room = player.Room;
         //if (room == null)
         //    return;
-        Console.WriteLine($"(아이디: {enterGamePacket.ObjectInfo.ObjectId}, 이름: {enterGamePacket.ObjectInfo.Name})");
         //room.Push(room.HandleMove, player, movePacket);
     }
 

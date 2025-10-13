@@ -30,22 +30,23 @@ namespace Server.Game
                 return;
             
             // 방 생성
-            GameRoom newRoom = RoomManager.Add(roomName);
-
+            GameRoom newRoom = RoomManager.Add(user.Id, roomName);
+            
             if (newRoom == null)
             {
                 ConsoleLogManager.Instance.Log($"Failed to create room: {roomName}");
                 return;
             }
             
-            ConsoleLogManager.Instance.Log($"Room created: {newRoom.RoomId}, Name: {roomName}");
-            
             S_AddRoom addRoomPacket = new S_AddRoom();
             addRoomPacket.RoomInfo = new RoomInfo();
             addRoomPacket.RoomInfo.RoomId = newRoom.RoomId;
             addRoomPacket.RoomInfo.RoomName = roomName;
-            // TODO - 생성한 본인은 어차피 바로 방으로 가니까 나중에 본인 제외시키기
-            Broadcast(addRoomPacket);
+            addRoomPacket.RoomInfo.RoomOwnerId = user.Id;
+            Broadcast(addRoomPacket); 
+            
+            ConsoleLogManager.Instance.Log($"Room created: {newRoom.RoomId}, RoomOnwerId: {newRoom.RoomOwnerId}, RoomName: {newRoom.RoomName}");
+
         }
 
         public void EnterLobby(Player user)
@@ -63,6 +64,12 @@ namespace Server.Game
             // 로비 아이디 할당
             user.LobbyId = LobbyId;
             ConsoleLogManager.Instance.Log($"Lobby: Enter UserId: {user.Id}");
+
+            // 서버에서 만든 UserId 클라 유저에게 할당
+            // 혹시 할당 못 받을 경우 클라에서 재요청하게 하기 (PushAfter이랑 쓰면 패킷 처리 순서 보장 안 됨)
+            S_AssignUserId s_AssignUserId = new S_AssignUserId();
+            s_AssignUserId.UserId = user.Id;
+            user.Session.Send(s_AssignUserId);
 
             // 들어온 유저에게 기존 유저들 알리고
             // 기존 유저들에게도 들어온 유저 알리기
@@ -83,6 +90,7 @@ namespace Server.Game
                 RoomInfo roomInfo = new RoomInfo();
                 roomInfo.RoomId = gameRoom.RoomId;
                 roomInfo.RoomName = gameRoom.RoomName;
+                roomInfo.RoomOwnerId = gameRoom.RoomOwnerId;
 
                 enterLobbyPacket.RoomInfoList.Add(roomInfo);
             }
@@ -104,7 +112,19 @@ namespace Server.Game
             Broadcast(leaveLobbyPacket);
         }
 
-        public Player FindPlayer(Func<GameObject, bool> condition)
+        public Player Find(int userId)
+        {
+            Player user = null;
+            _users.TryGetValue(userId, out user);
+            if (user == null)
+            {
+                ConsoleLogManager.Instance.Log($"Can't Find UserId: {userId}");
+                return null;
+            }
+            return user;
+        }
+
+        public Player Find(Func<GameObject, bool> condition)
         {
             foreach (Player user in _users.Values)
             {

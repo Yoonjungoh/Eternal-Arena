@@ -28,7 +28,7 @@ namespace Server.Game
             _timers.Add(timer);
         }
 
-        public GameRoom Add(string roomName)
+        public GameRoom Add(int roomOwnerId, string roomName)
         {
             lock (_lock)
             {
@@ -44,6 +44,7 @@ namespace Server.Game
                 
                 newRoom.RoomId = _roomId;
                 newRoom.RoomName = roomName;
+                newRoom.RoomOwnerId = roomOwnerId;
                 _rooms.Add(_roomId, newRoom);
                 _roomId++;
                 

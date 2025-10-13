@@ -114,6 +114,9 @@ public class PoolManager
 
     public void Clear()
     {
+        if (_root == null)
+            return;
+        
         foreach (Transform child in _root)
             GameObject.Destroy(child.gameObject);
 
