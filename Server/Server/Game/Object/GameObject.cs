@@ -13,9 +13,8 @@ namespace Server.Game
 		{
 			get { return ObjectInfo.ObjectId; }
 			set { ObjectInfo.ObjectId = value; }
-		}
-		public GameRoom Room { get; set; }
-		public GameRoom BackUpRoom { get; set; }
+        }
+        public GameRoom GameRoom { get; set; }
 
 		public ObjectInfo ObjectInfo { get; set; } = new ObjectInfo();
 		public PositionInfo PositionInfo { get; set; } = new PositionInfo();
@@ -34,7 +33,7 @@ namespace Server.Game
 		}
 		public virtual void OnDamaged(GameObject hitter, float damage)
 		{
-			if (Room == null)
+			if (GameRoom == null)
 				return;
 
 			if (Stat.Hp <= 0)
@@ -46,7 +45,7 @@ namespace Server.Game
 
 		public virtual void OnDead(GameObject hitter)
 		{
-			if (Room == null)
+			if (GameRoom == null)
 				return;
 
 			//S_Die diePacket = new S_Die();

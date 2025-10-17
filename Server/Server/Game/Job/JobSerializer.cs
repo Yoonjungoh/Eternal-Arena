@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Server.Game
 {
-    // 모아둔 Job 실행하는 클래스
-    public class JobSerializer
+	// 모아둔 Job 실행하는 클래스
+	public class JobSerializer
 	{
 		JobTimer _jobTimer = new JobTimer();
 		Queue<IJob> _jobQueue = new Queue<IJob>();
@@ -22,7 +22,7 @@ namespace Server.Game
 		public void PushAfter<T1, T2, T3>(Action<T1, T2, T3> action, T1 t1, T2 t2, T3 t3, int tickAfter) { PushAfter(new Job<T1, T2, T3>(action, t1, t2, t3), tickAfter); }
 
 		public void PushAfter(IJob job, int tickAfter)
-        {
+		{
 			_jobTimer.Push(job, tickAfter);
 		}
 		public void Push(Action action) { Push(new Job(action)); }
@@ -38,6 +38,11 @@ namespace Server.Game
 			}
 		}
 
+		private HashSet<string> _exceptJobName = new HashSet<string>()
+		{
+			"HandleMove",
+		};
+
 		public void Flush()
 		{
 			_jobTimer.Flush();
@@ -47,7 +52,10 @@ namespace Server.Game
 				IJob job = Pop();
 				if (job == null)
 					return;
-                ConsoleLogManager.Instance.Log($"{job.GetJobName()}");
+				if (_exceptJobName.Contains(job.GetJobName()) == false)
+				{
+                    ConsoleLogManager.Instance.Log($"{job.GetJobName()}");
+                }
                 try
                 {
                     job.Execute();

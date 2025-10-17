@@ -6,7 +6,5 @@ using UnityEngine;
 
 public class GameManager
 {
-    // 레이턴시 측정용
-    public DateTime PrevLatency;
-    public TimeSpan NowLatency;
+    public ObjectInfo SpawnObjectInfo = new ObjectInfo();
 }

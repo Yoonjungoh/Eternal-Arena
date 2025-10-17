@@ -5,20 +5,20 @@ using System.Text;
 
 namespace Server.Game
 {
-	public class RoomManager : JobSerializer
+	public class WaitingRoomManager : JobSerializer
     {
         object _lock = new object();
-        Dictionary<int, GameRoom> _rooms = new Dictionary<int, GameRoom>();
+        Dictionary<int, WaitingRoom> _rooms = new Dictionary<int, WaitingRoom>();
         int _roomId = 1;
-        public Dictionary<int, GameRoom> Rooms { get { return _rooms; } }
+        public Dictionary<int, WaitingRoom> Rooms { get { return _rooms; } }
         List<System.Timers.Timer> _timers = new List<System.Timers.Timer>();
         
-        public RoomManager(int lobbyId)
+        public WaitingRoomManager(int lobbyId)
         {
             ConsoleLogManager.Instance.Log($"RoomManager created for Lobby {lobbyId}");
         }
 
-        public void TickRoom(GameRoom room, int tick = 50)
+        public void TickRoom(WaitingRoom room, int tick = 50)
         {
             var timer = new System.Timers.Timer();
             timer.Interval = tick;
@@ -28,11 +28,11 @@ namespace Server.Game
             _timers.Add(timer);
         }
 
-        public GameRoom Add(int roomOwnerId, string roomName)
+        public WaitingRoom Add(int roomOwnerId, string roomName)
         {
             lock (_lock)
             {
-                GameRoom newRoom = new GameRoom();
+                WaitingRoom newRoom = new WaitingRoom();
                 newRoom.Push(newRoom.Init);
                 TickRoom(newRoom);
 
@@ -66,11 +66,11 @@ namespace Server.Game
             }
         }
 
-        public GameRoom Find(int roomId)
+        public WaitingRoom Find(int roomId)
         {
             lock (_lock)
             {
-                GameRoom room = null;
+                WaitingRoom room = null;
                 if (_rooms.TryGetValue(roomId, out room))
                     return room;
                 return null;

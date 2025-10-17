@@ -6,6 +6,7 @@ public class Define
 {
     public enum CameraMode
     {
+        CommonView,
         FirstPersonView,
         QuarterView,
     }

@@ -7,11 +7,14 @@ public class WatingRoomScene : BaseScene
     protected override void Init()
     {
         base.Init();
-        SceneType = Define.Scene.WaitingRoom;
-        Util.GetOrAddComponent<ConsoleController>(Camera.main.gameObject);
+
+        // 씬 로딩 되면 플레이어 아바타 생성
+        Managers.Object.Add(Managers.Game.SpawnObjectInfo, isMyPlayer: true);
+        Debug.Log($"(아이디: {Managers.Game.SpawnObjectInfo.ObjectId}, 이름: {Managers.Game.SpawnObjectInfo.Name})");
+        Camera.main.GetComponent<CameraController>().SetCommonView();
     }
 
-    void Awake()
+    private void Awake()
     {
         Init();
     }

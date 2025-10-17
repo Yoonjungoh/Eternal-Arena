@@ -17,12 +17,14 @@ public class SceneManagerEx
             Managers.Sound.ChangeBgmWhenSceneLoaded();
         }
     }
+
     public void LoadScene(Define.Scene type)
     {
         Managers.Clear();
-
+        CurrentScene = type;
         SceneManager.LoadScene(GetSceneName(type));
     }
+
     public void LoadScene(string sceneName)
     {
         Managers.Clear();

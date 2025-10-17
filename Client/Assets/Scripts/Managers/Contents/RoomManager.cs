@@ -9,11 +9,9 @@ public class RoomManager
     public void EnterRoom(int roomId)
     {
         // 방 입장 하겠다고 패킷 전송
-        C_EnterRoom enterRoomPacket = new C_EnterRoom();
+        C_EnterWaitingRoom enterRoomPacket = new C_EnterWaitingRoom();
         enterRoomPacket.UserId = Managers.Object.UserId;
         enterRoomPacket.RoomId = roomId;
         Managers.Network.Send(enterRoomPacket);
-
-        Managers.Scene.LoadScene(Define.Scene.WaitingRoom);
     }
 }

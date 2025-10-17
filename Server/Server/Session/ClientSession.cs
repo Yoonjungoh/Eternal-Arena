@@ -67,25 +67,27 @@ namespace Server
                 ConsoleLogManager.Instance.Log("Can't Find MyPlayer");
                 return;
             }
-			
-            Lobby lobby = LobbyManager.Instance.Find(MyPlayer.LobbyId);
-            if (lobby == null)
+
+            // 로비에서 내보내기
+            if (MyPlayer.Lobby == null)
             {
-                ConsoleLogManager.Instance.Log($"Can't Find Lobby {MyPlayer.LobbyId} -> UserId: {MyPlayer.Id}");
+                ConsoleLogManager.Instance.Log($"Can't Find Lobby {MyPlayer.Lobby.LobbyId} -> UserId: {MyPlayer.Id}");
+				return;
             }
-            else
+            MyPlayer.Lobby.Push(MyPlayer.Lobby.LeaveLobby, MyPlayer.Id);
+
+			// 대기방에서 내보내기
+			if (MyPlayer.WaitingRoom != null)
             {
-                lobby.Push(lobby.LeaveLobby, MyPlayer.Id);
-                GameRoom room = lobby.RoomManager.Find(MyPlayer.RoomId);
+                WaitingRoom room = MyPlayer.Lobby.WaitingRoomManager.Find(MyPlayer.WaitingRoom.RoomId);
                 if (room != null)
                 {
                     room.Push(room.LeaveGame, MyPlayer.ObjectInfo.ObjectId, true);
                 }
                 else
                 {
-                    ConsoleLogManager.Instance.Log($"Can't Find Room {MyPlayer.RoomId} -> UserId: {MyPlayer.Id}");
+                    ConsoleLogManager.Instance.Log($"Can't Find Room {MyPlayer.WaitingRoom.RoomId} -> UserId: {MyPlayer.Id}");
                 }
-
             }
 
             SessionManager.Instance.Remove(this);

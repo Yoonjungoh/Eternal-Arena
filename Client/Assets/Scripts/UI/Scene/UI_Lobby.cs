@@ -13,7 +13,7 @@ public class UI_Lobby : UI_Scene
     {
         AddRoomButton,
     }
-    int i = 0;  // TODO
+
     private GameObject _roomScrollView;
     private GameObject _userScrollView;
     Dictionary<int, Lobby_RoomSubItem> _roomSubItemDict = new Dictionary<int, Lobby_RoomSubItem>();
@@ -60,7 +60,7 @@ public class UI_Lobby : UI_Scene
             Debug.Log($"UserId: {userId}의 SubItem이 로비에 존재하지 않습니다.");
             return;
         }
-        Destroy(lobbyUserSubItem.gameObject);  // TODO - 풀링
+        Destroy(lobbyUserSubItem.gameObject);
         _userSubItemDict.Remove(userId);
     }
 

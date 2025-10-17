@@ -10,8 +10,8 @@ enum MsgId {
   S_ENTER_LOBBY = 2;
   S_LEAVE_LOBBY = 3;
   C_LEAVE_LOBBY = 4;
-  C_ENTER_ROOM = 5;
-  S_ENTER_ROOM = 6;
+  C_ENTER_WAITING_ROOM = 5;
+  S_ENTER_WAITING_ROOM = 6;
   C_ADD_ROOM = 7;
   S_ADD_ROOM = 8;
   S_ENTER_GAME = 90;
@@ -58,14 +58,14 @@ message C_LeaveLobby {
   int32 userId = 1;
 }
 
-message S_EnterRoom {
+message C_EnterWaitingRoom {
   int32 userId = 1;
   int32 roomId = 2;
 }
 
-message C_EnterRoom {
-  int32 userId = 1;
-  int32 roomId = 2;
+message S_EnterWaitingRoom {
+  int32 roomId = 1;
+  ObjectInfo objectInfo = 2;
 }
 
 message C_AddRoom {

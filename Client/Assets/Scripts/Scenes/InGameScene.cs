@@ -7,7 +7,6 @@ public class InGameScene : BaseScene
     protected override void Init()
     {
         base.Init();
-        SceneType = Define.Scene.InGame;
         Util.GetOrAddComponent<ConsoleController>(Camera.main.gameObject);
     }
     void Awake()

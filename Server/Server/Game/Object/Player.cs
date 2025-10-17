@@ -12,9 +12,9 @@ namespace Server.Game
             Init();
         }
 
-        public int LobbyId;	// 로비 나가면 초기화 해줘야 함
+        public Lobby Lobby;	// 로비 나가면 초기화 해줘야 함
 			
-        public int RoomId;	// 방 나가면 초기화 해줘야 함
+        public WaitingRoom WaitingRoom;	// 방 나가면 초기화 해줘야 함
         public ClientSession Session { get; set; }
 
         // 플레이어 정보 초기화

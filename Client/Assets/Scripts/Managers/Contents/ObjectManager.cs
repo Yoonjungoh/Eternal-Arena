@@ -30,8 +30,6 @@ public class ObjectManager
             MyPlayer.PositionInfo = positionInfo;
             MyPlayer.Id = objectInfo.ObjectId;
 
-            Camera.main.GetComponent<CameraController>().SetFirstPersonView();
-
             _objects.Add(objectInfo.ObjectId, MyPlayer.gameObject);
         }
         else

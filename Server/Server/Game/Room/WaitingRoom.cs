@@ -11,7 +11,7 @@ using System.Timers;
 
 namespace Server.Game
 {
-    public class GameRoom : JobSerializer
+    public class WaitingRoom : JobSerializer
     {
         public int RoomId { get; set; }
         public string RoomName { get; set; }
@@ -45,103 +45,66 @@ namespace Server.Game
             PushAfter(TestTimer, 100);
         }
 
-        public void EnterGame(GameObject gameObject)
+        public void EnterRoom(Player player)
         {
-            if (gameObject == null)
+            if (player == null)
                 return;
 
-            GameObjectType type = ObjectManager.Instance.GetObjectTypeById(gameObject.Id);
-            
+            ObjectManager.Instance.Add<Player>();
 
-            if (type == GameObjectType.Player)
-            {
-                Player player = gameObject as Player;
-                ObjectManager.Instance.Add<Player>();
+            S_EnterWaitingRoom enterWaitingRoomPacket = new S_EnterWaitingRoom();
 
-                S_EnterGame enterPacket = new S_EnterGame();
+            // objectId
+            enterWaitingRoomPacket.ObjectInfo = new ObjectInfo();
+            enterWaitingRoomPacket.ObjectInfo.ObjectId = player.Id;
+            enterWaitingRoomPacket.ObjectInfo.PositionInfo = new PositionInfo();
 
-                // objectId
-                enterPacket.ObjectInfo = new ObjectInfo();
-                enterPacket.ObjectInfo.ObjectId = player.Id;
-                enterPacket.ObjectInfo.PositionInfo = new PositionInfo();
+            // name
+            player.WaitingRoom = this;
+            player.ObjectInfo.Name = $"Player_{player.ObjectInfo.ObjectId}";
+            enterWaitingRoomPacket.ObjectInfo.Name = player.ObjectInfo.Name;
 
-                // name
-                player.GameRoom = this;
-                player.ObjectInfo.Name = $"Player_{player.ObjectInfo.ObjectId}";
-                enterPacket.ObjectInfo.Name = player.ObjectInfo.Name;
+            // positionInfo
+            PositionInfo positionInfo = new PositionInfo();
+            positionInfo.PosX = 0;
+            positionInfo.PosY = 2;
+            positionInfo.PosZ = 0;
+            positionInfo.RotY = 0;
+            enterWaitingRoomPacket.ObjectInfo.PositionInfo = positionInfo;
 
-                // positionInfo
-                PositionInfo positionInfo = new PositionInfo();
-                positionInfo.PosX = 1;
-                positionInfo.PosY = 0.53f;
-                positionInfo.PosZ = 0;
-                positionInfo.RotY = 0;
-                enterPacket.ObjectInfo.PositionInfo = positionInfo;
+            // TODO - stat
 
-                // TODO - stat
+            // creatureState
+            player.ObjectInfo.CreatureState = CreatureState.Idle;
+            enterWaitingRoomPacket.ObjectInfo.CreatureState = CreatureState.Idle;
 
-                // creatureState
-                player.ObjectInfo.CreatureState = CreatureState.Idle;
-                enterPacket.ObjectInfo.CreatureState = CreatureState.Idle;
+            player.Session.Send(enterWaitingRoomPacket);
 
-                player.Session.Send(enterPacket);
+            _players.Add(player.Id, player);
+            player.Init();
 
-                // 가끔 중복 키 들어가는 경우 해결하기 위함
-                if (_players.ContainsKey(gameObject.Id))
-                {
-                    Player newPlayer = ObjectManager.Instance.Add<Player>();
-                    _players.Add(newPlayer.Id, newPlayer);
-                }
-                else
-                {
-                    _players.Add(gameObject.Id, player);
-                }
-                player.Init();
-
-                // 본인한테 맵안의 플레이어, 몬스터 정보 전송
-                {
-                    //S_EnterGame enterGamePacket = new S_EnterGame();
-                    //enterGamePacket.ObjectInfo = player.Info;
-                    //player.Session.Send(enterGamePacket);
-
-                    S_Spawn spawnPacket = new S_Spawn();
-
-                    //나를 제외하고 접속한 플레이어를 spawnPacket에 저장
-                    foreach (Player p in _players.Values)
-                    {
-                        if (p == null)
-                            continue;
-
-                        if (player != p)
-                            spawnPacket.ObjectInfos.Add(p.ObjectInfo);
-                    }
-                    ////맵의 몬스터를 spawnPacket에 저장
-                    //foreach (Monster m in _monsters.Values)
-                    //{
-                    //    spawnPacket.Objects.Add(m.Info);
-                    //}
-                    ////맵의 Projectile을 spawnPacket에 저장
-                    //foreach (Projectile projectile in _projectiles.Values)
-                    //{
-                    //    spawnPacket.Objects.Add(projectile.Info);
-                    //}
-                    player.Session.Send(spawnPacket);
-                }
-            }
-            //else if (type == GameObjectType.Monster)
-            //{
-            //    Monster monster = gameObject as Monster;
-            //    _monsters.Add(gameObject.Id, monster);
-            //    monster.Room = this;
-            //    monster.BackUpRoom = monster.Room;
-            //}
-            // 타인한테 정보 전송
+            // 본인한테 맵안의 플레이어 정보 전송
             {
                 S_Spawn spawnPacket = new S_Spawn();
-                spawnPacket.ObjectInfos.Add(gameObject.ObjectInfo);
+
+                //나를 제외하고 접속한 플레이어를 spawnPacket에 저장
                 foreach (Player p in _players.Values)
                 {
-                    if (p.Id != gameObject.Id)
+                    if (p == null)
+                        continue;
+
+                    if (player != p)
+                        spawnPacket.ObjectInfos.Add(p.ObjectInfo);
+                }
+
+                player.Session.Send(spawnPacket);
+            }
+            {
+                S_Spawn spawnPacket = new S_Spawn();
+                spawnPacket.ObjectInfos.Add(player.ObjectInfo);
+                foreach (Player p in _players.Values)
+                {
+                    if (p.Id != player.Id)
                         p.Session.Send(spawnPacket);
                 }
             }
@@ -157,13 +120,12 @@ namespace Server.Game
                 if (_players.Remove(objectId, out player) == false)
                     return;
 
-                player.GameRoom = null;
+                player.WaitingRoom = null;
                 
                 // 본인한테 정보 전송
                 {
                     S_LeaveGame leavePacket = new S_LeaveGame();
                     leavePacket.PlayerCount = _players.Count;
-                    leavePacket.IsAttacked = isAttacked;
                     player.Session.Send(leavePacket);
                 }
 

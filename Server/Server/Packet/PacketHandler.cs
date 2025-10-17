@@ -44,8 +44,8 @@ class PacketHandler
 
 		Player player = clientSession.MyPlayer;
 		if (player == null)
-			return; 
-		GameRoom room = player.Room;
+			return;
+        WaitingRoom room = player.WaitingRoom;
 		if (room == null)
 			return;
 
@@ -58,31 +58,31 @@ class PacketHandler
         ClientSession clientSession = session as ClientSession;
 
         Player user = clientSession.MyPlayer;
-        if (user == null)
+        if (user == null || user.Lobby == null)
             return;
 
-        Lobby lobby = LobbyManager.Instance.Find(user.LobbyId);
-        if (lobby == null)
-            return;
-
-        lobby.Push(lobby.LeaveLobby, user.Id);
+        user.Lobby.Push(user.Lobby.LeaveLobby, user.Id);
     }
 
 
-    public static void C_EnterRoomHandler(PacketSession session, IMessage packet)
+    public static void C_EnterWaitingRoomHandler(PacketSession session, IMessage packet)
     {
-        C_EnterRoom enterRoomPacket = packet as C_EnterRoom;
+        C_EnterWaitingRoom enterWaitingRoomPacket = packet as C_EnterWaitingRoom;
         ClientSession clientSession = session as ClientSession;
 
         Player user = clientSession.MyPlayer;
-        if (user == null)
+        if (user == null || user.Lobby == null)
             return;
 
-        Lobby lobby = LobbyManager.Instance.Find(user.LobbyId);
-        if (lobby == null)
-            return;
+        // 로비에 해당 유저를 먼저 떠나게 하고
+        user.Lobby.Push(user.Lobby.LeaveLobby, user.Id);
 
-        lobby.Push(lobby.LeaveLobby, user.Id);
+        // 해당 유저를 방에 추가하기
+        WaitingRoom watingRoom = user.Lobby.WaitingRoomManager.Find(enterWaitingRoomPacket.RoomId);
+        if (watingRoom == null)
+            return;
+        
+        watingRoom.EnterRoom(user);
     }
 
     public static void C_AddRoomHandler(PacketSession session, IMessage packet)
@@ -91,13 +91,9 @@ class PacketHandler
         ClientSession clientSession = session as ClientSession;
 
         Player user = clientSession.MyPlayer;
-        if (user == null)
+        if (user == null || user.Lobby == null)
             return;
 
-        Lobby lobby = LobbyManager.Instance.Find(user.LobbyId);
-        if (lobby == null || lobby.RoomManager == null)
-            return;
-        
-        lobby.Push(lobby.HandleAddRoom, user, addRoomPacket.RoomName);
+        user.Lobby.Push(user.Lobby.HandleAddRoom, user, addRoomPacket.RoomName);
     }
 }

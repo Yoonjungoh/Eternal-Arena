@@ -63,17 +63,17 @@ class PacketHandler
         lobbyUI.LeaveLobby(leaveLobbyPacket.UserId);
     }
 
-    public static void S_EnterRoomHandler(PacketSession session, IMessage packet)
+    public static void S_EnterWaitingRoomHandler(PacketSession session, IMessage packet)
     {
-        // UI 찾는게 더 무겁고 패킷 캐스팅이 더 가벼우니 패킷 먼저 체크
-        S_EnterRoom enterRoomPacket = packet as S_EnterRoom;
-        if (enterRoomPacket == null)
+        S_EnterWaitingRoom enterWaitingRoomPacket = packet as S_EnterWaitingRoom;
+        if (enterWaitingRoomPacket == null)
         {
-            Debug.Log("S_EnterRoom 패킷이 null입니다");
+            Debug.Log("S_EnterWaitingRoom 패킷이 null입니다");
             return;
         }
-
-        Managers.Room.EnterRoom(enterRoomPacket.RoomId);
+        // 스폰 데이터 받고 Scene 이동
+        Managers.Game.SpawnObjectInfo = enterWaitingRoomPacket.ObjectInfo;
+        Managers.Scene.LoadScene(Define.Scene.WaitingRoom);
     }
 
     public static void S_AddRoomHandler(PacketSession session, IMessage packet)
@@ -108,9 +108,9 @@ class PacketHandler
     // 내가 게임에 입장할 때 패킷
     public static void S_EnterGameHandler(PacketSession session, IMessage packet)
     {
-        S_EnterGame enterGamePacket = packet as S_EnterGame;
-        Managers.Object.Add(enterGamePacket.ObjectInfo, isMyPlayer: true);
-        Debug.Log($"(아이디: {enterGamePacket.ObjectInfo.ObjectId}, 이름: {enterGamePacket.ObjectInfo.Name})");
+        //S_EnterGame enterGamePacket = packet as S_EnterGame;
+        //Managers.Object.Add(enterGamePacket.ObjectInfo, isMyPlayer: true);
+        //Debug.Log($"(아이디: {enterGamePacket.ObjectInfo.ObjectId}, 이름: {enterGamePacket.ObjectInfo.Name})");
     }
 
     // 게임에서 죽었을 때

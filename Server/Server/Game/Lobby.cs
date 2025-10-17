@@ -17,20 +17,20 @@ namespace Server.Game
         public int LobbyId { get; set; }
         
         Dictionary<int, Player> _users = new Dictionary<int, Player>();
-        public RoomManager RoomManager;
+        public WaitingRoomManager WaitingRoomManager;
 
         public void Init()
         {
-            RoomManager = new RoomManager(LobbyId);
+            WaitingRoomManager = new WaitingRoomManager(LobbyId);
         }
 
         public void HandleAddRoom(Player user, string roomName)
         {
-            if (user == null || RoomManager == null)
+            if (user == null || WaitingRoomManager == null)
                 return;
-            
+
             // 방 생성
-            GameRoom newRoom = RoomManager.Add(user.Id, roomName);
+            WaitingRoom newRoom = WaitingRoomManager.Add(user.Id, roomName);
             
             if (newRoom == null)
             {
@@ -62,7 +62,7 @@ namespace Server.Game
             }
 
             // 로비 아이디 할당
-            user.LobbyId = LobbyId;
+            user.Lobby = this;
             ConsoleLogManager.Instance.Log($"Lobby: Enter UserId: {user.Id}");
 
             // 서버에서 만든 UserId 클라 유저에게 할당
@@ -82,15 +82,15 @@ namespace Server.Game
                 enterLobbyPacket.UserIdList.Add(u.Id);
             }
             
-            foreach (GameRoom gameRoom in RoomManager.Rooms.Values)
+            foreach (WaitingRoom room in WaitingRoomManager.Rooms.Values)
             {
-                if (gameRoom == null)
+                if (room == null)
                     continue;
                 
                 RoomInfo roomInfo = new RoomInfo();
-                roomInfo.RoomId = gameRoom.RoomId;
-                roomInfo.RoomName = gameRoom.RoomName;
-                roomInfo.RoomOwnerId = gameRoom.RoomOwnerId;
+                roomInfo.RoomId = room.RoomId;
+                roomInfo.RoomName = room.RoomName;
+                roomInfo.RoomOwnerId = room.RoomOwnerId;
 
                 enterLobbyPacket.RoomInfoList.Add(roomInfo);
             }
