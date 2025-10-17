@@ -76,9 +76,14 @@ public class UI_Lobby : UI_Scene
     public void AddRoom(RepeatedField<RoomInfo> roomInfoList)
     {
         int roomInfoListCount = roomInfoList.Count;
-        // 내가 방 주인인지 확인
+        // 내가 방 주인인지 확인 후 바로 입장
         if (roomInfoListCount == 1 && roomInfoList[0].RoomOwnerId == Managers.Object.UserId)
         {
+            // 방 입장 했다고 패킷 전송
+            C_EnterRoom enterRoomPacket = new C_EnterRoom();
+            enterRoomPacket.UserId = Managers.Object.UserId;
+            Managers.Network.Send(enterRoomPacket);
+
             Managers.Scene.LoadScene(Define.Scene.WaitingRoom);
             return;    
         }

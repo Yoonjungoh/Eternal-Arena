@@ -109,7 +109,15 @@ namespace Server.Game
 
             S_LeaveLobby leaveLobbyPacket = new S_LeaveLobby();
             leaveLobbyPacket.UserId = userId;
-            Broadcast(leaveLobbyPacket);
+
+            // 로비에 있는 유저들에게만 알리기
+            foreach (Player user in _users.Values)
+            {
+                if (user == null) 
+                    continue;
+
+                user.Session.Send(leaveLobbyPacket);
+            }
         }
 
         public Player Find(int userId)
@@ -139,6 +147,9 @@ namespace Server.Game
         {
             foreach (Player user in _users.Values)
             {
+                if (user == null)
+                    continue;
+
                 user.Session.Send(packet);
             }
         }
