@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public struct ConfirmPopupData
 {
+    public int RoomId;
     public string RoomName;
 }
 
@@ -34,8 +35,7 @@ public class UI_Confirm : UI_Popup<ConfirmPopupData>
 
     private void OnClickConfirmButton()
     {
-        // TODO
-        Debug.Log($"{_data.RoomName} πÊ ¿‘¿Â");
+        Managers.Room.EnterRoom(_data.RoomId);
         ClosePopupUI();
     }
 

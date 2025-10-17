@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
 public struct LobbyRoomSubItemData
 {
     public int RoomId;
@@ -37,10 +38,10 @@ public class Lobby_RoomSubItem : UI_SubItem<LobbyRoomSubItemData>
         UI_Confirm confirmUI = Managers.UI.ShowPopupUI<UI_Confirm>();
         confirmUI.SetData(new ConfirmPopupData
         {
+            RoomId = _data.RoomId,
             RoomName = _data.RoomName,
         });
-        Debug.Log($"{_data.RoomName} 방 입장");
-        // TODO - 패킷
+
     }
     
     public override void SetData(LobbyRoomSubItemData data)

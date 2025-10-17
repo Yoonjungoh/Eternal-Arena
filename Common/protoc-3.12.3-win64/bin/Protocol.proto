@@ -60,10 +60,12 @@ message C_LeaveLobby {
 
 message S_EnterRoom {
   int32 userId = 1;
+  int32 roomId = 2;
 }
 
 message C_EnterRoom {
   int32 userId = 1;
+  int32 roomId = 2;
 }
 
 message C_AddRoom {

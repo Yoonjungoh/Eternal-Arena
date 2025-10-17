@@ -73,13 +73,7 @@ class PacketHandler
             return;
         }
 
-        UI_Lobby lobbyUI = Managers.UI.CurrentScene.GetComponent<UI_Lobby>();
-        if (lobbyUI == null)
-        {
-            Debug.Log("현재 로비가 아닌데 로비에 입장하려고 합니다.");
-            return;
-        }
-        //lobbyUI.EnterRoom(enterRoomPacket.UserId);
+        Managers.Room.EnterRoom(enterRoomPacket.RoomId);
     }
 
     public static void S_AddRoomHandler(PacketSession session, IMessage packet)
@@ -101,6 +95,14 @@ class PacketHandler
         RepeatedField<RoomInfo> roomInfoList = new RepeatedField<RoomInfo>();
         roomInfoList.Add(addRoomPacket.RoomInfo);
         lobbyUI.AddRoom(roomInfoList);
+
+        int roomInfoListCount = roomInfoList.Count;
+        // 내가 방 주인인지 확인 후 바로 입장
+        if (roomInfoListCount == 1 && roomInfoList[0].RoomOwnerId == Managers.Object.UserId)
+        {
+            Managers.Room.EnterRoom(roomInfoList[0].RoomId);
+        }
+
     }
 
     // 내가 게임에 입장할 때 패킷

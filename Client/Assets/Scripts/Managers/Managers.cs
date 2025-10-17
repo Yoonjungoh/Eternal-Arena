@@ -12,6 +12,7 @@ public class Managers : MonoBehaviour
     MapManager _map = new MapManager();
     NetworkManager _network = new NetworkManager();
     ObjectManager _object = new ObjectManager();
+    RoomManager _room = new RoomManager();
     InputManager _input = new InputManager();
     PoolManager _pool = new PoolManager();
     DataManager _data = new DataManager();
@@ -25,6 +26,7 @@ public class Managers : MonoBehaviour
     public static MapManager Map { get { return Instance._map; } }
     public static NetworkManager Network { get { return Instance._network; } }
     public static ObjectManager Object { get { return Instance._object; } }
+    public static RoomManager Room { get { return Instance._room; } }
     public static InputManager Input { get { return Instance._input; } }
     public static PoolManager Pool { get { return Instance._pool; } }
     public static DataManager Data { get { return Instance._data; } }
