@@ -71,9 +71,8 @@ class PacketHandler
             Debug.Log("S_EnterWaitingRoom 패킷이 null입니다");
             return;
         }
-        // 스폰 데이터 받고 Scene 이동
-        Managers.Game.SpawnObjectInfo = enterWaitingRoomPacket.ObjectInfo;
-        Managers.Scene.LoadScene(Define.Scene.WaitingRoom);
+
+        Managers.Object.Add(enterWaitingRoomPacket.ObjectInfo, isMyPlayer: true);
     }
 
     public static void S_AddRoomHandler(PacketSession session, IMessage packet)

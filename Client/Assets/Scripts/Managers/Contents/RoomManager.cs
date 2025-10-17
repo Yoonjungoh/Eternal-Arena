@@ -8,10 +8,8 @@ public class RoomManager
 {
     public void EnterRoom(int roomId)
     {
-        // 방 입장 하겠다고 패킷 전송
-        C_EnterWaitingRoom enterRoomPacket = new C_EnterWaitingRoom();
-        enterRoomPacket.UserId = Managers.Object.UserId;
-        enterRoomPacket.RoomId = roomId;
-        Managers.Network.Send(enterRoomPacket);
+        Managers.Object.RoomId = roomId;
+        Managers.Scene.LoadScene(Define.Scene.WaitingRoom);
+        // 이후 상황은 WaitingRoomScene에서 Init 처리
     }
 }

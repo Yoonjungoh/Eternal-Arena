@@ -6,5 +6,5 @@ using UnityEngine;
 
 public class GameManager
 {
-    public ObjectInfo SpawnObjectInfo = new ObjectInfo();
+
 }

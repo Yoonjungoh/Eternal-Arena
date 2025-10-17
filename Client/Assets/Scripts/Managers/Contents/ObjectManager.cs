@@ -8,8 +8,9 @@ using UnityEngine;
 public class ObjectManager
 {
     public int UserId;  // 현재 UserId랑 Player의 Id랑 같이 쓰는 중
+    public int RoomId;
     public MyPlayerController MyPlayer { get; set; }
-    Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
+    private Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
     public Dictionary<int, GameObject> Objects { get { return _objects; } set { _objects = value; } }
 
     public GameObjectType GetObjectTypeById(int id)
@@ -29,8 +30,10 @@ public class ObjectManager
             PositionInfo positionInfo = objectInfo.PositionInfo;
             MyPlayer.PositionInfo = positionInfo;
             MyPlayer.Id = objectInfo.ObjectId;
-
             _objects.Add(objectInfo.ObjectId, MyPlayer.gameObject);
+            Debug.Log($"소환: {MyPlayer.Id}, isMyPlayer: {isMyPlayer}");
+
+            Camera.main.GetComponent<CameraController>().SetCommonView();   // 캐릭터 소환 후 카메라 부착
         }
         else
         {
@@ -43,6 +46,7 @@ public class ObjectManager
             otherPlayer.Id = objectInfo.ObjectId;
             
             _objects.Add(objectInfo.ObjectId, otherPlayer.gameObject);
+            Debug.Log($"소환: {objectInfo.ObjectId}, isMyPlayer: {isMyPlayer}");
         }
     }
 
@@ -54,12 +58,6 @@ public class ObjectManager
 
         _objects.Remove(id);
         Managers.Resource.Destroy(go);
-    }
-
-    public void RemoveAll()
-    {
-        Clear();
-        //MyPlayer = null;
     }
 
     public GameObject FindById(int id)

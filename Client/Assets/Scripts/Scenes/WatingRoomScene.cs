@@ -1,3 +1,4 @@
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,10 +9,11 @@ public class WatingRoomScene : BaseScene
     {
         base.Init();
 
-        // 씬 로딩 되면 플레이어 아바타 생성
-        Managers.Object.Add(Managers.Game.SpawnObjectInfo, isMyPlayer: true);
-        Debug.Log($"(아이디: {Managers.Game.SpawnObjectInfo.ObjectId}, 이름: {Managers.Game.SpawnObjectInfo.Name})");
-        Camera.main.GetComponent<CameraController>().SetCommonView();
+        // 방 입장 하겠다고 패킷 전송
+        C_EnterWaitingRoom enterRoomPacket = new C_EnterWaitingRoom();
+        enterRoomPacket.UserId = Managers.Object.UserId;
+        enterRoomPacket.RoomId = Managers.Object.RoomId;
+        Managers.Network.Send(enterRoomPacket);
     }
 
     private void Awake()

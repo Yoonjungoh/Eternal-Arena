@@ -84,29 +84,26 @@ namespace Server.Game
             player.Init();
 
             // 본인한테 맵안의 플레이어 정보 전송
+            S_Spawn spawnToMePacket = new S_Spawn();
+
+            //나를 제외하고 접속한 플레이어를 spawnPacket에 저장
+            foreach (Player p in _players.Values)
             {
-                S_Spawn spawnPacket = new S_Spawn();
+                if (p == null)
+                    continue;
 
-                //나를 제외하고 접속한 플레이어를 spawnPacket에 저장
-                foreach (Player p in _players.Values)
-                {
-                    if (p == null)
-                        continue;
-
-                    if (player != p)
-                        spawnPacket.ObjectInfos.Add(p.ObjectInfo);
-                }
-
-                player.Session.Send(spawnPacket);
+                if (player != p)
+                    spawnToMePacket.ObjectInfos.Add(p.ObjectInfo);
             }
+            player.Session.Send(spawnToMePacket);
+
+            // 다른 플레이어에게도 내가 접속한 걸 알려주기
+            S_Spawn spawnToOthersPacket = new S_Spawn();
+            spawnToOthersPacket.ObjectInfos.Add(player.ObjectInfo);
+            foreach (Player p in _players.Values)
             {
-                S_Spawn spawnPacket = new S_Spawn();
-                spawnPacket.ObjectInfos.Add(player.ObjectInfo);
-                foreach (Player p in _players.Values)
-                {
-                    if (p.Id != player.Id)
-                        p.Session.Send(spawnPacket);
-                }
+                if (p.Id != player.Id)
+                    p.Session.Send(spawnToOthersPacket);
             }
         }
 

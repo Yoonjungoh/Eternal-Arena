@@ -46,7 +46,6 @@ namespace Server.Game
             Broadcast(addRoomPacket); 
             
             ConsoleLogManager.Instance.Log($"Room created: {newRoom.RoomId}, RoomOnwerId: {newRoom.RoomOwnerId}, RoomName: {newRoom.RoomName}");
-
         }
 
         public void EnterLobby(Player user)
