@@ -93,7 +93,6 @@ public class MyPlayerController : PlayerController
     {
         base.OnUpdate();
         SendMovePacket();
-        Debug.Log(CreatureState);
     }
 
     // TODO - 패킷 주기 전송 최적화
