@@ -9,13 +9,13 @@ public class OtherPlayerController : PlayerController
         base.Init();
     }
 
-    void Start()
+    private void Start()
     {
         Init();
     }
 
-    void Update()
+    private void Update()
     {
-        
+        OnUpdate();
     }
 }
