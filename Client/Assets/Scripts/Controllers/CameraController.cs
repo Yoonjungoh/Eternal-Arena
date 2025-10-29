@@ -1,67 +1,67 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public Define.CameraMode Mode= Define.CameraMode.CommonView;
+    [Header("Camera Settings")]
+    public Vector3 Offset = new Vector3(0, 2, -4); // ìºë¦­í„° ë’¤ìª½ ì¹´ë©”ë¼ ìœ„ì¹˜
+    public float FollowSpeed = 1000f;          // ë”°ë¼ê°€ëŠ” ì†ë„
+    public float RotationSpeed = 5f;         // íšŒì „ ê°ë„
+    public float MinPitch = -30f;            // ì•„ë˜ë¡œ ë³´ëŠ” ê°ë„ ì œí•œ
+    public float MaxPitch = 30f;             // ìœ„ë¡œ ë³´ëŠ” ê°ë„ ì œí•œ
 
-    [Header("View Settings - QuarterView")]
-    public Vector3 QuarterViewOffset = new Vector3(0, 10, -8);  // ÄõÅÍºä ½ÃÁ¡ °Å¸®
-    public float QuarterViewFollowSpeed = 5f;                   // µû¶ó°¡´Â ¼Óµµ
-    public Vector3 QuarterViewRotation = new Vector3(0, 0, 0);                // °íÁ¤¿ë Æ¯Á¤ °¢µµ
+    [Header("Zoom Settings")]
+    public float ZoomSpeed = 5f;             // ë§ˆìš°ìŠ¤ íœ  ë°˜ì‘ ì†ë„
+    public float MinZoom = -5f;              // ê°€ì¥ ê·¼ì ‘ (ìˆ«ìê°€ ì»¤ì§ˆìˆ˜ë¡ ê°€ê¹Œì›€)
+    public float MaxZoom = -12f;             // ê°€ì¥ ë©€ë¦¬ (ìˆ«ìê°€ ì‘ì„ìˆ˜ë¡ ë©€ë¦¬)
 
-    [Header("View Settings - FirstPersonView")]
-    public Vector3 FirstPersonViewOffset = new Vector3(0, 10, -8);  // ÄõÅÍºä ½ÃÁ¡ °Å¸®
-    public float FirstPersonViewFollowSpeed = 5f;                   // µû¶ó°¡´Â ¼Óµµ
-    public float FirstPersonViewLookDownAngle = 45f;                // ¾Æ·¡·Î ³»·Áº¸´Â °¢µµ
+    private MyPlayerController _target;
+    private float _yaw;   // ì¢Œìš° íšŒì „ (Yì¶•)
+    private float _pitch; // ìƒí•˜ íšŒì „ (Xì¶•)
 
-    private Transform _target;
+    public void Init()
+    {
+        if (_target == null)
+            _target = Managers.Object.MyPlayer;
+
+        Vector3 angles = transform.eulerAngles;
+        _yaw = angles.y;
+        _pitch = angles.x;
+
+        // TODO - ìš°ì„  ì»¤ì„œ ì ê¸ˆ
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
 
     void LateUpdate()
     {
-        if (Mode == Define.CameraMode.CommonView && _target != null)
-        {
-            // Æ¯Á¤ ÁÂÇ¥¿¡¼­ °¡¸¸È÷ ÀÖÀ» ¿¹Á¤
-        }
-        else if (Mode == Define.CameraMode.QuarterView && _target != null)
-        {
-            Vector3 desiredPosition = _target.position + QuarterViewOffset;
-
-            transform.position = Vector3.Lerp(transform.position, desiredPosition, QuarterViewFollowSpeed * Time.deltaTime);
-            transform.rotation = Quaternion.Euler(QuarterViewRotation);
-        }
-        else if (Mode == Define.CameraMode.FirstPersonView && _target != null)
-        {
-            transform.position = _target.position + FirstPersonViewOffset;
-            transform.rotation = _target.rotation;
-        }
-    }
-
-    public void SetCommonView()
-    {
         if (_target == null)
-        {
-            _target = Util.FindChild(Managers.Object.MyPlayer.gameObject, "Head", recursive: true).transform;
-        }
-        Mode = Define.CameraMode.CommonView;
-    }
+            return;
 
-    public void SetQuarterView()
-    {
-        if (_target == null)
-        {
-            _target = Util.FindChild(Managers.Object.MyPlayer.gameObject, "Head", recursive: true).transform;
-        }
-        Mode = Define.CameraMode.QuarterView;
-    }
+        float mouseX = Input.GetAxis("Mouse X");
+        float mouseY = Input.GetAxis("Mouse Y");
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
 
-    public void SetFirstPersonView()
-    {
-        if (_target == null)
+        // íšŒì „ ë‹´ë‹¹ ë¶€ë¶„
+        _yaw += mouseX * RotationSpeed;
+        _pitch -= mouseY * RotationSpeed;
+        _pitch = Mathf.Clamp(_pitch, MinPitch, MaxPitch);
+
+        Quaternion rotation = Quaternion.Euler(_pitch, _yaw, 0f);
+
+        // ì¤Œ ë‹´ë‹¹ ë¶€ë¶„
+        Offset.z += scroll * ZoomSpeed;
+        Offset.z = Mathf.Clamp(Offset.z, MaxZoom, MinZoom);
+
+        // ìœ„ì¹˜ ì´ë™ ë° íšŒì „ ì ìš© ë¶€ë¶„
+        Vector3 desiredPosition = _target.transform.position + rotation * Offset;
+        transform.position = Vector3.Lerp(transform.position, desiredPosition, FollowSpeed * Time.deltaTime);
+        transform.rotation = rotation;
+
+        // ìºë¦­í„° íšŒì „ ë¶€ë¶„ ë³´ì •
+        if (Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0)
         {
-            _target = Util.FindChild(Managers.Object.MyPlayer.gameObject, "Head", recursive: true).transform;
+            Vector3 forward = new Vector3(transform.forward.x, 0f, transform.forward.z);
+            _target.transform.forward = Vector3.Lerp(_target.transform.forward, forward, Time.deltaTime * _target.RotateSpeed);
         }
-        Mode = Define.CameraMode.FirstPersonView;
     }
 }

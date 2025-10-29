@@ -5,24 +5,26 @@ using UnityEngine;
 
 public class MyPlayerController : PlayerController
 {
-    [SerializeField] float _moveSpeed = 5.0f;
-    [SerializeField] float _mouseRotationSpeed = 2.0f; // 마우스 회전 감도 // TODO-설정 매니저로 빼기
+    [SerializeField] float _moveSpeed = 5.0f;    // 이동 속도
+    [SerializeField] float _rotateSpeed = 10.0f; // 회전 속도
 
-    private float _rotationX = 0f; // 상하 회전 (카메라)
-    private float _rotationY = 0f; // 좌우 회전 (캐릭터)
-    private Transform _headTransform; // 상하일 때는 머리만 돌아감
+    private Vector3 _moveDir = Vector3.zero;
+    private Transform _cameraTransform;
+    public float RotateSpeed { get { return _rotateSpeed; } }
 
     public override void Init()
     {
         base.Init();
+
         Managers.Input.KeyAction -= OnKeyBoard;
         Managers.Input.KeyAction += OnKeyBoard;
+
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
 
-        _headTransform = Util.FindChild(gameObject, "Head", recursive: true).transform;
+        _cameraTransform = Camera.main.transform;
     }
-    
+
     private void OnMouseClicked(Define.MouseEvent evt)
     {
         if (evt != Define.MouseEvent.Click)
@@ -38,55 +40,52 @@ public class MyPlayerController : PlayerController
     }
 
     private void OnKeyBoard()
-    {   
-        // 이동 입력 체크
-        bool hasInput = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D);
-        
-        // 이동 처리
-        if (hasInput)
+    {
+        _moveDir = Vector3.zero;
+
+        // 카메라 방향 기준 벡터 구하기
+        Vector3 camForward = _cameraTransform.forward;
+        Vector3 camRight = _cameraTransform.right;
+
+        // 수평 회전만 반영 (상하는 제외)
+        camForward.y = 0;
+        camRight.y = 0;
+        camForward.Normalize();
+        camRight.Normalize();
+
+        // 입력에 따라 이동 방향 결정
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
-            Vector3 moveDir = Vector3.zero;
+            _moveDir += camForward;
+        }
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        {
+            _moveDir -= camForward;
+        }
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {
+            _moveDir -= camRight;
+        }
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
+            _moveDir += camRight;
+        }
 
-            if (Input.GetKey(KeyCode.W))
-            {
-                moveDir += transform.forward;
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                moveDir += -transform.forward;
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                moveDir += -transform.right;
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                moveDir += transform.right;
-            }
+        _moveDir.Normalize();
 
-            moveDir.Normalize();
-            transform.position += moveDir * Time.deltaTime * _moveSpeed;
+        // 이동, 회전 처리
+        if (_moveDir != Vector3.zero)
+        {
+            // 캐릭터가 바라보는 방향을 이동 방향으로 회전
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(_moveDir), Time.deltaTime * _rotateSpeed);
 
+            // 이동
+            transform.position += _moveDir * Time.deltaTime * _moveSpeed;
             CreatureState = CreatureState.Move;
         }
         else
         {
             CreatureState = CreatureState.Idle;
-        }
-
-        // 회전 처리
-        if (Input.GetMouseButton(1) && _headTransform)
-        {
-            float mouseX = Input.GetAxis("Mouse X") * _mouseRotationSpeed;
-            float mouseY = Input.GetAxis("Mouse Y") * _mouseRotationSpeed;
-            
-            _rotationY += mouseX;
-            transform.rotation = Quaternion.Euler(0f, _rotationY, 0f);
-
-            _rotationX -= mouseY;
-            _rotationX = Mathf.Clamp(_rotationX, -90f, 90f);
-            
-            _headTransform.localRotation = Quaternion.Euler(_rotationX, 0f, 0f);
         }
     }
 
@@ -94,9 +93,10 @@ public class MyPlayerController : PlayerController
     {
         base.OnUpdate();
         SendMovePacket();
+        Debug.Log(CreatureState);
     }
 
-    // TODO - 패킷 전송 주기 조절하기
+    // TODO - 패킷 주기 전송 최적화
     private void SendMovePacket()
     {
         C_Move movePacket = new C_Move();

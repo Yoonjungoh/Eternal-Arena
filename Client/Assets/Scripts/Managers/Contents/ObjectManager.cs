@@ -33,7 +33,7 @@ public class ObjectManager
             _objects.Add(objectInfo.ObjectId, MyPlayer.gameObject);
             Debug.Log($"소환: {MyPlayer.Id}, isMyPlayer: {isMyPlayer}");
 
-            Camera.main.GetComponent<CameraController>().SetCommonView();   // 캐릭터 소환 후 카메라 부착
+            Camera.main.GetComponent<CameraController>().Init();   // 캐릭터 소환 후 카메라 부착
         }
         else
         {

@@ -9,6 +9,7 @@ public class Define
         CommonView,
         FirstPersonView,
         QuarterView,
+        None,
     }
     public enum UIEvent
     {

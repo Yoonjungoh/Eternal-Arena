@@ -34,7 +34,7 @@ public class InputManager
                 MouseAction.Invoke(Define.MouseEvent.Press);
                 _pressed = true;
             }
-            else
+            else if (Input.GetMouseButton(1))
             {
                 if (_pressed)
                     MouseAction.Invoke(Define.MouseEvent.Click);
