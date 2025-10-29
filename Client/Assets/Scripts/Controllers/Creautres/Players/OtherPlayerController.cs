@@ -16,6 +16,6 @@ public class OtherPlayerController : PlayerController
 
     private void Update()
     {
-        OnUpdate();
+        base.OnUpdate();
     }
 }
