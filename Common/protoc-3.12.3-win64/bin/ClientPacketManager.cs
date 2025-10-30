@@ -33,6 +33,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SEnterWaitingRoom, PacketHandler.S_EnterWaitingRoomHandler);		
 		_onRecv.Add((ushort)MsgId.SAddRoom, MakePacket<S_AddRoom>);
 		_handler.Add((ushort)MsgId.SAddRoom, PacketHandler.S_AddRoomHandler);		
+		_onRecv.Add((ushort)MsgId.SRemoveRoom, MakePacket<S_RemoveRoom>);
+		_handler.Add((ushort)MsgId.SRemoveRoom, PacketHandler.S_RemoveRoomHandler);		
 		_onRecv.Add((ushort)MsgId.SEnterGame, MakePacket<S_EnterGame>);
 		_handler.Add((ushort)MsgId.SEnterGame, PacketHandler.S_EnterGameHandler);		
 		_onRecv.Add((ushort)MsgId.SLeaveGame, MakePacket<S_LeaveGame>);

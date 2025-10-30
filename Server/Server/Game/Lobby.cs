@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using Server.Game;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,9 @@ namespace Server.Game
         public void Init()
         {
             WaitingRoomManager = new WaitingRoomManager(LobbyId);
+
+            WaitingRoomManager.OnRemoveRoom -= HandleRemoveRoom;
+            WaitingRoomManager.OnRemoveRoom += HandleRemoveRoom;
         }
 
         public void HandleAddRoom(Player user, string roomName)
@@ -46,6 +50,23 @@ namespace Server.Game
             Broadcast(addRoomPacket); 
             
             ConsoleLogManager.Instance.Log($"Room created: {newRoom.RoomId}, RoomOnwerId: {newRoom.RoomOwnerId}, RoomName: {newRoom.RoomName}");
+        }
+
+        private void HandleRemoveRoom(int roomId)
+        {
+            WaitingRoom room = null;
+            WaitingRoomManager.Rooms.TryGetValue(roomId, out room);
+            if (room == null)
+            {
+                ConsoleLogManager.Instance.Log($"Cant Find Room {roomId}");
+                return;
+            }
+            WaitingRoomManager.Rooms.Remove(roomId);
+
+            S_RemoveRoom removeRoomPacket = new S_RemoveRoom();
+            removeRoomPacket.RoomId = roomId;
+            Broadcast(removeRoomPacket);
+            ConsoleLogManager.Instance.Log($"[Manager] Room {roomId} deleted (no players left)");
         }
 
         public void EnterLobby(Player user)

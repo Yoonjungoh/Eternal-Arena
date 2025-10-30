@@ -79,10 +79,10 @@ namespace Server
 			// 대기방에서 내보내기
 			if (MyPlayer.WaitingRoom != null)
             {
-                WaitingRoom room = MyPlayer.Lobby.WaitingRoomManager.Find(MyPlayer.WaitingRoom.RoomId);
-                if (room != null)
+                WaitingRoom watingRoom = MyPlayer.Lobby.WaitingRoomManager.Find(MyPlayer.WaitingRoom.RoomId);
+                if (watingRoom != null)
                 {
-                    room.Push(room.LeaveGame, MyPlayer.ObjectInfo.ObjectId, true);
+                    watingRoom.Push(watingRoom.LeaveRoom, MyPlayer.ObjectInfo.ObjectId, true);
                 }
                 else
                 {

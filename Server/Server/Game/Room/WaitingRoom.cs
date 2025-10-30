@@ -17,6 +17,8 @@ namespace Server.Game
         public string RoomName { get; set; }
         public int RoomOwnerId { get; set; }
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
+
+        public event Action<int> OnEmptyRoom; // 방이 비었을 때 알림 (roomId)
         public void Init()
         {
             //TestTimer();
@@ -25,24 +27,7 @@ namespace Server.Game
         // 어디선가 주기적으로 호출해줘야 함
         public void Update()
         {
-            //if (IsGameOver)
-            //    return;
-            //foreach (Projectile projectile in _projectiles.Values)
-            //{
-            //    projectile.Update();
-            //}
-            //foreach (Monster monster in _monsters.Values)
-            //{
-
-            //    monster.Update();
-            //}
             Flush();
-        }
-
-        void TestTimer()
-        {
-            Console.WriteLine("TestTimer");
-            PushAfter(TestTimer, 100);
         }
 
         public void EnterRoom(Player player)
@@ -107,39 +92,41 @@ namespace Server.Game
             }
         }
 
-        public void LeaveGame(int objectId, bool isAttacked = true)
+        public void LeaveRoom(int playerId, bool isAttacked = true)
         {
-            GameObjectType type = ObjectManager.Instance.GetObjectTypeById(objectId);
-
-            //if (type == GameObjectType.Player)
-            {
-                Player player = null;
-                if (_players.Remove(objectId, out player) == false)
-                    return;
-
-                player.WaitingRoom = null;
+            Player player = null;
+            if (_players.Remove(playerId, out player) == false)
+                return;
+            
+            player.WaitingRoom = null;
                 
-                // 본인한테 정보 전송
-                {
-                    S_LeaveGame leavePacket = new S_LeaveGame();
-                    leavePacket.PlayerCount = _players.Count;
-                    player.Session.Send(leavePacket);
-                }
+            // 본인한테 정보 전송
+            {
+                S_LeaveGame leavePacket = new S_LeaveGame();
+                leavePacket.PlayerCount = _players.Count;
+                player.Session.Send(leavePacket);
+            }
 
-                // 타인한테 정보 전송
-                {
-                    S_Despawn despawnPacket = new S_Despawn();
-                    despawnPacket.ObjectIds.Add(objectId);
-                    despawnPacket.PlayerCount = _players.Count;
+            // 타인한테 정보 전송
+            {
+                S_Despawn despawnPacket = new S_Despawn();
+                despawnPacket.ObjectIds.Add(playerId);
+                despawnPacket.PlayerCount = _players.Count;
 
-                    foreach (Player p in _players.Values)
-                    {
-                        if (p.Id != objectId)
-                            p.Session.Send(despawnPacket);
-                    }
+                foreach (Player p in _players.Values)
+                {
+                    if (p.Id != playerId)
+                        p.Session.Send(despawnPacket);
                 }
             }
+
+            // 나간 사람이 방장인 경우 방 폭파
+            if (RoomOwnerId == playerId)
+            {
+                OnEmptyRoom?.Invoke(RoomId);
+            }
         }
+
         public void HandleMove(Player player, C_Move movePacket)
         {
             if (player == null)

@@ -98,4 +98,14 @@ public class UI_Lobby : UI_Scene
             _roomSubItemDict.TryAdd(roomId, lobbyRoomSubItem);
         }
     }
+
+    public void RemoveRoom(int roomId)
+    {
+        if (_roomSubItemDict.ContainsKey(roomId) == false)
+            return;
+
+        _roomSubItemDict.TryGetValue(roomId, out Lobby_RoomSubItem room);
+        Destroy(room.gameObject);
+        _roomSubItemDict.Remove(roomId);
+    }
 }
