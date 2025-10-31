@@ -28,6 +28,15 @@ public class UI_Lobby : UI_Scene
 
         _roomScrollView = Util.FindChild(gameObject, "RoomContent", recursive: true);
         _userScrollView = Util.FindChild(gameObject, "UserContent", recursive: true);
+
+        // 로비에 재진입 시 갱신 패킷 전송
+        if (Managers.Lobby.IsEnterFirst == true)
+        {
+            C_EnterLobby enterLobbyPacket = new C_EnterLobby();
+            Managers.Network.Send(enterLobbyPacket);
+        }
+
+        Managers.Lobby.IsEnterFirst = true; // 로비 UI 초기화 시에 처음 들어왔다고 판단
     }
 
     public void EnterLobby(RepeatedField<int> userIdList)

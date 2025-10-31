@@ -96,4 +96,29 @@ class PacketHandler
 
         user.Lobby.Push(user.Lobby.HandleAddRoom, user, addRoomPacket.RoomName);
     }
+
+    public static void C_ExitRoomHandler(PacketSession session, IMessage packet)
+    {
+        C_ExitRoom exitRoomPacket = packet as C_ExitRoom;
+        ClientSession clientSession = session as ClientSession;
+
+        Player user = clientSession.MyPlayer;
+        if (user == null || user.Lobby == null || user.WaitingRoom == null)
+            return;
+
+        user.Lobby.Push(user.WaitingRoom.LeaveRoom, user.Id);
+    }
+
+    public static void C_EnterLobbyHandler(PacketSession session, IMessage packet)
+    {
+        C_EnterLobby enterLobbyPacket = packet as C_EnterLobby;
+        ClientSession clientSession = session as ClientSession;
+
+        Player user = clientSession.MyPlayer;
+        if (user == null || user.Lobby == null)
+            return;
+
+        LobbyManager.Instance.EnterLobby(1, user);	// TODO - 1번 로비로 강제 이동
+
+    }
 }

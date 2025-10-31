@@ -61,6 +61,8 @@ namespace Server.Game
                 ConsoleLogManager.Instance.Log($"Cant Find Room {roomId}");
                 return;
             }
+            // 방의 유저들에게 나가기 알림
+            // TODO
             WaitingRoomManager.Rooms.Remove(roomId);
 
             S_RemoveRoom removeRoomPacket = new S_RemoveRoom();
@@ -98,15 +100,15 @@ namespace Server.Game
             {
                 if (u == null)
                     continue;
-                
+
                 enterLobbyPacket.UserIdList.Add(u.Id);
             }
-            
+
             foreach (WaitingRoom room in WaitingRoomManager.Rooms.Values)
             {
                 if (room == null)
                     continue;
-                
+
                 RoomInfo roomInfo = new RoomInfo();
                 roomInfo.RoomId = room.RoomId;
                 roomInfo.RoomName = room.RoomName;

@@ -69,12 +69,10 @@ namespace Server
             }
 
             // 로비에서 내보내기
-            if (MyPlayer.Lobby == null)
+            if (MyPlayer.Lobby != null)
             {
-                ConsoleLogManager.Instance.Log($"Can't Find Lobby {MyPlayer.Lobby.LobbyId} -> UserId: {MyPlayer.Id}");
-				return;
+                MyPlayer.Lobby.Push(MyPlayer.Lobby.LeaveLobby, MyPlayer.Id);
             }
-            MyPlayer.Lobby.Push(MyPlayer.Lobby.LeaveLobby, MyPlayer.Id);
 
 			// 대기방에서 내보내기
 			if (MyPlayer.WaitingRoom != null)
@@ -82,7 +80,7 @@ namespace Server
                 WaitingRoom watingRoom = MyPlayer.Lobby.WaitingRoomManager.Find(MyPlayer.WaitingRoom.RoomId);
                 if (watingRoom != null)
                 {
-                    watingRoom.Push(watingRoom.LeaveRoom, MyPlayer.ObjectInfo.ObjectId, true);
+                    watingRoom.Push(watingRoom.LeaveRoom, MyPlayer.ObjectInfo.ObjectId);
                 }
                 else
                 {

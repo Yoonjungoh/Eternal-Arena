@@ -92,20 +92,16 @@ namespace Server.Game
             }
         }
 
-        public void LeaveRoom(int playerId, bool isAttacked = true)
+        public void LeaveRoom(int playerId)
         {
             Player player = null;
             if (_players.Remove(playerId, out player) == false)
                 return;
             
             player.WaitingRoom = null;
-                
-            // 본인한테 정보 전송
-            {
-                S_LeaveGame leavePacket = new S_LeaveGame();
-                leavePacket.PlayerCount = _players.Count;
-                player.Session.Send(leavePacket);
-            }
+
+            // 본인에겐 다시 로비로 가라고 하기
+            ExitRoom(player);
 
             // 타인한테 정보 전송
             {
@@ -123,7 +119,27 @@ namespace Server.Game
             // 나간 사람이 방장인 경우 방 폭파
             if (RoomOwnerId == playerId)
             {
+                ExitRoomAll();
                 OnEmptyRoom?.Invoke(RoomId);
+            }
+        }
+
+        public void ExitRoom(Player player)
+        {
+            if (player == null)
+            {
+                ConsoleLogManager.Instance.Log("Player is null");
+                return;
+            }
+            S_ExitRoom exitRoomPacket = new S_ExitRoom();
+            player.Session.Send(exitRoomPacket);
+        }
+
+        public void ExitRoomAll()
+        {
+            foreach (Player player in _players.Values)
+            {
+                ExitRoom(player);
             }
         }
 

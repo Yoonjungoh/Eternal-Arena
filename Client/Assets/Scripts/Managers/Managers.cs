@@ -5,24 +5,26 @@ using UnityEngine;
 
 public class Managers : MonoBehaviour
 {
-    static Managers s_instance; // 유일성이 보장된다
-    static Managers Instance { get { Init(); return s_instance; } } // 유일한 매니저를 갖고온다
+    private static Managers s_instance; // 유일성이 보장된다
+    private static Managers Instance { get { Init(); return s_instance; } } // 유일한 매니저를 갖고온다
 
-    GameManager _game = new GameManager();
-    MapManager _map = new MapManager();
-    NetworkManager _network = new NetworkManager();
-    ObjectManager _object = new ObjectManager();
-    RoomManager _room = new RoomManager();
-    InputManager _input = new InputManager();
-    PoolManager _pool = new PoolManager();
-    DataManager _data = new DataManager();
-    ResourceManager _resource = new ResourceManager();
-    SceneManagerEx _scene = new SceneManagerEx();
-    SoundManager _sound = new SoundManager();
-    UIManager _ui = new UIManager();
-    URLManager _url = new URLManager();
+    private GameManager _game = new GameManager();
+    private LobbyManager _lobby = new LobbyManager();
+    private MapManager _map = new MapManager();
+    private NetworkManager _network = new NetworkManager();
+    private ObjectManager _object = new ObjectManager();
+    private RoomManager _room = new RoomManager();
+    private InputManager _input = new InputManager();
+    private PoolManager _pool = new PoolManager();
+    private DataManager _data = new DataManager();
+    private ResourceManager _resource = new ResourceManager();
+    private SceneManagerEx _scene = new SceneManagerEx();
+    private SoundManager _sound = new SoundManager();
+    private UIManager _ui = new UIManager();
+    private URLManager _url = new URLManager();
 
     public static GameManager Game { get { return Instance._game; } }
+    public static LobbyManager Lobby { get { return Instance._lobby; } }
     public static MapManager Map { get { return Instance._map; } }
     public static NetworkManager Network { get { return Instance._network; } }
     public static ObjectManager Object { get { return Instance._object; } }

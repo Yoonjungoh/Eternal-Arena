@@ -40,7 +40,7 @@ class PacketHandler
             return;
         }
         lobbyUI.EnterLobby(enterLobbyPacket.UserIdList);
-        lobbyUI.AddRoom(enterLobbyPacket.RoomInfoList);
+        lobbyUI.AddRoom(enterLobbyPacket.RoomInfoList); // 기존 방 목록 추가
     }
 
     // 로비에서 누군가 퇴장했을 때
@@ -124,6 +124,18 @@ class PacketHandler
         lobbyUI.RemoveRoom(removeRoomPacket.RoomId);
     }
 
+
+    public static void S_ExitRoomHandler(PacketSession session, IMessage packet)
+    {
+        S_ExitRoom exitRoomPacket = packet as S_ExitRoom;
+        if (exitRoomPacket == null)
+        {
+            Debug.Log("S_ExitRoom 패킷이 null입니다");
+            return;
+        }
+        
+        Managers.Room.ExitRoom();
+    }
 
     // 내가 게임에 입장할 때 패킷
     public static void S_EnterGameHandler(PacketSession session, IMessage packet)

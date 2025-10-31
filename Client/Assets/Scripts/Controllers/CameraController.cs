@@ -27,9 +27,9 @@ public class CameraController : MonoBehaviour
         _yaw = angles.y;
         _pitch = angles.x;
 
-        // TODO - 우선 커서 잠금
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //// TODO - 우선 커서 잠금
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
 
     void LateUpdate()

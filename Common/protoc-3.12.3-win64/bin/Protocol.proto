@@ -17,6 +17,7 @@ enum MsgId {
   S_REMOVE_ROOM = 9;
   S_EXIT_ROOM = 10;
   C_EXIT_ROOM = 11;
+  C_ENTER_LOBBY = 12;
   S_ENTER_GAME = 90;
   S_LEAVE_GAME = 100;
   S_SPAWN = 101;
@@ -83,12 +84,21 @@ message S_RemoveRoom {
   int32 roomId = 1;
 }
 
+message S_ExitRoom {
+}
+
+message C_ExitRoom {
+}
+
 message S_EnterGame {
   ObjectInfo objectInfo = 1;
 }
 
 message C_EnterGame {
   ObjectInfo objectInfo = 1;
+}
+
+message C_EnterLobby {
 }
 
 message S_LeaveGame {
