@@ -216,6 +216,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &435645090
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 435645091}
+  m_Layer: 0
+  m_Name: SceneStarter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &435645091
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 435645090}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 738.63477, y: 214.63327, z: 0.7582327}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &806112188
 GameObject:
   m_ObjectHideFlags: 0
@@ -332,7 +363,6 @@ GameObject:
   - component: {fileID: 1295372941}
   - component: {fileID: 1295372940}
   - component: {fileID: 1295372939}
-  - component: {fileID: 1295372938}
   - component: {fileID: 1295372942}
   m_Layer: 0
   m_Name: Main Camera
@@ -341,18 +371,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1295372938
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1295372937}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20da5dc49082c864ca9157710c526ee5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!81 &1295372939
 AudioListener:
   m_ObjectHideFlags: 0
@@ -439,8 +457,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 810f839e2ad33ae48b9effc9cad18cd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Mode: 0
-  _delta: {x: 0, y: 2, z: 0}
+  Offset: {x: 0, y: 2, z: -4}
+  FollowSpeed: 1000
+  RotationSpeed: 5
+  MinPitch: -30
+  MaxPitch: 30
+  ZoomSpeed: 5
+  MinZoom: -5
+  MaxZoom: -12
 --- !u!1001 &8158808088075957695
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -510,3 +534,4 @@ SceneRoots:
   - {fileID: 236104209}
   - {fileID: 806112192}
   - {fileID: 8158808088075957695}
+  - {fileID: 435645091}

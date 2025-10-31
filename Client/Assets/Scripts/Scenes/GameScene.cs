@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InGameScene : BaseScene
+public class GameScene : BaseScene
 {
     protected override void Init()
     {

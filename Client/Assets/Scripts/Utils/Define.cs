@@ -24,7 +24,7 @@ public class Define
         MainMenu,
         Lobby,
         WaitingRoom,
-        InGame,
+        Game,
     }
 
     public enum Sound

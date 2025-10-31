@@ -9,6 +9,7 @@ public class UI_WaitingRoom : UI_Scene
     enum Buttons
     {
         ExitButton,
+        StartGameButton,
     }
 
     public override void Init()
@@ -17,11 +18,17 @@ public class UI_WaitingRoom : UI_Scene
 
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.ExitButton).onClick.AddListener(OnClickExitRoomButton);
+        GetButton((int)Buttons.StartGameButton).onClick.AddListener(OnClickStartGameButton);
     }
 
     private void OnClickExitRoomButton()
     {
         C_ExitRoom exitRoomPacket = new C_ExitRoom();
         Managers.Network.Send(exitRoomPacket);
+    }
+
+    private void OnClickStartGameButton()
+    {
+        
     }
 }
