@@ -133,8 +133,27 @@ class PacketHandler
             Debug.Log("S_ExitRoom 패킷이 null입니다");
             return;
         }
-        
+
         Managers.Room.ExitRoom();
+    }
+
+    public static void S_UpdateWaitingRoomInfoHandler(PacketSession session, IMessage packet)
+    {
+        S_UpdateWaitingRoomInfo updateWatingRoomInfoPacket = packet as S_UpdateWaitingRoomInfo;
+        if (updateWatingRoomInfoPacket == null)
+        {
+            Debug.Log("S_UpdateWaitingRoomInfo 패킷이 null입니다");
+            return;
+        }
+
+        UI_Lobby lobbyUI = Managers.UI.CurrentScene.GetComponent<UI_Lobby>();
+        if (lobbyUI == null)
+        {
+            Debug.Log("현재 로비가 아닌데 로비에 입장하려고 합니다.");
+            return;
+        }
+
+        lobbyUI.UpdateRoomInfo(updateWatingRoomInfoPacket.RoomInfo);
     }
 
     // 내가 게임에 입장할 때 패킷

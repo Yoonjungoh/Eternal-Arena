@@ -14,6 +14,7 @@ namespace Server.Game
         public Dictionary<int, WaitingRoom> Rooms { get { return _rooms; } }
         List<System.Timers.Timer> _timers = new List<System.Timers.Timer>();
         public event Action<int> OnRemoveRoom; // 방이 비었을 때 알림 (roomId)
+        public event Action<int> OnRoomInfoChanged; // 방 정보 바뀌었을 때 알림 (roomId)
 
         public WaitingRoomManager(int lobbyId)
         {
@@ -47,8 +48,13 @@ namespace Server.Game
                 newRoom.RoomId = _roomId;
                 newRoom.RoomName = roomName;
                 newRoom.RoomOwnerId = roomOwnerId;
+
                 newRoom.OnEmptyRoom -= HandleEmptyRoom;
                 newRoom.OnEmptyRoom += HandleEmptyRoom;
+
+                newRoom.OnRoomInfoChanged -= HandleRoomInfoChanged;
+                newRoom.OnRoomInfoChanged += HandleRoomInfoChanged;
+
                 _rooms.Add(_roomId, newRoom);
                 _roomId++;
                 
@@ -68,6 +74,16 @@ namespace Server.Game
                     return false;
                 }
             }
+        }
+
+        private void HandleRoomInfoChanged(int roomId)
+        {
+            if (_rooms.ContainsKey(roomId) == false)
+            {
+                ConsoleLogManager.Instance.Log($"Cant Find Room {roomId}");
+                return;
+            }
+            OnRoomInfoChanged?.Invoke(roomId);
         }
 
         private void HandleEmptyRoom(int roomId)

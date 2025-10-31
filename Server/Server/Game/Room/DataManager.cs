@@ -17,5 +17,6 @@ namespace Server.Game
     {
         public static DataManager Instance { get; } = new DataManager();
         public int MaxLobbyCount = 3;  // 최대 로비 개수
+        public int MaxRoomPlayerCount = 4; // 방당 최대 플레이어 수
     }
 }

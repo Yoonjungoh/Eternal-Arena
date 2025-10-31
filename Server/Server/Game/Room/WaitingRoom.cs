@@ -16,9 +16,11 @@ namespace Server.Game
         public int RoomId { get; set; }
         public string RoomName { get; set; }
         public int RoomOwnerId { get; set; }
+        public int CurrentPlayerCount { get { return _players.Count; } }
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
 
         public event Action<int> OnEmptyRoom; // 방이 비었을 때 알림 (roomId)
+        public event Action<int> OnRoomInfoChanged;  // 방 정보 바뀌었을 때 알림 (roomId)
         public void Init()
         {
             //TestTimer();
@@ -67,6 +69,9 @@ namespace Server.Game
 
             _players.Add(player.Id, player);
             player.Init();
+
+            // 방 정보가 업데이트 된 것을 로비의 유저들에게 알려야 함
+            OnRoomInfoChanged?.Invoke(RoomId);
 
             // 본인한테 맵안의 플레이어 정보 전송
             S_Spawn spawnToMePacket = new S_Spawn();
@@ -133,6 +138,9 @@ namespace Server.Game
             }
             S_ExitRoom exitRoomPacket = new S_ExitRoom();
             player.Session.Send(exitRoomPacket);
+
+            // 방 정보가 업데이트 된 것을 로비의 유저들에게 알려야 함
+            OnRoomInfoChanged?.Invoke(RoomId);
         }
 
         public void ExitRoomAll()

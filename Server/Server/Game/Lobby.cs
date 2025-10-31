@@ -26,6 +26,9 @@ namespace Server.Game
 
             WaitingRoomManager.OnRemoveRoom -= HandleRemoveRoom;
             WaitingRoomManager.OnRemoveRoom += HandleRemoveRoom;
+
+            WaitingRoomManager.OnRoomInfoChanged -= HandleRoomInfoChanged;
+            WaitingRoomManager.OnRoomInfoChanged += HandleRoomInfoChanged;
         }
 
         public void HandleAddRoom(Player user, string roomName)
@@ -47,9 +50,32 @@ namespace Server.Game
             addRoomPacket.RoomInfo.RoomId = newRoom.RoomId;
             addRoomPacket.RoomInfo.RoomName = roomName;
             addRoomPacket.RoomInfo.RoomOwnerId = user.Id;
+            addRoomPacket.RoomInfo.CurrentPlayerCount = 1;
+            addRoomPacket.RoomInfo.MaxPlayerCount = DataManager.Instance.MaxRoomPlayerCount;
             Broadcast(addRoomPacket); 
             
             ConsoleLogManager.Instance.Log($"Room created: {newRoom.RoomId}, RoomOnwerId: {newRoom.RoomOwnerId}, RoomName: {newRoom.RoomName}");
+        }
+
+        private void HandleRoomInfoChanged(int roomId)
+        {
+            WaitingRoom room = null;
+            WaitingRoomManager.Rooms.TryGetValue(roomId, out room);
+            if (room == null)
+            {
+                ConsoleLogManager.Instance.Log($"Cant Find Room {roomId}");
+                return;
+            }
+
+            S_UpdateWaitingRoomInfo updateWaitingRoomInfoPacket = new S_UpdateWaitingRoomInfo();
+            updateWaitingRoomInfoPacket.RoomInfo = new RoomInfo();
+            updateWaitingRoomInfoPacket.RoomInfo.RoomId = room.RoomId;
+            updateWaitingRoomInfoPacket.RoomInfo.RoomName = room.RoomName;
+            updateWaitingRoomInfoPacket.RoomInfo.RoomOwnerId = room.RoomOwnerId;
+            updateWaitingRoomInfoPacket.RoomInfo.CurrentPlayerCount = room.CurrentPlayerCount;
+            updateWaitingRoomInfoPacket.RoomInfo.MaxPlayerCount = DataManager.Instance.MaxRoomPlayerCount;
+            Broadcast(updateWaitingRoomInfoPacket);
+            ConsoleLogManager.Instance.Log($"[Manager] Room {roomId} ({updateWaitingRoomInfoPacket.RoomInfo.CurrentPlayerCount}/{updateWaitingRoomInfoPacket.RoomInfo.MaxPlayerCount})");
         }
 
         private void HandleRemoveRoom(int roomId)
@@ -113,6 +139,8 @@ namespace Server.Game
                 roomInfo.RoomId = room.RoomId;
                 roomInfo.RoomName = room.RoomName;
                 roomInfo.RoomOwnerId = room.RoomOwnerId;
+                roomInfo.CurrentPlayerCount = room.CurrentPlayerCount;
+                roomInfo.MaxPlayerCount = DataManager.Instance.MaxRoomPlayerCount;
 
                 enterLobbyPacket.RoomInfoList.Add(roomInfo);
             }

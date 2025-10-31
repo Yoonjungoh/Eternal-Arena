@@ -88,23 +88,21 @@ public class UI_Lobby : UI_Scene
 
         for (int i = 0; i < roomInfoListCount; i++)
         {
-            int roomId = roomInfoList[i].RoomId;
-            string roomName = roomInfoList[i].RoomName;
-            if (_roomSubItemDict.ContainsKey(roomId))
+            if (_roomSubItemDict.ContainsKey(roomInfoList[i].RoomId))
             {
-                Debug.Log($"같은 RoomId가 이미 존재합니다. RoomId: {roomId}, RoomName: {roomName}");
+                Debug.Log($"같은 RoomId가 이미 존재합니다. RoomId: {roomInfoList[i].RoomId}, RoomName: {roomInfoList[i].RoomName}");
                 return;
             }
             
             Lobby_RoomSubItem lobbyRoomSubItem = Managers.UI.MakeSubItem<Lobby_RoomSubItem>(_roomScrollView.transform);
             lobbyRoomSubItem.SetData(new LobbyRoomSubItemData
             {
-                RoomId = roomId,
-                RoomName = roomName,
-                MaxPlayerCount = 4,  // TODO 
-                CurrentPlayerCount = 1, // TODO - 본인
+                RoomId = roomInfoList[i].RoomId,
+                RoomName = roomInfoList[i].RoomName,
+                CurrentPlayerCount = roomInfoList[i].CurrentPlayerCount,
+                MaxPlayerCount = roomInfoList[i].MaxPlayerCount,
             });
-            _roomSubItemDict.TryAdd(roomId, lobbyRoomSubItem);
+            _roomSubItemDict.TryAdd(roomInfoList[i].RoomId, lobbyRoomSubItem);
         }
     }
 
@@ -116,5 +114,20 @@ public class UI_Lobby : UI_Scene
         _roomSubItemDict.TryGetValue(roomId, out Lobby_RoomSubItem room);
         Destroy(room.gameObject);
         _roomSubItemDict.Remove(roomId);
+    }
+
+    public void UpdateRoomInfo(RoomInfo roomInfo)
+    {
+        if (_roomSubItemDict.ContainsKey(roomInfo.RoomId) == false)
+            return;
+        
+        _roomSubItemDict.TryGetValue(roomInfo.RoomId, out Lobby_RoomSubItem room);
+        room.SetData(new LobbyRoomSubItemData
+        {
+            RoomId = roomInfo.RoomId,
+            RoomName = roomInfo.RoomName,
+            CurrentPlayerCount = roomInfo.CurrentPlayerCount,
+            MaxPlayerCount = roomInfo.MaxPlayerCount,
+        });
     }
 }

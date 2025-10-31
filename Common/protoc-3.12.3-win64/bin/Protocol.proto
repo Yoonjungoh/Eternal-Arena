@@ -18,6 +18,7 @@ enum MsgId {
   S_EXIT_ROOM = 10;
   C_EXIT_ROOM = 11;
   C_ENTER_LOBBY = 12;
+  S_UPDATE_WAITING_ROOM_INFO = 13;
   S_ENTER_GAME = 90;
   S_LEAVE_GAME = 100;
   S_SPAWN = 101;
@@ -90,6 +91,10 @@ message S_ExitRoom {
 message C_ExitRoom {
 }
 
+message S_UpdateWaitingRoomInfo{
+  RoomInfo roomInfo = 1;
+}
+
 message S_EnterGame {
   ObjectInfo objectInfo = 1;
 }
@@ -131,6 +136,8 @@ message RoomInfo {
   int32 roomId = 1;
   string roomName = 2;
   int32 roomOwnerId = 3;
+  int32 currentPlayerCount = 4;
+  int32 maxPlayerCount = 5;
 }
 
 message ObjectInfo {
