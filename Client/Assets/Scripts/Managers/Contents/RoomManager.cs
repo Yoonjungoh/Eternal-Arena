@@ -9,6 +9,7 @@ public class RoomManager
     // 현재 Room Id, -1이면 방에 없음
     public RoomInfo RoomInfo { get; set; } = new RoomInfo();
     public bool IsRoomOwner { get { return RoomInfo.RoomOwnerId == Managers.Object.UserId; } }
+    public bool CanEnterWaitingRoom { get { return RoomInfo.CurrentPlayerCount < RoomInfo.MaxPlayerCount; } }
     public bool CanEnterGame { get { return RoomInfo.CurrentPlayerCount == RoomInfo.MaxPlayerCount; } }
 
     public void Init()
@@ -19,6 +20,11 @@ public class RoomManager
     public void EnterRoom(RoomInfo roomInfo)
     {
         RoomInfo = roomInfo;
+        if (CanEnterWaitingRoom == false)
+        {
+            Managers.UI.ShowToastPopup("현재 방에 입장 가능 인원을 초과했습니다.");
+            return;
+        }
         Managers.Scene.LoadScene(Define.Scene.WaitingRoom);
         // 이후 상황은 WaitingRoomScene에서 Init 처리
     }
