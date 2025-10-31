@@ -19,6 +19,9 @@ public class UI_WaitingRoom : UI_Scene
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.ExitButton).onClick.AddListener(OnClickExitRoomButton);
         GetButton((int)Buttons.StartGameButton).onClick.AddListener(OnClickStartGameButton);
+
+        // 방장만 게임 시작 버튼 활성화
+        GetButton((int)Buttons.StartGameButton).gameObject.SetActive(Managers.Room.IsRoomOwner);
     }
 
     private void OnClickExitRoomButton()
@@ -29,6 +32,14 @@ public class UI_WaitingRoom : UI_Scene
 
     private void OnClickStartGameButton()
     {
-        Debug.Log("Start Game Button Clicked");
+        // 내가 방장이고 게임에 들어갈 수 있는 조건을 만족할 때 게임 진입 가능
+        if (Managers.Room.IsRoomOwner && Managers.Room.CanEnterGame)
+        {
+            Debug.Log("게임 입장 가능");
+        }
+        else
+        {
+            Debug.Log("게임 불가능");
+        }
     }
 }

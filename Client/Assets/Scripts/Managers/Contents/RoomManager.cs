@@ -8,6 +8,8 @@ public class RoomManager
 {
     // 현재 Room Id, -1이면 방에 없음
     public RoomInfo RoomInfo { get; set; } = new RoomInfo();
+    public bool IsRoomOwner { get { return RoomInfo.RoomOwnerId == Managers.Object.UserId; } }
+    public bool CanEnterGame { get { return RoomInfo.CurrentPlayerCount == RoomInfo.MaxPlayerCount; } }
 
     public void Init()
     {

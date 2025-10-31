@@ -71,7 +71,7 @@ namespace Server.Game
             player.Init();
 
             // 방 정보가 업데이트 된 것을 로비의 유저들에게 알려야 함
-            OnRoomInfoChanged?.Invoke(RoomId);
+            HandleRoomInfoChanged();
 
             // 본인한테 맵안의 플레이어 정보 전송
             S_Spawn spawnToMePacket = new S_Spawn();
@@ -95,6 +95,22 @@ namespace Server.Game
                 if (p.Id != player.Id)
                     p.Session.Send(spawnToOthersPacket);
             }
+        }
+
+        private void HandleRoomInfoChanged()
+        {
+            // 해당 방 안의 유저들에게 업데이트 정보 쏴주기
+            S_UpdateWaitingRoomInfo updateWaitingRoomInfoPacket = new S_UpdateWaitingRoomInfo();
+            updateWaitingRoomInfoPacket.RoomInfo = new RoomInfo();
+            updateWaitingRoomInfoPacket.RoomInfo.RoomId = RoomId;
+            updateWaitingRoomInfoPacket.RoomInfo.RoomName = RoomName;
+            updateWaitingRoomInfoPacket.RoomInfo.RoomOwnerId = RoomOwnerId;
+            updateWaitingRoomInfoPacket.RoomInfo.CurrentPlayerCount = CurrentPlayerCount;
+            updateWaitingRoomInfoPacket.RoomInfo.MaxPlayerCount = DataManager.Instance.MaxRoomPlayerCount;
+            Broadcast(updateWaitingRoomInfoPacket);
+
+            // 로비의 유저들에겐 아래의 액션 함수 통해서 옵저버 패턴으로 알리기
+            OnRoomInfoChanged?.Invoke(RoomId);
         }
 
         public void LeaveRoom(int playerId)

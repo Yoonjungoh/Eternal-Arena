@@ -136,7 +136,9 @@ class PacketHandler
 
         Managers.Room.ExitRoom();
     }
-
+    
+    // 유저가 로비에 있으면 방 정보 갱신
+    // 유저가 대기방에 있으면 본인 방의 정보 갱신
     public static void S_UpdateWaitingRoomInfoHandler(PacketSession session, IMessage packet)
     {
         S_UpdateWaitingRoomInfo updateWatingRoomInfoPacket = packet as S_UpdateWaitingRoomInfo;
@@ -146,14 +148,20 @@ class PacketHandler
             return;
         }
 
-        UI_Lobby lobbyUI = Managers.UI.CurrentScene.GetComponent<UI_Lobby>();
-        if (lobbyUI == null)
+        if (Managers.Scene.CurrentScene == Define.Scene.Lobby)
         {
-            Debug.Log("현재 로비가 아닌데 로비에 입장하려고 합니다.");
-            return;
+            UI_Lobby lobbyUI = Managers.UI.CurrentScene.GetComponent<UI_Lobby>();
+            if (lobbyUI == null)
+            {
+                Debug.Log("현재 로비가 아닌데 로비에 입장하려고 합니다.");
+                return;
+            }
+            lobbyUI.UpdateRoomInfo(updateWatingRoomInfoPacket.RoomInfo);
         }
-
-        lobbyUI.UpdateRoomInfo(updateWatingRoomInfoPacket.RoomInfo);
+        else if (Managers.Scene.CurrentScene == Define.Scene.WaitingRoom)
+        {
+            Managers.Room.RoomInfo = updateWatingRoomInfoPacket.RoomInfo;
+        }
     }
 
     // 내가 게임에 입장할 때 패킷
