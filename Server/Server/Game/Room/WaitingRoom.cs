@@ -109,7 +109,7 @@ namespace Server.Game
             updateWaitingRoomInfoPacket.RoomInfo.MaxPlayerCount = DataManager.Instance.MaxRoomPlayerCount;
             Broadcast(updateWaitingRoomInfoPacket);
 
-            // 로비의 유저들에겐 아래의 액션 함수 통해서 옵저버 패턴으로 알리기
+            // 로비의 유저들에겐 아래의 액션 함수 통해서 방 인원 변경 알리기
             OnRoomInfoChanged?.Invoke(RoomId);
         }
 

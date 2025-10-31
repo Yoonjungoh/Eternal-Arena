@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class UIManager
@@ -20,6 +21,18 @@ public class UIManager
 				root = new GameObject { name = "@UI_Root" };
             return root;
 		}
+    }
+
+    private UI_ToastPopup _toastPopup;
+    private Coroutine _toastCoroutine;
+
+    public void ShowToastPopup(string message, float duration = 1f)
+    {
+        if (_toastPopup == null)
+        {
+            _toastPopup = Managers.UI.ShowPopupUI<UI_ToastPopup>();
+        }
+        _toastPopup.ShowToastPopup(message, duration);
     }
 
     public void SetCanvas(GameObject go, bool sort = true)

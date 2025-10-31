@@ -35,11 +35,11 @@ public class UI_WaitingRoom : UI_Scene
         // 내가 방장이고 게임에 들어갈 수 있는 조건을 만족할 때 게임 진입 가능
         if (Managers.Room.IsRoomOwner && Managers.Room.CanEnterGame)
         {
-            Debug.Log("게임 입장 가능");
+            Managers.UI.ShowToastPopup("게임 시작!");
         }
         else
         {
-            Debug.Log("게임 불가능");
+            Managers.UI.ShowToastPopup("게임 시작 불가능");
         }
     }
 }

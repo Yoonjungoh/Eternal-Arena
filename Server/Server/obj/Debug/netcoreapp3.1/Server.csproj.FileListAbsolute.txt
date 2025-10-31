@@ -364,7 +364,6 @@ C:\Users\user\Desktop\Development\EternalArena\Server\Server\obj\Debug\netcoreap
 C:\Users\user\Desktop\Development\EternalArena\Server\Server\obj\Debug\netcoreapp3.1\Server.AssemblyInfoInputs.cache
 C:\Users\user\Desktop\Development\EternalArena\Server\Server\obj\Debug\netcoreapp3.1\Server.AssemblyInfo.cs
 C:\Users\user\Desktop\Development\EternalArena\Server\Server\obj\Debug\netcoreapp3.1\Server.csproj.CoreCompileInputs.cache
-C:\Users\user\Desktop\Development\EternalArena\Server\Server\obj\Debug\netcoreapp3.1\Server.csproj.CopyComplete
 C:\Users\user\Desktop\Development\EternalArena\Server\Server\obj\Debug\netcoreapp3.1\Server.dll
 C:\Users\user\Desktop\Development\EternalArena\Server\Server\obj\Debug\netcoreapp3.1\Server.pdb
 C:\Users\user\Desktop\Development\EternalArena\Server\Server\obj\Debug\netcoreapp3.1\Server.genruntimeconfig.cache
@@ -388,3 +387,5 @@ C:\Users\user\Desktop\Development\Unity\Eternal Arena\Server\Server\obj\Debug\ne
 C:\Users\user\Desktop\Development\Unity\Eternal Arena\Server\Server\obj\Debug\netcoreapp3.1\Server.dll
 C:\Users\user\Desktop\Development\Unity\Eternal Arena\Server\Server\obj\Debug\netcoreapp3.1\Server.pdb
 C:\Users\user\Desktop\Development\Unity\Eternal Arena\Server\Server\obj\Debug\netcoreapp3.1\Server.genruntimeconfig.cache
+C:\Users\user\Desktop\Development\EternalArena\Server\Server\obj\Debug\netcoreapp3.1\Server.sourcelink.json
+C:\Users\user\Desktop\Development\EternalArena\Server\Server\obj\Debug\netcoreapp3.1\Server.csproj.Up2Date
