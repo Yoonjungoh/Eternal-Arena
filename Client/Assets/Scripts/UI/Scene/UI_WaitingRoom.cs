@@ -29,6 +29,6 @@ public class UI_WaitingRoom : UI_Scene
 
     private void OnClickStartGameButton()
     {
-        
+        Debug.Log("Start Game Button Clicked");
     }
 }

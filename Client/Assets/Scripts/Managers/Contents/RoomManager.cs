@@ -6,18 +6,25 @@ using UnityEngine;
 
 public class RoomManager
 {
-    public int RoomId = -1; // 현재 Room Id, -1이면 방에 없음
+    // 현재 Room Id, -1이면 방에 없음
+    public RoomInfo RoomInfo { get; set; } = new RoomInfo();
 
-    public void EnterRoom(int roomId)
+    public void Init()
     {
-        RoomId = roomId;
+        RoomInfo.RoomId = -1;
+    }
+
+    public void EnterRoom(RoomInfo roomInfo)
+    {
+        RoomInfo = roomInfo;
         Managers.Scene.LoadScene(Define.Scene.WaitingRoom);
         // 이후 상황은 WaitingRoomScene에서 Init 처리
     }
 
     public void ExitRoom()
     {
-        RoomId = -1;
+        RoomInfo = new RoomInfo();
+        RoomInfo.RoomId = -1;
         Managers.Object.Clear();
         Managers.Scene.LoadScene(Define.Scene.Lobby);
     }

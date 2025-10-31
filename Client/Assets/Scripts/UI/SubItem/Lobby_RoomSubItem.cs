@@ -8,6 +8,7 @@ public struct LobbyRoomSubItemData
 {
     public int RoomId;
     public string RoomName;
+    public int RoomOwnerId;
     public int CurrentPlayerCount;
     public int MaxPlayerCount;
 }
@@ -40,6 +41,9 @@ public class Lobby_RoomSubItem : UI_SubItem<LobbyRoomSubItemData>
         {
             RoomId = _data.RoomId,
             RoomName = _data.RoomName,
+            RoomOwnerId = _data.RoomOwnerId,
+            CurrentPlayerCount = _data.CurrentPlayerCount,
+            MaxPlayerCount = _data.MaxPlayerCount,
         });
 
     }

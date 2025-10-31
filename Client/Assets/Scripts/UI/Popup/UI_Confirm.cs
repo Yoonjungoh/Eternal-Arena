@@ -1,3 +1,4 @@
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -8,6 +9,9 @@ public struct ConfirmPopupData
 {
     public int RoomId;
     public string RoomName;
+    public int RoomOwnerId;
+    public int CurrentPlayerCount;
+    public int MaxPlayerCount;
 }
 
 public class UI_Confirm : UI_Popup<ConfirmPopupData>
@@ -35,7 +39,14 @@ public class UI_Confirm : UI_Popup<ConfirmPopupData>
 
     private void OnClickConfirmButton()
     {
-        Managers.Room.EnterRoom(_data.RoomId);
+        RoomInfo roomInfo = new RoomInfo();
+        roomInfo.RoomId = _data.RoomId;
+        roomInfo.RoomName = _data.RoomName;
+        roomInfo.RoomOwnerId = _data.RoomOwnerId;
+        roomInfo.CurrentPlayerCount = _data.CurrentPlayerCount;
+        roomInfo.MaxPlayerCount = _data.MaxPlayerCount;
+        
+        Managers.Room.EnterRoom(roomInfo);
         ClosePopupUI();
     }
 

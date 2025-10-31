@@ -99,7 +99,7 @@ class PacketHandler
         // 내가 방 주인인지 확인 후 바로 입장
         if (roomInfoListCount == 1 && roomInfoList[0].RoomOwnerId == Managers.Object.UserId)
         {
-            Managers.Room.EnterRoom(roomInfoList[0].RoomId);
+            Managers.Room.EnterRoom(roomInfoList[0]);
         }
 
     }

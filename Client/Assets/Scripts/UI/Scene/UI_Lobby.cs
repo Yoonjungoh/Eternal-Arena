@@ -99,6 +99,7 @@ public class UI_Lobby : UI_Scene
             {
                 RoomId = roomInfoList[i].RoomId,
                 RoomName = roomInfoList[i].RoomName,
+                RoomOwnerId = roomInfoList[i].RoomOwnerId,
                 CurrentPlayerCount = roomInfoList[i].CurrentPlayerCount,
                 MaxPlayerCount = roomInfoList[i].MaxPlayerCount,
             });
