@@ -14,6 +14,8 @@ public class WatingRoomScene : BaseScene
         enterRoomPacket.UserId = Managers.Object.UserId;
         enterRoomPacket.RoomId = Managers.Room.RoomId;
         Managers.Network.Send(enterRoomPacket);
+
+        Managers.UI.ShowSceneUI<UI_WaitingRoom>();
     }
 
     private void Awake()
