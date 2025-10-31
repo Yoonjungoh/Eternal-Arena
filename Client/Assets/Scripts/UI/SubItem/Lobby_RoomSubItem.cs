@@ -1,3 +1,4 @@
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -36,6 +37,14 @@ public class Lobby_RoomSubItem : UI_SubItem<LobbyRoomSubItemData>
 
     private void OnClickEnterRoom()
     {
+        // 방 입장 가능 인원 초과
+        bool canEnterWaitingRoom = (_data.CurrentPlayerCount < _data.MaxPlayerCount);
+        if (canEnterWaitingRoom == false)
+        {
+            Managers.UI.ShowToastPopup("현재 방에 입장 가능 인원을 초과했습니다.");
+            return;
+        }
+
         UI_Confirm confirmUI = Managers.UI.ShowPopupUI<UI_Confirm>();
         confirmUI.SetData(new ConfirmPopupData
         {
@@ -45,7 +54,6 @@ public class Lobby_RoomSubItem : UI_SubItem<LobbyRoomSubItemData>
             CurrentPlayerCount = _data.CurrentPlayerCount,
             MaxPlayerCount = _data.MaxPlayerCount,
         });
-
     }
     
     public override void SetData(LobbyRoomSubItemData data)

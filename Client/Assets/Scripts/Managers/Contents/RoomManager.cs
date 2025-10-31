@@ -21,12 +21,9 @@ public class RoomManager
     {
         RoomInfo = roomInfo;
         if (CanEnterWaitingRoom == false)
-        {
-            Managers.UI.ShowToastPopup("현재 방에 입장 가능 인원을 초과했습니다.");
             return;
-        }
+
         Managers.Scene.LoadScene(Define.Scene.WaitingRoom);
-        // 이후 상황은 WaitingRoomScene에서 Init 처리
     }
 
     public void ExitRoom()

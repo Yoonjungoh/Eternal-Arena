@@ -17,6 +17,7 @@ namespace Server.Game
         public string RoomName { get; set; }
         public int RoomOwnerId { get; set; }
         public int CurrentPlayerCount { get { return _players.Count; } }
+        public bool CanEnterWaitingRoom { get { return CurrentPlayerCount < DataManager.Instance.MaxRoomPlayerCount; } }
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
 
         public event Action<int> OnEmptyRoom; // 방이 비었을 때 알림 (roomId)

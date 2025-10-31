@@ -81,7 +81,11 @@ class PacketHandler
         WaitingRoom watingRoom = user.Lobby.WaitingRoomManager.Find(enterWaitingRoomPacket.RoomId);
         if (watingRoom == null)
             return;
-        
+
+        // 방 인원 수 초과 체크
+        if (watingRoom.CanEnterWaitingRoom == false)
+            return;
+
         watingRoom.EnterRoom(user);
     }
 
