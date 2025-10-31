@@ -88,7 +88,6 @@ namespace Server.Game
                 return;
             }
             // 방의 유저들에게 나가기 알림
-            // TODO
             WaitingRoomManager.Rooms.Remove(roomId);
 
             S_RemoveRoom removeRoomPacket = new S_RemoveRoom();
