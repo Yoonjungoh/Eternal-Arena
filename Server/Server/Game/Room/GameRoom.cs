@@ -185,23 +185,18 @@ namespace Server.Game
             if (player == null)
                 return;
 
+            // 클라 패킷 적용
+            player.ObjectState = movePacket.ObjectState;
+
             // 서버에서 클라로 보낼 패킷 생성
             S_Move resMovePacket = new S_Move();
-            resMovePacket.ObjectState = new ObjectState();
-
-            // 움직였나 Moving 체크하는 부분
-            // 클래스 취급이라 정보를 복사해오면 call by value가 아니라 call by refernce임
-            // 서버에서 State 바꾸는 부분
-            ObjectState objectState = player.ObjectState;
-
-            resMovePacket.ObjectState.CreatureState = player.CreatureState;
+            resMovePacket.ObjectState = player.ObjectState;
 
             // 서버에서 플레이어 좌표 이동 하는 부분
+            ObjectState objectState = player.ObjectState;
             objectState.Position = movePacket.ObjectState.Position;
 
             // 다른 플레이어들한테도 myPlayer가 움직이는 것을 알려준다
-            resMovePacket.ObjectState.ObjectId = player.ObjectState.ObjectId;
-            resMovePacket.ObjectState.Position = objectState.Position;
             Broadcast(resMovePacket);
         }
 

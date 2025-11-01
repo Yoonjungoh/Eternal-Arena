@@ -3,6 +3,7 @@ using Google.Protobuf.Protocol;
 using Server.Game;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -173,22 +174,17 @@ namespace Server.Game
                 return;
             
             // 클라 패킷 적용
-            player.CreatureState = movePacket.ObjectState.CreatureState;
+            player.ObjectState = movePacket.ObjectState;
 
             // 서버에서 클라로 보낼 패킷 생성
             S_Move resMovePacket = new S_Move();
-            resMovePacket.ObjectState = new ObjectState();
-            resMovePacket.ObjectState.Position = new ProtoVector3();
-
-            resMovePacket.ObjectState.CreatureState = player.CreatureState;
+            resMovePacket.ObjectState = player.ObjectState;
 
             // 서버에서 플레이어 좌표 이동 하는 부분
             ObjectState objectState = player.ObjectState;
             objectState.Position = movePacket.ObjectState.Position;
 
             // 다른 플레이어들한테도 myPlayer가 움직이는 것을 알려준다
-            resMovePacket.ObjectState.ObjectId = player.ObjectState.ObjectId;
-            resMovePacket.ObjectState.Position = objectState.Position;
             Broadcast(resMovePacket);
         }
 

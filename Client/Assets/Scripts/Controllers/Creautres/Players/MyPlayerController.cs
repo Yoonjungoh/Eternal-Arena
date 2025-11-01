@@ -16,9 +16,6 @@ public class MyPlayerController : PlayerController
     {
         base.Init();
 
-        Managers.Input.KeyAction -= OnKeyBoard;
-        Managers.Input.KeyAction += OnKeyBoard;
-
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
 
@@ -28,64 +25,49 @@ public class MyPlayerController : PlayerController
     private void Update()
     {
         base.OnUpdate();
+        OnKeyBoardUpdate();
         SendMovePacket();
     }
 
 
-    private void OnKeyBoard()
+    private void OnKeyBoardUpdate()
     {
         _moveDir = Vector3.zero;
 
-        // 카메라 방향 기준 벡터 구하기
+        // 카메라 기준 벡터
         Vector3 camForward = _cameraTransform.forward;
         Vector3 camRight = _cameraTransform.right;
-
-        // 수평 회전만 반영 (상하는 제외)
-        camForward.y = 0;
-        camRight.y = 0;
+        camForward.y = 0; camRight.y = 0;
         camForward.Normalize();
         camRight.Normalize();
 
-        // 입력이 있었나 확인 
-        bool isInput = false;
+        // 입력 체크
+        if (Input.anyKey == false)
+        {
+            CreatureState = CreatureState.Idle;
+            return;
+        }
 
-        if (Input.GetKey(KeyCode.W))
-        {
-            _moveDir += camForward;
-            isInput = true;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            _moveDir -= camForward;
-            isInput = true;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            _moveDir -= camRight;
-            isInput = true;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            _moveDir += camRight;
-            isInput = true;
-        }
+        if (Input.GetKey(KeyCode.W)) _moveDir += camForward;
+        if (Input.GetKey(KeyCode.S)) _moveDir -= camForward;
+        if (Input.GetKey(KeyCode.A)) _moveDir -= camRight;
+        if (Input.GetKey(KeyCode.D)) _moveDir += camRight;
 
         _moveDir.Normalize();
 
-        // 이동, 회전 처리
-        if (_moveDir != Vector3.zero)
-        {
-            // 캐릭터가 바라보는 방향을 이동 방향으로 회전
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(_moveDir), Time.deltaTime * _rotateSpeed);
-
-            // 이동
-            transform.position += _moveDir * Time.deltaTime * _moveSpeed;
-            CreatureState = CreatureState.Move;
-        }
-        else if (isInput == false)
+        if (_moveDir.sqrMagnitude < 0.01f)
         {
             CreatureState = CreatureState.Idle;
+            Debug.Log("idle");
+            return;
         }
+
+        // 이동 및 회전
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(_moveDir), Time.deltaTime * _rotateSpeed);
+        transform.position += _moveDir * Time.deltaTime * _moveSpeed;
+
+        CreatureState = CreatureState.Move;
+        Debug.Log($"move");
     }
 
     // TODO - 패킷 주기 전송 최적화
