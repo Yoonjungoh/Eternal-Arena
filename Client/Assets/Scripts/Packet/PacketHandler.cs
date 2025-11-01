@@ -213,9 +213,8 @@ class PacketHandler
             Debug.Log("Cant find CreatureController");
             return;
         }
-        cc.CreatureState = movePacket.ObjectState.CreatureState;
-        // 서버에서 이동하라고 한 부분
-        // 클라에서 움직였지만 서버 요청을 준 후 다시 움직이는 코드임
+
+        cc.ObjectState = movePacket.ObjectState;
         GameObjectType type = Managers.Object.GetObjectTypeById(cc.Id);
         if (type == GameObjectType.Player)
         {
@@ -223,6 +222,7 @@ class PacketHandler
             if (otherPlayer != null)
             {
                 otherPlayer.Position = movePacket.ObjectState.Position;
+                otherPlayer.Rotation = movePacket.ObjectState.Rotation;
             }
 
             //// 움직인게 내 플레이어가 아니고 다른 플레이어일 때는 스르르 움직이게 보여주기

@@ -37,7 +37,24 @@ public class CreatureController : MonoBehaviour
             transform.position = new Vector3(_position.X, _position.Y, _position.Z);        
         }
     }
-
+    
+    protected ProtoQuaternion _rotation = new ProtoQuaternion();
+    public ProtoQuaternion Rotation
+    {
+        get
+        {
+            _rotation.X = transform.rotation.x;
+            _rotation.Y = transform.rotation.y;
+            _rotation.Z = transform.rotation.z;
+            _rotation.W = transform.rotation.w;
+            return _rotation;
+        }
+        set
+        {
+            _rotation = value;
+            transform.rotation = new Quaternion(_rotation.X, _rotation.Y, _rotation.Z, _rotation.W);
+        }
+    }
 
     protected virtual void OnUpdate()
     {

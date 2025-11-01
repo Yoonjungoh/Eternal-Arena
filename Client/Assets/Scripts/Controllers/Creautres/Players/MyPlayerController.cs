@@ -58,7 +58,6 @@ public class MyPlayerController : PlayerController
         if (_moveDir.sqrMagnitude < 0.01f)
         {
             CreatureState = CreatureState.Idle;
-            Debug.Log("idle");
             return;
         }
 
@@ -67,15 +66,14 @@ public class MyPlayerController : PlayerController
         transform.position += _moveDir * Time.deltaTime * _moveSpeed;
 
         CreatureState = CreatureState.Move;
-        Debug.Log($"move");
     }
 
-    // TODO - 패킷 주기 전송 최적화
     private void SendMovePacket()
     {
         C_Move movePacket = new C_Move();
         movePacket.ObjectState = ObjectState;
         movePacket.ObjectState.Position = Position; // 복사 현상 때문에 이렇게 넣어주기
+        movePacket.ObjectState.Rotation = Rotation; // 복사 현상 때문에 이렇게 넣어주기
         Managers.Network.Send(movePacket);
     }
 
