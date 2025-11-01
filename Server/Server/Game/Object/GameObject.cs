@@ -17,9 +17,9 @@ namespace Server.Game
         public GameRoom GameRoom { get; set; }
 
 		public ObjectState ObjectState { get; set; } = new ObjectState();
-		public ProtoVector3 Position { get; set; } = new ProtoVector3();
-		public Stat Stat { get; set; } = new Stat();
-		public CreatureState CreatureState;
+		public ProtoVector3 Position { get { return ObjectState.Position; } set { ObjectState.Position = value; } }
+		public Stat Stat { get { return ObjectState.Stat; } set { ObjectState.Stat = value; } }
+		public CreatureState CreatureState { get { return ObjectState.CreatureState; } set { ObjectState.CreatureState = value; } }
 		public float Hp { get { return Stat.Hp; } set { Stat.Hp = Math.Clamp(value, 0, Stat.MaxHp); } }
 
 		public GameObject()

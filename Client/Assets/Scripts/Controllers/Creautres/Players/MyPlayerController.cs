@@ -93,6 +93,7 @@ public class MyPlayerController : PlayerController
     {
         C_Move movePacket = new C_Move();
         movePacket.ObjectState = ObjectState;
+        movePacket.ObjectState.Position = Position; // 복사 현상 때문에 이렇게 넣어주기
         Managers.Network.Send(movePacket);
     }
 

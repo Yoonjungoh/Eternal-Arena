@@ -200,11 +200,6 @@ class PacketHandler
     public static void S_MoveHandler(PacketSession session, IMessage packet)
     {
         S_Move movePacket = packet as S_Move;
-        //TimeSpan latency = DateTime.Now - Managers.Game.PrevLatency;
-
-        //Debug.Log($"Latency: {latency.TotalMilliseconds} ms");
-        //Managers.Game.NowLatency = latency;
-
         GameObject go = Managers.Object.FindById(movePacket.ObjectState.ObjectId);
         if (go == null)
         {

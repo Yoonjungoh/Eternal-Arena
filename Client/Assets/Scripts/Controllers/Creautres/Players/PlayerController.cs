@@ -11,7 +11,6 @@ public class PlayerController : CreatureController
     public override void Init()
     {
         base.Init();
-        GameObjectType = GameObjectType.Player;
     }
 
     // 매 프레임 CrossFade 호출 방지 용도

@@ -21,29 +21,25 @@ public class ObjectManager
     public void Add(ObjectState objectState, bool isMyPlayer = false)
     {
         GameObjectType objectType = GetObjectTypeById(objectState.ObjectId);
-        if (isMyPlayer)
+        if (objectType == GameObjectType.Player && isMyPlayer)
         {
             GameObject player = Managers.Resource.Instantiate($"Creatures/Players/MyPlayers/MyPlayer_1");
             MyPlayer = player.GetComponent<MyPlayerController>();
 
-            ProtoVector3 position = objectState.Position;
-            MyPlayer.Position = position;
-            MyPlayer.Id = objectState.ObjectId;
+            MyPlayer.ObjectState = objectState;
+            MyPlayer.GameObjectType = objectType;
             _objects.Add(objectState.ObjectId, MyPlayer.gameObject);
             Debug.Log($"소환: {MyPlayer.Id}, isMyPlayer: {isMyPlayer}");
 
             Camera.main.GetComponent<CameraController>().Init();   // 캐릭터 소환 후 카메라 부착
         }
-        else
+        else if (objectType == GameObjectType.Player && isMyPlayer == false)
         {
             GameObject player = Managers.Resource.Instantiate($"Creatures/Players/OtherPlayers/OtherPlayer_1");
             OtherPlayerController otherPlayer = player.GetComponent<OtherPlayerController>();
 
-            ProtoVector3 position = objectState.Position;
-            otherPlayer.Position = position;
-
-            otherPlayer.Id = objectState.ObjectId;
-            
+            otherPlayer.ObjectState = objectState;
+            otherPlayer.GameObjectType = objectType;
             _objects.Add(objectState.ObjectId, otherPlayer.gameObject);
             Debug.Log($"소환: {objectState.ObjectId}, isMyPlayer: {isMyPlayer}");
         }

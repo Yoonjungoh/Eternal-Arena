@@ -6,7 +6,7 @@ using UnityEngine;
 public class CreatureController : MonoBehaviour
 {
     protected Animator _anim;
-    protected ObjectState ObjectState = new ObjectState();
+    public ObjectState ObjectState { get; set; } = new ObjectState();
     public int Id { get { return ObjectState.ObjectId; } set { ObjectState.ObjectId = value; } }
     public CreatureState CreatureState 
     { 
