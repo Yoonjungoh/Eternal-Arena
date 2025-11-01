@@ -18,18 +18,18 @@ public class ObjectManager
         return (GameObjectType)type;
     }
 
-    public void Add(ObjectInfo objectInfo, bool isMyPlayer = false)
+    public void Add(ObjectState objectState, bool isMyPlayer = false)
     {
-        GameObjectType objectType = GetObjectTypeById(objectInfo.ObjectId);
+        GameObjectType objectType = GetObjectTypeById(objectState.ObjectId);
         if (isMyPlayer)
         {
             GameObject player = Managers.Resource.Instantiate($"Creatures/Players/MyPlayers/MyPlayer_1");
             MyPlayer = player.GetComponent<MyPlayerController>();
 
-            PositionInfo positionInfo = objectInfo.PositionInfo;
-            MyPlayer.PositionInfo = positionInfo;
-            MyPlayer.Id = objectInfo.ObjectId;
-            _objects.Add(objectInfo.ObjectId, MyPlayer.gameObject);
+            ProtoVector3 position = objectState.Position;
+            MyPlayer.Position = position;
+            MyPlayer.Id = objectState.ObjectId;
+            _objects.Add(objectState.ObjectId, MyPlayer.gameObject);
             Debug.Log($"소환: {MyPlayer.Id}, isMyPlayer: {isMyPlayer}");
 
             Camera.main.GetComponent<CameraController>().Init();   // 캐릭터 소환 후 카메라 부착
@@ -39,13 +39,13 @@ public class ObjectManager
             GameObject player = Managers.Resource.Instantiate($"Creatures/Players/OtherPlayers/OtherPlayer_1");
             OtherPlayerController otherPlayer = player.GetComponent<OtherPlayerController>();
 
-            PositionInfo positionInfo = objectInfo.PositionInfo;
-            otherPlayer.PositionInfo = positionInfo;
+            ProtoVector3 position = objectState.Position;
+            otherPlayer.Position = position;
 
-            otherPlayer.Id = objectInfo.ObjectId;
+            otherPlayer.Id = objectState.ObjectId;
             
-            _objects.Add(objectInfo.ObjectId, otherPlayer.gameObject);
-            Debug.Log($"소환: {objectInfo.ObjectId}, isMyPlayer: {isMyPlayer}");
+            _objects.Add(objectState.ObjectId, otherPlayer.gameObject);
+            Debug.Log($"소환: {objectState.ObjectId}, isMyPlayer: {isMyPlayer}");
         }
     }
 

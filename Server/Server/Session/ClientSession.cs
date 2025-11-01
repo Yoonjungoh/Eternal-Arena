@@ -80,7 +80,7 @@ namespace Server
                 WaitingRoom watingRoom = MyPlayer.Lobby.WaitingRoomManager.Find(MyPlayer.WaitingRoom.RoomId);
                 if (watingRoom != null)
                 {
-                    watingRoom.Push(watingRoom.LeaveRoom, MyPlayer.ObjectInfo.ObjectId);
+                    watingRoom.Push(watingRoom.LeaveRoom, MyPlayer.ObjectState.ObjectId);
                 }
                 else
                 {

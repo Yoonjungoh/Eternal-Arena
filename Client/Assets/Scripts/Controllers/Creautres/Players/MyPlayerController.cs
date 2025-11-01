@@ -25,19 +25,12 @@ public class MyPlayerController : PlayerController
         _cameraTransform = Camera.main.transform;
     }
 
-    private void OnMouseClicked(Define.MouseEvent evt)
+    private void Update()
     {
-        if (evt != Define.MouseEvent.Click)
-            return;
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Debug.DrawRay(Camera.main.transform.position, ray.direction * 100.0f, Color.red, 1.0f);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100.0f))
-        {
-            Debug.Log($"Raycast Camera @ {hit.collider.gameObject.name}");
-        }
+        base.OnUpdate();
+        SendMovePacket();
     }
+
 
     private void OnKeyBoard()
     {
@@ -53,22 +46,28 @@ public class MyPlayerController : PlayerController
         camForward.Normalize();
         camRight.Normalize();
 
-        // 입력에 따라 이동 방향 결정
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        // 입력이 있었나 확인 
+        bool isInput = false;
+
+        if (Input.GetKey(KeyCode.W))
         {
             _moveDir += camForward;
+            isInput = true;
         }
-        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.S))
         {
             _moveDir -= camForward;
+            isInput = true;
         }
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.A))
         {
             _moveDir -= camRight;
+            isInput = true;
         }
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.D))
         {
             _moveDir += camRight;
+            isInput = true;
         }
 
         _moveDir.Normalize();
@@ -83,28 +82,35 @@ public class MyPlayerController : PlayerController
             transform.position += _moveDir * Time.deltaTime * _moveSpeed;
             CreatureState = CreatureState.Move;
         }
-        else
+        else if (isInput == false)
         {
             CreatureState = CreatureState.Idle;
         }
-    }
-
-    private void Update()
-    {
-        base.OnUpdate();
-        SendMovePacket();
     }
 
     // TODO - 패킷 주기 전송 최적화
     private void SendMovePacket()
     {
         C_Move movePacket = new C_Move();
-        movePacket.PositionInfo = PositionInfo;
+        movePacket.ObjectState = ObjectState;
         Managers.Network.Send(movePacket);
     }
 
     private void Start()
     {
         Init();
+    }
+    private void OnMouseClicked(Define.MouseEvent evt)
+    {
+        if (evt != Define.MouseEvent.Click)
+            return;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Debug.DrawRay(Camera.main.transform.position, ray.direction * 100.0f, Color.red, 1.0f);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100.0f))
+        {
+            Debug.Log($"Raycast Camera @ {hit.collider.gameObject.name}");
+        }
     }
 }

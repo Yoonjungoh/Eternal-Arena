@@ -25,8 +25,8 @@ namespace Server.Game
 			Random rand = new Random();
 
             // DB 에서 플레이어 정보 빼오기
-            ObjectInfo.Name = $"Player_{ObjectInfo.ObjectId}";
-            ObjectInfo.CreatureState = CreatureState.Idle;
+            ObjectState.Name = $"Player_{ObjectState.ObjectId}";
+            ObjectState.CreatureState = CreatureState.Idle;
 
 			InitStat();
 		}

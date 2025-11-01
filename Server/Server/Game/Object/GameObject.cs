@@ -11,21 +11,21 @@ namespace Server.Game
 		public GameObjectType ObjectType { get; protected set; } = GameObjectType.None;
 		public int Id
 		{
-			get { return ObjectInfo.ObjectId; }
-			set { ObjectInfo.ObjectId = value; }
+			get { return ObjectState.ObjectId; }
+			set { ObjectState.ObjectId = value; }
         }
         public GameRoom GameRoom { get; set; }
 
-		public ObjectInfo ObjectInfo { get; set; } = new ObjectInfo();
-		public PositionInfo PositionInfo { get; set; } = new PositionInfo();
+		public ObjectState ObjectState { get; set; } = new ObjectState();
+		public ProtoVector3 Position { get; set; } = new ProtoVector3();
 		public Stat Stat { get; set; } = new Stat();
 		public CreatureState CreatureState;
 		public float Hp { get { return Stat.Hp; } set { Stat.Hp = Math.Clamp(value, 0, Stat.MaxHp); } }
 
 		public GameObject()
 		{
-            ObjectInfo.PositionInfo = PositionInfo;
-            ObjectInfo.Stat = Stat;
+            ObjectState.Position = Position;
+            ObjectState.Stat = Stat;
 		}
 		public virtual void Update()
 		{

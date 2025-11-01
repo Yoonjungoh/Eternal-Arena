@@ -43,28 +43,27 @@ namespace Server.Game
             S_EnterWaitingRoom enterWaitingRoomPacket = new S_EnterWaitingRoom();
 
             // objectId
-            enterWaitingRoomPacket.ObjectInfo = new ObjectInfo();
-            enterWaitingRoomPacket.ObjectInfo.ObjectId = player.Id;
-            enterWaitingRoomPacket.ObjectInfo.PositionInfo = new PositionInfo();
+            enterWaitingRoomPacket.ObjectState = new ObjectState();
+            enterWaitingRoomPacket.ObjectState.ObjectId = player.Id;
+            enterWaitingRoomPacket.ObjectState.Position = new ProtoVector3();
 
             // name
             player.WaitingRoom = this;
-            player.ObjectInfo.Name = $"Player_{player.ObjectInfo.ObjectId}";
-            enterWaitingRoomPacket.ObjectInfo.Name = player.ObjectInfo.Name;
+            player.ObjectState.Name = $"Player_{player.ObjectState.ObjectId}";
+            enterWaitingRoomPacket.ObjectState.Name = player.ObjectState.Name;
 
             // positionInfo
-            PositionInfo positionInfo = new PositionInfo();
-            positionInfo.PosX = 0;
-            positionInfo.PosY = 2;
-            positionInfo.PosZ = 0;
-            positionInfo.RotY = 0;
-            enterWaitingRoomPacket.ObjectInfo.PositionInfo = positionInfo;
+            ProtoVector3 position = new ProtoVector3();
+            position.X = 0;
+            position.Y = 2;
+            position.Z = 0;
+            enterWaitingRoomPacket.ObjectState.Position = position;
 
             // TODO - stat
 
             // creatureState
-            player.ObjectInfo.CreatureState = CreatureState.Idle;
-            enterWaitingRoomPacket.ObjectInfo.CreatureState = CreatureState.Idle;
+            player.ObjectState.CreatureState = CreatureState.Idle;
+            enterWaitingRoomPacket.ObjectState.CreatureState = CreatureState.Idle;
 
             player.Session.Send(enterWaitingRoomPacket);
 
@@ -84,13 +83,13 @@ namespace Server.Game
                     continue;
 
                 if (player != p)
-                    spawnToMePacket.ObjectInfos.Add(p.ObjectInfo);
+                    spawnToMePacket.ObjectStates.Add(p.ObjectState);
             }
             player.Session.Send(spawnToMePacket);
 
             // 다른 플레이어에게도 내가 접속한 걸 알려주기
             S_Spawn spawnToOthersPacket = new S_Spawn();
-            spawnToOthersPacket.ObjectInfos.Add(player.ObjectInfo);
+            spawnToOthersPacket.ObjectStates.Add(player.ObjectState);
             foreach (Player p in _players.Values)
             {
                 if (p.Id != player.Id)
@@ -175,29 +174,22 @@ namespace Server.Game
 
             // 서버에서 클라로 보낼 패킷 생성
             S_Move resMovePacket = new S_Move();
-            resMovePacket.PositionInfo = new PositionInfo();
+            resMovePacket.ObjectState = new ObjectState();
+            resMovePacket.ObjectState.Position = new ProtoVector3();
 
             // 움직였나 Moving 체크하는 부분
             // 클래스 취급이라 정보를 복사해오면 call by value가 아니라 call by refernce임
             // 서버에서 State 바꾸는 부분
-            ObjectInfo objectInfo = player.ObjectInfo;
+            ObjectState objectState = player.ObjectState;
 
-            if (objectInfo.PositionInfo.PosX == movePacket.PositionInfo.PosX &&
-                objectInfo.PositionInfo.PosY == movePacket.PositionInfo.PosY &&
-                objectInfo.PositionInfo.PosZ == movePacket.PositionInfo.PosZ &&
-                objectInfo.PositionInfo.RotY == movePacket.PositionInfo.RotY)
-                player.CreatureState = CreatureState.Idle;
-            else
-                player.CreatureState = CreatureState.Move;
-
-            resMovePacket.CreatureState = player.CreatureState;
+            resMovePacket.ObjectState.CreatureState = player.CreatureState;
 
             // 서버에서 플레이어 좌표 이동 하는 부분
-            objectInfo.PositionInfo = movePacket.PositionInfo;
+            objectState.Position = movePacket.ObjectState.Position;
 
             // 다른 플레이어들한테도 myPlayer가 움직이는 것을 알려준다
-            resMovePacket.ObjectId = player.ObjectInfo.ObjectId;
-            resMovePacket.PositionInfo = objectInfo.PositionInfo;
+            resMovePacket.ObjectState.ObjectId = player.ObjectState.ObjectId;
+            resMovePacket.ObjectState.Position = objectState.Position;
             Broadcast(resMovePacket);
         }
 

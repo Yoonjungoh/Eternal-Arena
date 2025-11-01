@@ -6,40 +6,38 @@ using UnityEngine;
 public class CreatureController : MonoBehaviour
 {
     protected Animator _anim;
-    public int Id;
-    protected CreatureState _creatureState = CreatureState.Idle;
+    protected ObjectState ObjectState = new ObjectState();
+    public int Id { get { return ObjectState.ObjectId; } set { ObjectState.ObjectId = value; } }
+    public CreatureState CreatureState 
+    { 
+        get { return ObjectState.CreatureState; } 
+        set
+        {
+            if (ObjectState.CreatureState == value)
+                return;
+
+            ObjectState.CreatureState = value;
+        }
+    }
     public GameObjectType GameObjectType;
 
-    protected PositionInfo _positionInfo = new PositionInfo();
-    public PositionInfo PositionInfo
+    protected ProtoVector3 _position = new ProtoVector3();
+    public ProtoVector3 Position
     {
         get
         {
-            _positionInfo.PosX = transform.position.x;
-            _positionInfo.PosY = transform.position.y;
-            _positionInfo.PosZ = transform.position.z;
-            _positionInfo.RotY = transform.eulerAngles.y;
-            return _positionInfo; 
+            _position.X = transform.position.x;
+            _position.Y = transform.position.y;
+            _position.Z = transform.position.z;
+            return _position; 
         }
         set
         {
-            _positionInfo = value;
-            transform.position = new Vector3(_positionInfo.PosX, _positionInfo.PosY, _positionInfo.PosZ);
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, _positionInfo.RotY, transform.eulerAngles.z);
+            _position = value;
+            transform.position = new Vector3(_position.X, _position.Y, _position.Z);        
         }
     }
 
-    public virtual CreatureState CreatureState
-    {
-        get { return _creatureState; }
-        set
-        {
-            if (_creatureState == value)
-                return;
-
-            _creatureState = value;
-        }
-    }
 
     protected virtual void OnUpdate()
     {

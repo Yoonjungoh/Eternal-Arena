@@ -72,7 +72,7 @@ class PacketHandler
             return;
         }
 
-        Managers.Object.Add(enterWaitingRoomPacket.ObjectInfo, isMyPlayer: true);
+        Managers.Object.Add(enterWaitingRoomPacket.ObjectState, isMyPlayer: true);
     }
 
     public static void S_AddRoomHandler(PacketSession session, IMessage packet)
@@ -184,7 +184,7 @@ class PacketHandler
     {
         S_Spawn spawnPacket = packet as S_Spawn;
 
-        foreach (ObjectInfo player in spawnPacket.ObjectInfos)
+        foreach (ObjectState player in spawnPacket.ObjectStates)
         {
             Managers.Object.Add(player, isMyPlayer: false);
         }
@@ -205,10 +205,10 @@ class PacketHandler
         //Debug.Log($"Latency: {latency.TotalMilliseconds} ms");
         //Managers.Game.NowLatency = latency;
 
-        GameObject go = Managers.Object.FindById(movePacket.ObjectId);
+        GameObject go = Managers.Object.FindById(movePacket.ObjectState.ObjectId);
         if (go == null)
         {
-            Debug.Log($"Cant find GameObject {movePacket.ObjectId}");
+            Debug.Log($"Cant find GameObject {movePacket.ObjectState.ObjectId}");
             return;
         }
 
@@ -218,7 +218,7 @@ class PacketHandler
             Debug.Log("Cant find CreatureController");
             return;
         }
-        cc.CreatureState = movePacket.CreatureState;
+        cc.CreatureState = movePacket.ObjectState.CreatureState;
         // 서버에서 이동하라고 한 부분
         // 클라에서 움직였지만 서버 요청을 준 후 다시 움직이는 코드임
         GameObjectType type = Managers.Object.GetObjectTypeById(cc.Id);
@@ -227,7 +227,7 @@ class PacketHandler
             OtherPlayerController otherPlayer = go.GetComponent<OtherPlayerController>();
             if (otherPlayer != null)
             {
-                otherPlayer.PositionInfo = movePacket.PositionInfo;
+                otherPlayer.Position = movePacket.ObjectState.Position;
             }
 
             //// 움직인게 내 플레이어가 아니고 다른 플레이어일 때는 스르르 움직이게 보여주기
