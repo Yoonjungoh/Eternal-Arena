@@ -16,9 +16,6 @@ public class MyPlayerController : PlayerController
     {
         base.Init();
 
-        Managers.Input.MouseAction -= OnMouseClicked;
-        Managers.Input.MouseAction += OnMouseClicked;
-
         _cameraTransform = Camera.main.transform;
     }
 
@@ -26,10 +23,8 @@ public class MyPlayerController : PlayerController
     {
         base.OnUpdate();
         OnKeyBoardUpdate();
-        SendMovePacket();
     }
-
-
+    
     private void OnKeyBoardUpdate()
     {
         _moveDir = Vector3.zero;
@@ -48,15 +43,31 @@ public class MyPlayerController : PlayerController
             return;
         }
 
-        if (Input.GetKey(KeyCode.W)) _moveDir += camForward;
-        if (Input.GetKey(KeyCode.S)) _moveDir -= camForward;
-        if (Input.GetKey(KeyCode.A)) _moveDir -= camRight;
-        if (Input.GetKey(KeyCode.D)) _moveDir += camRight;
+        // 이동 방향 설정
+        if (Input.GetKey(KeyCode.W))
+        {
+            _moveDir += camForward;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            _moveDir -= camForward;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            _moveDir -= camRight;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            _moveDir += camRight;
+        }
 
         _moveDir.Normalize();
 
+        // Move -> Idle
+        // 움직이다 멈춘 경우
         if (_moveDir.sqrMagnitude < 0.01f)
         {
+            SendMovePacket();
             CreatureState = CreatureState.Idle;
             return;
         }
@@ -66,6 +77,12 @@ public class MyPlayerController : PlayerController
         transform.position += _moveDir * Time.deltaTime * _moveSpeed;
 
         CreatureState = CreatureState.Move;
+
+        // 데드 레커닝 정보 전송
+        if (HasMoveInput())
+        {
+            SendMovePacket();
+        }
     }
 
     private void SendMovePacket()
@@ -81,6 +98,15 @@ public class MyPlayerController : PlayerController
     {
         Init();
     }
+
+    private bool HasMoveInput()
+    {
+        return Input.GetKey(KeyCode.W) ||
+               Input.GetKey(KeyCode.A) ||
+               Input.GetKey(KeyCode.S) ||
+               Input.GetKey(KeyCode.D);
+    }
+
     private void OnMouseClicked(Define.MouseEvent evt)
     {
         if (evt != Define.MouseEvent.Click)

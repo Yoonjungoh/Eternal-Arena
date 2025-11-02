@@ -124,7 +124,6 @@ class PacketHandler
         lobbyUI.RemoveRoom(removeRoomPacket.RoomId);
     }
 
-
     public static void S_ExitRoomHandler(PacketSession session, IMessage packet)
     {
         S_ExitRoom exitRoomPacket = packet as S_ExitRoom;
@@ -180,6 +179,7 @@ class PacketHandler
         //    Managers.Resource.InstantiateResources("UI_Dead");
         //Managers.Object.RemoveAll();
     }
+
     public static void S_SpawnHandler(PacketSession session, IMessage packet)
     {
         S_Spawn spawnPacket = packet as S_Spawn;
@@ -189,6 +189,7 @@ class PacketHandler
             Managers.Object.Add(player, isMyPlayer: false);
         }
     }
+
     public static void S_DespawnHandler(PacketSession session, IMessage packet)
     {
         S_Despawn despawnPacket = packet as S_Despawn;
@@ -197,6 +198,7 @@ class PacketHandler
             Managers.Object.Remove(id);
         }
     }
+
     public static void S_MoveHandler(PacketSession session, IMessage packet)
     {
         S_Move movePacket = packet as S_Move;
@@ -221,8 +223,11 @@ class PacketHandler
             OtherPlayerController otherPlayer = go.GetComponent<OtherPlayerController>();
             if (otherPlayer != null)
             {
-                otherPlayer.Position = movePacket.ObjectState.Position;
-                otherPlayer.Rotation = movePacket.ObjectState.Rotation;
+                otherPlayer.SetServerState(
+                    movePacket.ObjectState.Position,
+                    movePacket.ObjectState.Rotation,
+                    movePacket.ObjectState.Velocity
+                );
             }
 
             //// 움직인게 내 플레이어가 아니고 다른 플레이어일 때는 스르르 움직이게 보여주기
@@ -246,30 +251,5 @@ class PacketHandler
             //    Debug.Log($"{cc.Id}가 텔레포트중");
             //}
         }
-        //else if (type == GameObjectType.Monster)
-        //{
-        //    MonsterController mc = cc.GetComponent<MonsterController>();
-        //    Vector3 destPos = new Vector3(movePacket.PosInfo.PosX, movePacket.PosInfo.PosY, 0f);
-
-        //    cc.IsMoving = true;
-        //    cc.DestPos = destPos;
-
-        //    // 각도 수정
-        //    cc.transform.eulerAngles = new Vector3(0, 0, movePacket.PosInfo.RotZ);
-        //    cc.PosInfo.RotZ = movePacket.PosInfo.RotZ;
-        //}
-        //else if (type == GameObjectType.Projectile)
-        //{
-        //    BulletController bc = cc.GetComponent<BulletController>();
-        //    // 각도 수정
-        //    bc.PosInfo.RotZ = movePacket.PosInfo.RotZ;
-        //    bc.transform.eulerAngles = new Vector3(0, 0, cc.PosInfo.RotZ);
-        //    // 크기 수정
-        //    bc.transform.localScale += new Vector3(movePacket.BulletScaleBuff, movePacket.BulletScaleBuff, 0);
-        //    // 방향 벡터 수정
-        //    //Debug.Log(movePacket.PosInfo);
-        //    bc.Dir = new Vector3(movePacket.PosInfo.PosX, movePacket.PosInfo.PosY, 0f);
-        //    bc.IsMoving = true;
-        //}
     }
 }

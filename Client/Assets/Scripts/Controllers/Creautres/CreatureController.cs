@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class CreatureController : MonoBehaviour
 {
+    // 서버 데이터
+    protected float _lerpSpeed = 10f; // 데드 레커닝 보간 속도 조절
+    protected Vector3 _serverPosition;
+    protected Quaternion _serverRotation;
+    protected Vector3 _lastReceivedVelocity;
+    protected float _lastReceiveTime;
+
     protected Animator _anim;
     public ObjectState ObjectState { get; set; } = new ObjectState();
     public int Id { get { return ObjectState.ObjectId; } set { ObjectState.ObjectId = value; } }
@@ -39,6 +46,7 @@ public class CreatureController : MonoBehaviour
     }
     
     protected ProtoQuaternion _rotation = new ProtoQuaternion();
+
     public ProtoQuaternion Rotation
     {
         get
@@ -54,6 +62,13 @@ public class CreatureController : MonoBehaviour
             _rotation = value;
             transform.rotation = new Quaternion(_rotation.X, _rotation.Y, _rotation.Z, _rotation.W);
         }
+    }
+    public void SetServerState(ProtoVector3 pos, ProtoQuaternion rot, ProtoVector3 vel)
+    {
+        _serverPosition = new Vector3(pos.X, pos.Y, pos.Z);
+        _serverRotation = new Quaternion(rot.X, rot.Y, rot.Z, rot.W);
+        _lastReceivedVelocity = new Vector3(vel.X, vel.Y, vel.Z);
+        _lastReceiveTime = Time.time;
     }
 
     protected virtual void OnUpdate()
@@ -88,4 +103,10 @@ public class CreatureController : MonoBehaviour
     protected virtual void UpdateIdle() { }
     protected virtual void UpdateAttack() { }
     protected virtual void UpdateSkill() { }
+    protected virtual void UpdateDeadReckoningMove()
+    {
+        // 단순 보간 이동 (상속 받은 Controller에서 override 예정)
+        transform.position = Vector3.Lerp(transform.position, _serverPosition, Time.deltaTime * _lerpSpeed);
+        transform.rotation = Quaternion.Slerp(transform.rotation, _serverRotation, Time.deltaTime * _lerpSpeed);
+    }
 }

@@ -14,7 +14,6 @@ public class Managers : MonoBehaviour
     private NetworkManager _network = new NetworkManager();
     private ObjectManager _object = new ObjectManager();
     private RoomManager _room = new RoomManager();
-    private InputManager _input = new InputManager();
     private PoolManager _pool = new PoolManager();
     private DataManager _data = new DataManager();
     private ResourceManager _resource = new ResourceManager();
@@ -29,7 +28,6 @@ public class Managers : MonoBehaviour
     public static NetworkManager Network { get { return Instance._network; } }
     public static ObjectManager Object { get { return Instance._object; } }
     public static RoomManager Room { get { return Instance._room; } }
-    public static InputManager Input { get { return Instance._input; } }
     public static PoolManager Pool { get { return Instance._pool; } }
     public static DataManager Data { get { return Instance._data; } }
     public static ResourceManager Resource { get { return Instance._resource; } }
@@ -48,7 +46,6 @@ public class Managers : MonoBehaviour
 
     void Update()
     {
-        _input.OnUpdate();
         _network.OnUpdate();
     }
 
@@ -76,11 +73,11 @@ public class Managers : MonoBehaviour
 
     public static void Clear()
     {
-        Input.Clear();
         Sound.Clear();
         UI.Clear();
 
         Pool.Clear();
+        Object.Clear();
     }
     public IEnumerator CoDataManagerInit()
     {
