@@ -44,9 +44,25 @@ public class CreatureController : MonoBehaviour
             transform.position = new Vector3(_position.X, _position.Y, _position.Z);        
         }
     }
-    
-    protected ProtoQuaternion _rotation = new ProtoQuaternion();
 
+    protected ProtoVector3 _velocity = new ProtoVector3();
+    public ProtoVector3 Velocity
+    {
+        get
+        {
+            _velocity.X = _lastReceivedVelocity.x;
+            _velocity.Y = _lastReceivedVelocity.y;
+            _velocity.Z = _lastReceivedVelocity.z;
+            return _velocity;
+        }
+        set
+        {
+            _velocity = value;
+            _lastReceivedVelocity = new Vector3(_velocity.X, _velocity.Y, _velocity.Z);
+        }
+    }
+
+    protected ProtoQuaternion _rotation = new ProtoQuaternion();
     public ProtoQuaternion Rotation
     {
         get
@@ -63,7 +79,8 @@ public class CreatureController : MonoBehaviour
             transform.rotation = new Quaternion(_rotation.X, _rotation.Y, _rotation.Z, _rotation.W);
         }
     }
-    public void SetServerState(ProtoVector3 pos, ProtoQuaternion rot, ProtoVector3 vel)
+
+    public void SetServerState(ProtoVector3 pos, ProtoQuaternion rot, ProtoVector3 vel, double timestamp)
     {
         _serverPosition = new Vector3(pos.X, pos.Y, pos.Z);
         _serverRotation = new Quaternion(rot.X, rot.Y, rot.Z, rot.W);
@@ -73,6 +90,7 @@ public class CreatureController : MonoBehaviour
 
     protected virtual void OnUpdate()
     {
+        Debug.Log($"playerId: {Id}, {CreatureState}");
         switch (CreatureState)
         {
             case CreatureState.Die:

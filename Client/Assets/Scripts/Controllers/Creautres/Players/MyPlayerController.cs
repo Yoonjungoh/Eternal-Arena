@@ -29,19 +29,19 @@ public class MyPlayerController : PlayerController
     {
         _moveDir = Vector3.zero;
 
-        // 카메라 기준 벡터
-        Vector3 camForward = _cameraTransform.forward;
-        Vector3 camRight = _cameraTransform.right;
-        camForward.y = 0; camRight.y = 0;
-        camForward.Normalize();
-        camRight.Normalize();
-
         // 입력 체크
         if (Input.anyKey == false)
         {
             CreatureState = CreatureState.Idle;
             return;
         }
+
+        // 카메라 기준 벡터
+        Vector3 camForward = _cameraTransform.forward;
+        Vector3 camRight = _cameraTransform.right;
+        camForward.y = 0; camRight.y = 0;
+        camForward.Normalize();
+        camRight.Normalize();
 
         // 이동 방향 설정
         if (Input.GetKey(KeyCode.W))
@@ -67,8 +67,8 @@ public class MyPlayerController : PlayerController
         // 움직이다 멈춘 경우
         if (_moveDir.sqrMagnitude < 0.01f)
         {
-            SendMovePacket();
             CreatureState = CreatureState.Idle;
+            SendMovePacket();
             return;
         }
 
@@ -89,8 +89,10 @@ public class MyPlayerController : PlayerController
     {
         C_Move movePacket = new C_Move();
         movePacket.ObjectState = ObjectState;
-        movePacket.ObjectState.Position = Position; // 복사 현상 때문에 이렇게 넣어주기
-        movePacket.ObjectState.Rotation = Rotation; // 복사 현상 때문에 이렇게 넣어주기
+        movePacket.ObjectState.Position = Position;
+        movePacket.ObjectState.Rotation = Rotation;
+        movePacket.ObjectState.Velocity = Velocity;
+        movePacket.ObjectState.CreatureState = CreatureState;
         Managers.Network.Send(movePacket);
     }
 

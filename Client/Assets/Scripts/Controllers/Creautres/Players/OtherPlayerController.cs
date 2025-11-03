@@ -19,6 +19,7 @@ public class OtherPlayerController : PlayerController
 
     protected override void UpdateMove()
     {
+        base.UpdateMove();
         UpdateDeadReckoningMove();
     }
 

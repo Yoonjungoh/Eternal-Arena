@@ -135,7 +135,7 @@ class PacketHandler
 
         Managers.Room.ExitRoom();
     }
-    
+
     // 유저가 로비에 있으면 방 정보 갱신
     // 유저가 대기방에 있으면 본인 방의 정보 갱신
     public static void S_UpdateWaitingRoomInfoHandler(PacketSession session, IMessage packet)
@@ -216,7 +216,11 @@ class PacketHandler
             return;
         }
 
-        cc.ObjectState = movePacket.ObjectState;
+        cc.ObjectState.Position = movePacket.ObjectState.Position;
+        cc.ObjectState.Rotation = movePacket.ObjectState.Rotation;
+        cc.ObjectState.Velocity = movePacket.ObjectState.Velocity;
+        cc.ObjectState.CreatureState = movePacket.ObjectState.CreatureState;
+
         GameObjectType type = Managers.Object.GetObjectTypeById(cc.Id);
         if (type == GameObjectType.Player)
         {
@@ -226,30 +230,11 @@ class PacketHandler
                 otherPlayer.SetServerState(
                     movePacket.ObjectState.Position,
                     movePacket.ObjectState.Rotation,
-                    movePacket.ObjectState.Velocity
+                    movePacket.ObjectState.Velocity,
+                    movePacket.ObjectState.Timestamp
                 );
             }
-
-            //// 움직인게 내 플레이어가 아니고 다른 플레이어일 때는 스르르 움직이게 보여주기
-            //// 내껏도 스르르 움직이게 서버에서 조종하면 트레이서 일어남
-            //MyPlayerController mc = go.GetComponent<MyPlayerController>();
-            //if (mc == null && movePacket.UseTeleport == false)
-            //{
-            //    Vector3 destPos = new Vector3(movePacket.PosInfo.PosX, movePacket.PosInfo.PosY, 0f);
-            //    cc.IsMoving = true;
-            //    cc.DestPos = destPos;
-            //    cc.PosInfo.RotZ = movePacket.PosInfo.RotZ;
-            //    cc.transform.eulerAngles = new Vector3(0, 0, movePacket.PosInfo.RotZ);
-            //}
-            //// 텔레 포트중
-            //else if (movePacket.UseTeleport == true)
-            //{
-            //    pc.PosInfo = movePacket.PosInfo;
-            //    pc.PosInfo.RotZ = movePacket.PosInfo.RotZ;
-            //    pc.transform.eulerAngles = new Vector3(0, 0, movePacket.PosInfo.RotZ);
-            //    cc.UseTeleport = false;
-            //    Debug.Log($"{cc.Id}가 텔레포트중");
-            //}
         }
     }
+
 }

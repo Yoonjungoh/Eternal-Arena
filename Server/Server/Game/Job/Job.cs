@@ -8,7 +8,7 @@ namespace Server.Game
     // 커맨드 패턴(주문서화 = 캡슐화)
     public interface IJob
     {
-        // 실행하는 거 따로 만들어주기
+        // 실행하는 거 따로 만들어주기 
         void Execute();
         string GetJobName();
     }

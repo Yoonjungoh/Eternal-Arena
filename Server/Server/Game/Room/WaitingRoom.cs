@@ -32,6 +32,12 @@ namespace Server.Game
         public void Update()
         {
             Flush();
+            foreach(Player player in _players.Values)
+            {
+                Console.WriteLine($"playerId: {player.ObjectState.ObjectId}, {player.ObjectState.CreatureState}");
+
+            }
+
         }
 
         public void EnterRoom(Player player)
@@ -172,17 +178,16 @@ namespace Server.Game
         {
             if (player == null)
                 return;
-            
+
             // 클라 패킷 적용
-            player.ObjectState = movePacket.ObjectState;
+            player.Position = movePacket.ObjectState.Position;
+            player.Velocity = movePacket.ObjectState.Velocity;
+            player.Rotation = movePacket.ObjectState.Rotation;
+            player.CreatureState = movePacket.ObjectState.CreatureState;
 
             // 서버에서 클라로 보낼 패킷 생성
             S_Move resMovePacket = new S_Move();
             resMovePacket.ObjectState = player.ObjectState;
-
-            // 서버에서 플레이어 좌표 이동 하는 부분
-            ObjectState objectState = player.ObjectState;
-            objectState.Position = movePacket.ObjectState.Position;
 
             // 다른 플레이어들한테도 myPlayer가 움직이는 것을 알려준다
             Broadcast(resMovePacket);
