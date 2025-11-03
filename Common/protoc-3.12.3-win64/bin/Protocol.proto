@@ -162,7 +162,7 @@ message ObjectState {
   Stat stat = 9;                    // 캐릭터 스탯 (옵션)
 }
 
-message Stat{
+message Stat {
   float hp = 1;
   float maxHp = 2;
   float attack = 3;

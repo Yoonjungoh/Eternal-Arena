@@ -24,17 +24,12 @@ public class MyPlayerController : PlayerController
         base.OnUpdate();
         OnKeyBoardUpdate();
     }
-    
+
     private void OnKeyBoardUpdate()
     {
         _moveDir = Vector3.zero;
 
-        // 입력 체크
-        if (Input.anyKey == false)
-        {
-            CreatureState = CreatureState.Idle;
-            return;
-        }
+        // 기존에는 Input.anyKey로 조기 리턴하여 서버에 멈춤 상태가 전송되지 않는 경우가 있어 제거했습니다.
 
         // 카메라 기준 벡터
         Vector3 camForward = _cameraTransform.forward;
@@ -67,8 +62,12 @@ public class MyPlayerController : PlayerController
         // 움직이다 멈춘 경우
         if (_moveDir.sqrMagnitude < 0.01f)
         {
-            CreatureState = CreatureState.Idle;
-            SendMovePacket();
+            // 멈춘 상태는 반드시 서버에 전송하여 다른 클라이언트가 올바른 상태를 보도록 함
+            if (CreatureState != CreatureState.Idle)
+            {
+                CreatureState = CreatureState.Idle;
+                SendMovePacket();
+            }
             return;
         }
 
@@ -96,6 +95,31 @@ public class MyPlayerController : PlayerController
         Managers.Network.Send(movePacket);
     }
 
+    // 패킷 생성
+    private C_Move MakeMovePacket(Vector3 curVelocity, Quaternion curRotation, long timestampMs)
+    {
+        C_Move movePacket = new C_Move();
+        movePacket.ObjectState = ObjectState;
+        movePacket.ObjectState.Position = Position;
+        movePacket.ObjectState.Rotation = new ProtoQuaternion
+        {
+            X = curRotation.x,
+            Y = curRotation.y,
+            Z = curRotation.z,
+            W = curRotation.w
+        };
+        movePacket.ObjectState.Velocity = new ProtoVector3
+        {
+            X = curVelocity.x,
+            Y = curVelocity.y,
+            Z = curVelocity.z
+        };
+        movePacket.ObjectState.Timestamp = timestampMs;
+        movePacket.ObjectState.CreatureState = CreatureState;
+        Debug.Log(CreatureState);
+
+        return movePacket;
+    }
     private void Start()
     {
         Init();
