@@ -25,6 +25,8 @@ enum MsgId {
   S_DESPAWN = 102;
   C_MOVE = 103;
   S_MOVE = 104;
+  C_TIMESTAMP = 105;
+  S_TIMESTAMP = 106;
 }
 
 enum CreatureState {
@@ -127,6 +129,15 @@ message C_Move {
 
 message S_Move {
   ObjectState objectState = 1;
+}
+
+message C_Timestamp {
+  int64 clientSendTime = 1;
+}
+
+message S_Timestamp {
+  int64 clientSendTime = 1;
+  int64 serverReceiveTime = 2;
 }
 
 message RoomInfo {

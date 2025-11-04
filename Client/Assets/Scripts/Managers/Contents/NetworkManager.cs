@@ -7,11 +7,52 @@ using UnityEngine;
 using Google.Protobuf;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
+using Google.Protobuf.Protocol;
 
 public class NetworkManager
 {
     ServerSession _session = new ServerSession();
     private string urlValue;
+
+    // 서버와의 offset 저장
+    public double ServerOffset = 0.0; // 서버 기준 시각과 내 로컬 시각의 차이 (초 단위)
+    public double RTT = 0.0;
+    public double Latency = 0.0;
+
+    #region 서버와의 시간 차이 계산
+    // t1: 내가 패킷을 보낸 시각 (클라 로컬)
+    // t2: 서버가 패킷을 받은 시각 (서버 기준)
+    // t3: 내가 서버 응답을 받은 시각 (클라 로컬)
+    #endregion
+    public void CalculateTimeOffset(double clientSendTime, double serverReceiveTime)
+    {
+        double clientReceiveTime = Util.GetTimestampMs(); // 현재 클라 로컬 시각
+        RTT = clientReceiveTime - clientSendTime;
+        Latency = RTT / 2.0;
+        ServerOffset = (serverReceiveTime + Latency) - clientReceiveTime;
+    }
+
+    public void CalculateTimeOffset(S_Timestamp sereverTimestamp)
+    {
+        double clientReceiveTime = Util.GetTimestampMs() / 1000.0; // 현재 클라 로컬 시각
+        RTT = clientReceiveTime - sereverTimestamp.ClientSendTime;
+        Latency = RTT / 2.0;
+        ServerOffset = (sereverTimestamp.ServerReceiveTime + Latency) - clientReceiveTime;
+    }
+
+    // 서버 기준 현재 시각 반환
+    public double GetServerNow()
+    {
+        return Util.GetTimestampMs() / 1000.0 + ServerOffset;
+    }
+
+    public void RequestServerTimeSync()
+    {
+        // 서버와의 시간 offset 계산
+        C_Timestamp timestampPacket = new C_Timestamp();
+        timestampPacket.ClientSendTime = Util.GetTimestampMs();
+        Managers.Network.Send(timestampPacket);
+    }
 
     public void Send(IMessage packet)
     {

@@ -30,7 +30,9 @@ public class ServerSession : PacketSession
 		{
 			PacketQueue.Instance.Push(i, m);
 		};
-	}
+		// 서버 시간 동기화 요청
+		Managers.Network.RequestServerTimeSync();
+    }
 
 	public override void OnDisconnected(EndPoint endPoint)
 	{

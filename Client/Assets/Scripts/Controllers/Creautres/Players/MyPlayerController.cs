@@ -81,7 +81,7 @@ public class MyPlayerController : PlayerController
         if (HasMoveInput())
         {
             SendMovePacket();
-        }
+        }   
     }
 
     private void SendMovePacket()

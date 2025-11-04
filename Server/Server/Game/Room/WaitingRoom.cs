@@ -32,12 +32,6 @@ namespace Server.Game
         public void Update()
         {
             Flush();
-            foreach(Player player in _players.Values)
-            {
-                Console.WriteLine($"playerId: {player.ObjectState.ObjectId}, {player.ObjectState.CreatureState}");
-
-            }
-
         }
 
         public void EnterRoom(Player player)

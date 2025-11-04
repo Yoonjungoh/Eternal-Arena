@@ -36,7 +36,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CEnterLobby, MakePacket<C_EnterLobby>);
 		_handler.Add((ushort)MsgId.CEnterLobby, PacketHandler.C_EnterLobbyHandler);		
 		_onRecv.Add((ushort)MsgId.CMove, MakePacket<C_Move>);
-		_handler.Add((ushort)MsgId.CMove, PacketHandler.C_MoveHandler);
+		_handler.Add((ushort)MsgId.CMove, PacketHandler.C_MoveHandler);		
+		_onRecv.Add((ushort)MsgId.CTimestamp, MakePacket<C_Timestamp>);
+		_handler.Add((ushort)MsgId.CTimestamp, PacketHandler.C_TimestampHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

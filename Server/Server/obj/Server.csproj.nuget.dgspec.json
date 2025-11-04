@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\Server\\Server.csproj": {}
+    "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\Server\\Server.csproj": {}
   },
   "projects": {
-    "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\ServerCore\\ServerCore.csproj": {
+    "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\ServerCore\\ServerCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\ServerCore\\ServerCore.csproj",
+        "projectUniqueName": "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\ServerCore\\ServerCore.csproj",
         "projectName": "ServerCore",
-        "projectPath": "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\ServerCore\\ServerCore.csproj",
+        "projectPath": "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\ServerCore\\ServerCore.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\ServerCore\\obj\\",
+        "outputPath": "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\ServerCore\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -44,8 +44,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.300"
+        }
       },
       "frameworks": {
         "netcoreapp3.1": {
@@ -61,23 +60,37 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.10, 3.1.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\Server\\Server.csproj": {
+    "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\Server\\Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\Server\\Server.csproj",
+        "projectUniqueName": "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\Server\\Server.csproj",
         "projectName": "Server",
-        "projectPath": "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\Server\\Server.csproj",
+        "projectPath": "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\Server\\Server.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\Server\\obj\\",
+        "outputPath": "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\Server\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -99,8 +112,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\ServerCore\\ServerCore.csproj": {
-                "projectPath": "C:\\Users\\user\\Desktop\\Development\\EternalArena\\Server\\ServerCore\\ServerCore.csproj"
+              "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\ServerCore\\ServerCore.csproj": {
+                "projectPath": "C:\\Users\\user\\Desktop\\Development\\Unity\\Eternal Arena\\Server\\ServerCore\\ServerCore.csproj"
               }
             }
           }
@@ -114,8 +127,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.300"
+        }
       },
       "frameworks": {
         "netcoreapp3.1": {
@@ -141,12 +153,30 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.10, 3.1.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[3.1.32, 3.1.32]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
         }
       }
     }

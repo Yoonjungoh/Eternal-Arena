@@ -237,4 +237,11 @@ class PacketHandler
         }
     }
 
+    public static void S_TimestampHandler(PacketSession session, IMessage packet)
+    {
+        S_Timestamp sereverTimestamp = packet as S_Timestamp;
+        Managers.Network.CalculateTimeOffset(sereverTimestamp.ClientSendTime, sereverTimestamp.ServerReceiveTime);
+        // TODO - 삭제 요망
+        Managers.UI.ShowToastPopup($"오프셋: {Managers.Network.ServerOffset}\nRTT: {Managers.Network.RTT}");
+    }
 }

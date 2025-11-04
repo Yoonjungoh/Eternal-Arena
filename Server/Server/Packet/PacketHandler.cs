@@ -125,4 +125,15 @@ class PacketHandler
         LobbyManager.Instance.EnterLobby(1, user);	// TODO - 1번 로비로 강제 이동
 
     }
+
+    public static void C_TimestampHandler(PacketSession session, IMessage packet)
+    {
+        C_Timestamp clientTimestampPacket = packet as C_Timestamp;
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession == null)
+            return;
+
+        NetworkManager.Instance.SendTimestamp(clientTimestampPacket, clientSession);
+    }
 }
