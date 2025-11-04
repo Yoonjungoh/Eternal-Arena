@@ -37,6 +37,24 @@ public class MyPlayerController : PlayerController
 
     }
 
+    private void FixedUpdate()
+    {
+        //HandlePhysicsMovement();
+        StartCoroutine(CoPhysicsSync());
+    }
+
+    // 속도가 의미 있을 때만 패킷 전송 (무언가에 의해서 밀리거나 낙하 중일 때)
+    private IEnumerator CoPhysicsSync()
+    {
+        yield return new WaitForFixedUpdate(); // 다음 물리 프레임까지 대기
+        Vector3 velocity = _rb.velocity;
+        if (velocity.sqrMagnitude > 0.0001f)
+        {
+            Debug.Log($"Physics Velocity: {_rb.velocity}");
+            SendMovePacket(velocity);
+        }
+    }
+
     private void HandleInput()
     {
         _moveDir = Vector3.zero;

@@ -32,6 +32,14 @@ namespace Server.Game
         public void Update()
         {
             Flush();
+            int pid = 16777216;
+            foreach(Player p in _players.Values)
+            {
+                if (p.Id == pid)
+                {
+                    ConsoleLogManager.Instance.Log($"[WaitingRoom Update] Player {p.Id} Pos({p.Position.X}, {p.Position.Y}, {p.Position.Z})");
+                }
+            }
         }
 
         public void EnterRoom(Player player)
@@ -181,25 +189,21 @@ namespace Server.Game
             // 서버에서 상태 업데이트
             player.ObjectState = movePacket.ObjectState;
 
-            //// TODO - 일정 거리 이상 순간이동 방지
-            //Vector3 serverPos = new Vector3(player.ObjectState.Position.X, player.ObjectState.Position.Y, player.ObjectState.Position.Z);
-            //Vector3 clientPos = new Vector3(movePacket.ObjectState.Position.X, movePacket.ObjectState.Position.Y, movePacket.ObjectState.Position.Z);
+            //TODO - 일정 거리 이상 순간이동 방지
+            Vector3 serverPos = new Vector3(player.ObjectState.Position.X, player.ObjectState.Position.Y, player.ObjectState.Position.Z);
+            Vector3 clientPos = new Vector3(movePacket.ObjectState.Position.X, movePacket.ObjectState.Position.Y, movePacket.ObjectState.Position.Z);
 
-            //float dist = Vector3.Distance(serverPos, clientPos);
-            //if (dist > 10.0f)
-            //{
-            //    Console.WriteLine($"[Warning] Player {player.Id} position correction ({dist})");
-            //    movePacket.ObjectState.Position = player.ObjectState.Position;
-            //    movePacket.ObjectState.Velocity = new ProtoVector3 { X = 0, Y = 0, Z = 0 };
-            //}
-            
+            float dist = Vector3.Distance(serverPos, clientPos);
+            if (dist > 1.0f)
+            {
+                Console.WriteLine($"[Warning] Player {player.Id} position correction ({dist})");
+                movePacket.ObjectState.Position = player.ObjectState.Position;
+                movePacket.ObjectState.Velocity = new ProtoVector3 { X = 0, Y = 0, Z = 0 };
+            }
+
             // 다른 유저들에게 브로드캐스트
             S_Move res = new S_Move { ObjectState = movePacket.ObjectState };
             res.ObjectState.ServerReceivedTime = Util.GetTimestampMs();
-
-            ////Console.WriteLine($"playerId {player.Id}: Pos => {player.ObjectState.Position.X}, {player.ObjectState.Position.Y}, {player.ObjectState.Position.Z}");
-            ////Console.WriteLine($"playerId {player.Id}: Vel => {player.ObjectState.Velocity.X}, {player.ObjectState.Velocity.Y}, {player.ObjectState.Velocity.Z}");
-            ////Console.WriteLine($"playerId {player.Id}: Rot => {player.ObjectState.Rotation.X}, {player.ObjectState.Rotation.Y}, {player.ObjectState.Rotation.Z}, {player.ObjectState.Rotation.W},");
 
             Broadcast(res, player.Id);
         }
