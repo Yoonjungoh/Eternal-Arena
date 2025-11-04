@@ -167,11 +167,10 @@ message ObjectState {
   int64 serverReceivedTime = 3;		 // 서버 기준 보낸 시점
   ProtoVector3 position = 4;         // 현재 위치
   ProtoVector3 velocity = 5;         // 이동 속도
-  ProtoVector3 angularVelocity = 6;  // 회전 속도
-  ProtoQuaternion rotation = 7;      // 회전 상태
-  string name = 8;					 // 유저 이름 (todo)
-  CreatureState creatureState = 9;	 // 캐릭터 상태
-  Stat stat = 10;                    // 캐릭터 스탯 (todo)
+  ProtoQuaternion rotation = 6;      // 회전 상태
+  string name = 7;					 // 유저 이름 (todo)
+  CreatureState creatureState = 8;	 // 캐릭터 상태
+  Stat stat = 9;                     // 캐릭터 스탯 (todo)
 }
 
 message Stat {

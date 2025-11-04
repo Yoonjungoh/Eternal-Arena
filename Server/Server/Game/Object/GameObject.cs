@@ -17,7 +17,7 @@ namespace Server.Game
         }
         public GameRoom GameRoom { get; set; }
 
-		public ObjectState ObjectState { get; set; } = new ObjectState();
+		public ObjectState ObjectState { get; set; }
         public ProtoVector3 Position { get { return ObjectState.Position; } set { ObjectState.Position = value; } }
         public ProtoVector3 Velocity { get { return ObjectState.Velocity; } set { ObjectState.Velocity = value; } }
         public ProtoQuaternion Rotation { get { return ObjectState.Rotation; } set { ObjectState.Rotation = value; } }
@@ -27,13 +27,19 @@ namespace Server.Game
 
 		public GameObject()
 		{
-            ObjectState.Position = Position;
-            ObjectState.Stat = Stat;
-		}
+			ObjectState = new ObjectState();
+			ObjectState.Position = new ProtoVector3();
+			ObjectState.Velocity = new ProtoVector3();
+			ObjectState.Rotation = new ProtoQuaternion();
+			ObjectState.Stat = new Stat();
+			ObjectState.CreatureState = new CreatureState();
+        }
+
 		public virtual void Update()
 		{
 
 		}
+
 		public virtual void OnDamaged(GameObject hitter, float damage)
 		{
 			if (GameRoom == null)

@@ -40,25 +40,25 @@ namespace Server.Game
                 return;
 
             ObjectManager.Instance.Add<Player>();
-
-            S_EnterWaitingRoom enterWaitingRoomPacket = new S_EnterWaitingRoom();
-
-            // objectId
-            enterWaitingRoomPacket.ObjectState = new ObjectState();
-            enterWaitingRoomPacket.ObjectState.ObjectId = player.Id;
-            enterWaitingRoomPacket.ObjectState.Position = new ProtoVector3();
-
-            // name
             player.WaitingRoom = this;
             player.ObjectState.Name = $"Player_{player.ObjectState.ObjectId}";
+
+            S_EnterWaitingRoom enterWaitingRoomPacket = new S_EnterWaitingRoom();
+            enterWaitingRoomPacket.ObjectState = new ObjectState();
+            enterWaitingRoomPacket.ObjectState.Position = new ProtoVector3();
+            enterWaitingRoomPacket.ObjectState.Velocity = new ProtoVector3();
+            enterWaitingRoomPacket.ObjectState.Rotation = new ProtoQuaternion();
+
+            // objectId
+            enterWaitingRoomPacket.ObjectState.ObjectId = player.Id;
+
+            // name
             enterWaitingRoomPacket.ObjectState.Name = player.ObjectState.Name;
 
             // positionInfo
-            ProtoVector3 position = new ProtoVector3();
-            position.X = 0;
-            position.Y = 2;
-            position.Z = 0;
-            enterWaitingRoomPacket.ObjectState.Position = position;
+            enterWaitingRoomPacket.ObjectState.Position.X = 0;
+            enterWaitingRoomPacket.ObjectState.Position.Y = 2;
+            enterWaitingRoomPacket.ObjectState.Position.Z = 0;
 
             // TODO - stat
 
@@ -195,9 +195,9 @@ namespace Server.Game
             S_Move res = new S_Move { ObjectState = movePacket.ObjectState };
             res.ObjectState.ServerReceivedTime = Util.GetTimestampMs();
 
-            Console.WriteLine($"playerId {player.Id}: Pos => {player.ObjectState.Position.X}, {player.ObjectState.Position.Y}, {player.ObjectState.Position.Z}");
-            Console.WriteLine($"playerId {player.Id}: Vel => {player.ObjectState.Velocity.X}, {player.ObjectState.Velocity.Y}, {player.ObjectState.Velocity.Z}");
-            Console.WriteLine($"playerId {player.Id}: Rot => {player.ObjectState.Rotation.X}, {player.ObjectState.Rotation.Y}, {player.ObjectState.Rotation.Z}, {player.ObjectState.Rotation.W},");
+            ////Console.WriteLine($"playerId {player.Id}: Pos => {player.ObjectState.Position.X}, {player.ObjectState.Position.Y}, {player.ObjectState.Position.Z}");
+            ////Console.WriteLine($"playerId {player.Id}: Vel => {player.ObjectState.Velocity.X}, {player.ObjectState.Velocity.Y}, {player.ObjectState.Velocity.Z}");
+            ////Console.WriteLine($"playerId {player.Id}: Rot => {player.ObjectState.Rotation.X}, {player.ObjectState.Rotation.Y}, {player.ObjectState.Rotation.Z}, {player.ObjectState.Rotation.W},");
 
             Broadcast(res, player.Id);
         }

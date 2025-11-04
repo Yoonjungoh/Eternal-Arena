@@ -53,9 +53,8 @@ public class ObjectManager
                 objectState.Rotation.W
             );
 
-
             _objects.Add(objectState.ObjectId, otherPlayer.gameObject);
-            Debug.Log($"소환: {objectState.ObjectId}, 위치: ({objectState.Position.X}, {objectState.Position.Y}, {objectState.Position.Z})");
+            Managers.UI.ShowToastPopup($"소환: {objectState.ObjectId}, 위치: ({objectState.Position.X}, {objectState.Position.Y}, {objectState.Position.Z})");
         }
     }
 

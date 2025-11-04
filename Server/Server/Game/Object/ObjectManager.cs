@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace Server.Game
@@ -28,9 +29,11 @@ namespace Server.Game
 					if (gameObject.ObjectType == GameObjectType.Player)
 					{
 						_players.Add(gameObject.Id, gameObject as Player);
-					}
+                    }
+					// 네이밍
+                    gameObject.ObjectState.Name = $"{gameObject.ObjectType}_{gameObject.ObjectState.ObjectId}";
 
-				}
+                }
 				catch(Exception e)
                 {
                     ConsoleLogManager.Instance.Log(e);

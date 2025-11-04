@@ -54,31 +54,30 @@ namespace Google.Protobuf.Protocol {
             "dW50GAQgASgFEhYKDm1heFBsYXllckNvdW50GAUgASgFIi8KDFByb3RvVmVj",
             "dG9yMxIJCgF4GAEgASgCEgkKAXkYAiABKAISCQoBehgDIAEoAiI9Cg9Qcm90",
             "b1F1YXRlcm5pb24SCQoBeBgBIAEoAhIJCgF5GAIgASgCEgkKAXoYAyABKAIS",
-            "CQoBdxgEIAEoAiLhAgoLT2JqZWN0U3RhdGUSEAoIb2JqZWN0SWQYASABKAUS",
+            "CQoBdxgEIAEoAiKwAgoLT2JqZWN0U3RhdGUSEAoIb2JqZWN0SWQYASABKAUS",
             "FgoOY2xpZW50U2VuZFRpbWUYAiABKAMSGgoSc2VydmVyUmVjZWl2ZWRUaW1l",
             "GAMgASgDEigKCHBvc2l0aW9uGAQgASgLMhYuUHJvdG9jb2wuUHJvdG9WZWN0",
             "b3IzEigKCHZlbG9jaXR5GAUgASgLMhYuUHJvdG9jb2wuUHJvdG9WZWN0b3Iz",
-            "Ei8KD2FuZ3VsYXJWZWxvY2l0eRgGIAEoCzIWLlByb3RvY29sLlByb3RvVmVj",
-            "dG9yMxIrCghyb3RhdGlvbhgHIAEoCzIZLlByb3RvY29sLlByb3RvUXVhdGVy",
-            "bmlvbhIMCgRuYW1lGAggASgJEi4KDWNyZWF0dXJlU3RhdGUYCSABKA4yFy5Q",
-            "cm90b2NvbC5DcmVhdHVyZVN0YXRlEhwKBHN0YXQYCiABKAsyDi5Qcm90b2Nv",
-            "bC5TdGF0IoUBCgRTdGF0EgoKAmhwGAEgASgCEg0KBW1heEhwGAIgASgCEg4K",
-            "BmF0dGFjaxgDIAEoAhIPCgdkZWZlbnNlGAQgASgCEg0KBXNwZWVkGAUgASgC",
-            "EhIKCmNhbWVyYVNpemUYBiABKAISDAoEY29zdBgHIAEoBRIQCghjb29sVGlt",
-            "ZRgIIAEoAiqiAwoFTXNnSWQSFAoQU19BU1NJR05fVVNFUl9JRBAAEhQKEENf",
-            "QVNTSUdOX1VTRVJfSUQQARIRCg1TX0VOVEVSX0xPQkJZEAISEQoNU19MRUFW",
-            "RV9MT0JCWRADEhEKDUNfTEVBVkVfTE9CQlkQBBIYChRDX0VOVEVSX1dBSVRJ",
-            "TkdfUk9PTRAFEhgKFFNfRU5URVJfV0FJVElOR19ST09NEAYSDgoKQ19BRERf",
-            "Uk9PTRAHEg4KClNfQUREX1JPT00QCBIRCg1TX1JFTU9WRV9ST09NEAkSDwoL",
-            "U19FWElUX1JPT00QChIPCgtDX0VYSVRfUk9PTRALEhEKDUNfRU5URVJfTE9C",
-            "QlkQDBIeChpTX1VQREFURV9XQUlUSU5HX1JPT01fSU5GTxANEhAKDFNfRU5U",
-            "RVJfR0FNRRBaEhAKDFNfTEVBVkVfR0FNRRBkEgsKB1NfU1BBV04QZRINCglT",
-            "X0RFU1BBV04QZhIKCgZDX01PVkUQZxIKCgZTX01PVkUQaBIPCgtDX1RJTUVT",
-            "VEFNUBBpEg8KC1NfVElNRVNUQU1QEGoqUwoNQ3JlYXR1cmVTdGF0ZRIICgRJ",
-            "RExFEAASCAoETU9WRRABEgoKBkFUVEFDSxACEg4KCk9OX0RBTUFHRUQQAxIJ",
-            "CgVTS0lMTBAEEgcKA0RJRRAFKjMKDkdhbWVPYmplY3RUeXBlEggKBE5PTkUQ",
-            "ABIKCgZQTEFZRVIQARILCgdNT05TVEVSEAJCG6oCGEdvb2dsZS5Qcm90b2J1",
-            "Zi5Qcm90b2NvbGIGcHJvdG8z"));
+            "EisKCHJvdGF0aW9uGAYgASgLMhkuUHJvdG9jb2wuUHJvdG9RdWF0ZXJuaW9u",
+            "EgwKBG5hbWUYByABKAkSLgoNY3JlYXR1cmVTdGF0ZRgIIAEoDjIXLlByb3Rv",
+            "Y29sLkNyZWF0dXJlU3RhdGUSHAoEc3RhdBgJIAEoCzIOLlByb3RvY29sLlN0",
+            "YXQihQEKBFN0YXQSCgoCaHAYASABKAISDQoFbWF4SHAYAiABKAISDgoGYXR0",
+            "YWNrGAMgASgCEg8KB2RlZmVuc2UYBCABKAISDQoFc3BlZWQYBSABKAISEgoK",
+            "Y2FtZXJhU2l6ZRgGIAEoAhIMCgRjb3N0GAcgASgFEhAKCGNvb2xUaW1lGAgg",
+            "ASgCKqIDCgVNc2dJZBIUChBTX0FTU0lHTl9VU0VSX0lEEAASFAoQQ19BU1NJ",
+            "R05fVVNFUl9JRBABEhEKDVNfRU5URVJfTE9CQlkQAhIRCg1TX0xFQVZFX0xP",
+            "QkJZEAMSEQoNQ19MRUFWRV9MT0JCWRAEEhgKFENfRU5URVJfV0FJVElOR19S",
+            "T09NEAUSGAoUU19FTlRFUl9XQUlUSU5HX1JPT00QBhIOCgpDX0FERF9ST09N",
+            "EAcSDgoKU19BRERfUk9PTRAIEhEKDVNfUkVNT1ZFX1JPT00QCRIPCgtTX0VY",
+            "SVRfUk9PTRAKEg8KC0NfRVhJVF9ST09NEAsSEQoNQ19FTlRFUl9MT0JCWRAM",
+            "Eh4KGlNfVVBEQVRFX1dBSVRJTkdfUk9PTV9JTkZPEA0SEAoMU19FTlRFUl9H",
+            "QU1FEFoSEAoMU19MRUFWRV9HQU1FEGQSCwoHU19TUEFXThBlEg0KCVNfREVT",
+            "UEFXThBmEgoKBkNfTU9WRRBnEgoKBlNfTU9WRRBoEg8KC0NfVElNRVNUQU1Q",
+            "EGkSDwoLU19USU1FU1RBTVAQaipTCg1DcmVhdHVyZVN0YXRlEggKBElETEUQ",
+            "ABIICgRNT1ZFEAESCgoGQVRUQUNLEAISDgoKT05fREFNQUdFRBADEgkKBVNL",
+            "SUxMEAQSBwoDRElFEAUqMwoOR2FtZU9iamVjdFR5cGUSCAoETk9ORRAAEgoK",
+            "BlBMQVlFUhABEgsKB01PTlNURVIQAkIbqgIYR29vZ2xlLlByb3RvYnVmLlBy",
+            "b3RvY29sYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -108,7 +107,7 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.RoomInfo), global::Google.Protobuf.Protocol.RoomInfo.Parser, new[]{ "RoomId", "RoomName", "RoomOwnerId", "CurrentPlayerCount", "MaxPlayerCount" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ProtoVector3), global::Google.Protobuf.Protocol.ProtoVector3.Parser, new[]{ "X", "Y", "Z" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ProtoQuaternion), global::Google.Protobuf.Protocol.ProtoQuaternion.Parser, new[]{ "X", "Y", "Z", "W" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ObjectState), global::Google.Protobuf.Protocol.ObjectState.Parser, new[]{ "ObjectId", "ClientSendTime", "ServerReceivedTime", "Position", "Velocity", "AngularVelocity", "Rotation", "Name", "CreatureState", "Stat" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ObjectState), global::Google.Protobuf.Protocol.ObjectState.Parser, new[]{ "ObjectId", "ClientSendTime", "ServerReceivedTime", "Position", "Velocity", "Rotation", "Name", "CreatureState", "Stat" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.Stat), global::Google.Protobuf.Protocol.Stat.Parser, new[]{ "Hp", "MaxHp", "Attack", "Defense", "Speed", "CameraSize", "Cost", "CoolTime" }, null, null, null, null)
           }));
     }
@@ -3891,7 +3890,6 @@ namespace Google.Protobuf.Protocol {
       serverReceivedTime_ = other.serverReceivedTime_;
       position_ = other.position_ != null ? other.position_.Clone() : null;
       velocity_ = other.velocity_ != null ? other.velocity_.Clone() : null;
-      angularVelocity_ = other.angularVelocity_ != null ? other.angularVelocity_.Clone() : null;
       rotation_ = other.rotation_ != null ? other.rotation_.Clone() : null;
       name_ = other.name_;
       creatureState_ = other.creatureState_;
@@ -3974,22 +3972,8 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
-    /// <summary>Field number for the "angularVelocity" field.</summary>
-    public const int AngularVelocityFieldNumber = 6;
-    private global::Google.Protobuf.Protocol.ProtoVector3 angularVelocity_;
-    /// <summary>
-    /// 회전 속도
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Google.Protobuf.Protocol.ProtoVector3 AngularVelocity {
-      get { return angularVelocity_; }
-      set {
-        angularVelocity_ = value;
-      }
-    }
-
     /// <summary>Field number for the "rotation" field.</summary>
-    public const int RotationFieldNumber = 7;
+    public const int RotationFieldNumber = 6;
     private global::Google.Protobuf.Protocol.ProtoQuaternion rotation_;
     /// <summary>
     /// 회전 상태
@@ -4003,7 +3987,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "name" field.</summary>
-    public const int NameFieldNumber = 8;
+    public const int NameFieldNumber = 7;
     private string name_ = "";
     /// <summary>
     /// 유저 이름 (todo)
@@ -4017,7 +4001,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "creatureState" field.</summary>
-    public const int CreatureStateFieldNumber = 9;
+    public const int CreatureStateFieldNumber = 8;
     private global::Google.Protobuf.Protocol.CreatureState creatureState_ = global::Google.Protobuf.Protocol.CreatureState.Idle;
     /// <summary>
     /// 캐릭터 상태
@@ -4031,7 +4015,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "stat" field.</summary>
-    public const int StatFieldNumber = 10;
+    public const int StatFieldNumber = 9;
     private global::Google.Protobuf.Protocol.Stat stat_;
     /// <summary>
     /// 캐릭터 스탯 (todo)
@@ -4062,7 +4046,6 @@ namespace Google.Protobuf.Protocol {
       if (ServerReceivedTime != other.ServerReceivedTime) return false;
       if (!object.Equals(Position, other.Position)) return false;
       if (!object.Equals(Velocity, other.Velocity)) return false;
-      if (!object.Equals(AngularVelocity, other.AngularVelocity)) return false;
       if (!object.Equals(Rotation, other.Rotation)) return false;
       if (Name != other.Name) return false;
       if (CreatureState != other.CreatureState) return false;
@@ -4078,7 +4061,6 @@ namespace Google.Protobuf.Protocol {
       if (ServerReceivedTime != 0L) hash ^= ServerReceivedTime.GetHashCode();
       if (position_ != null) hash ^= Position.GetHashCode();
       if (velocity_ != null) hash ^= Velocity.GetHashCode();
-      if (angularVelocity_ != null) hash ^= AngularVelocity.GetHashCode();
       if (rotation_ != null) hash ^= Rotation.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (CreatureState != global::Google.Protobuf.Protocol.CreatureState.Idle) hash ^= CreatureState.GetHashCode();
@@ -4116,24 +4098,20 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(42);
         output.WriteMessage(Velocity);
       }
-      if (angularVelocity_ != null) {
-        output.WriteRawTag(50);
-        output.WriteMessage(AngularVelocity);
-      }
       if (rotation_ != null) {
-        output.WriteRawTag(58);
+        output.WriteRawTag(50);
         output.WriteMessage(Rotation);
       }
       if (Name.Length != 0) {
-        output.WriteRawTag(66);
+        output.WriteRawTag(58);
         output.WriteString(Name);
       }
       if (CreatureState != global::Google.Protobuf.Protocol.CreatureState.Idle) {
-        output.WriteRawTag(72);
+        output.WriteRawTag(64);
         output.WriteEnum((int) CreatureState);
       }
       if (stat_ != null) {
-        output.WriteRawTag(82);
+        output.WriteRawTag(74);
         output.WriteMessage(Stat);
       }
       if (_unknownFields != null) {
@@ -4158,9 +4136,6 @@ namespace Google.Protobuf.Protocol {
       }
       if (velocity_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Velocity);
-      }
-      if (angularVelocity_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(AngularVelocity);
       }
       if (rotation_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Rotation);
@@ -4205,12 +4180,6 @@ namespace Google.Protobuf.Protocol {
           Velocity = new global::Google.Protobuf.Protocol.ProtoVector3();
         }
         Velocity.MergeFrom(other.Velocity);
-      }
-      if (other.angularVelocity_ != null) {
-        if (angularVelocity_ == null) {
-          AngularVelocity = new global::Google.Protobuf.Protocol.ProtoVector3();
-        }
-        AngularVelocity.MergeFrom(other.AngularVelocity);
       }
       if (other.rotation_ != null) {
         if (rotation_ == null) {
@@ -4268,28 +4237,21 @@ namespace Google.Protobuf.Protocol {
             break;
           }
           case 50: {
-            if (angularVelocity_ == null) {
-              AngularVelocity = new global::Google.Protobuf.Protocol.ProtoVector3();
-            }
-            input.ReadMessage(AngularVelocity);
-            break;
-          }
-          case 58: {
             if (rotation_ == null) {
               Rotation = new global::Google.Protobuf.Protocol.ProtoQuaternion();
             }
             input.ReadMessage(Rotation);
             break;
           }
-          case 66: {
+          case 58: {
             Name = input.ReadString();
             break;
           }
-          case 72: {
+          case 64: {
             CreatureState = (global::Google.Protobuf.Protocol.CreatureState) input.ReadEnum();
             break;
           }
-          case 82: {
+          case 74: {
             if (stat_ == null) {
               Stat = new global::Google.Protobuf.Protocol.Stat();
             }

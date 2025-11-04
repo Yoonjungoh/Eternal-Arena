@@ -31,6 +31,8 @@ public class NetworkManager
         RTTMs = clientReceiveTimeMs - clientSendTimeMs;
         LatencyMs = RTTMs / 2.0;
         ServerOffsetMs = (serverReceiveTimeMs + LatencyMs) - clientReceiveTimeMs;
+        // TODO - 삭제
+        Managers.UI.ShowToastPopup($"RTT: {RTTMs}ms, Latency: {LatencyMs}ms, ServerOffset: {ServerOffsetMs}ms");
     }
 
     // 서버 기준 현재 시각 반환
