@@ -39,7 +39,6 @@ namespace Server.Game
             if (player == null)
                 return;
 
-            ObjectManager.Instance.Add<Player>();
             player.WaitingRoom = this;
             player.ObjectState.Name = $"Player_{player.ObjectState.ObjectId}";
 
@@ -49,20 +48,23 @@ namespace Server.Game
             enterWaitingRoomPacket.ObjectState.Velocity = new ProtoVector3();
             enterWaitingRoomPacket.ObjectState.Rotation = new ProtoQuaternion();
 
-            // objectId
+            // objectId 초기화
             enterWaitingRoomPacket.ObjectState.ObjectId = player.Id;
 
-            // name
+            // name 초기화
             enterWaitingRoomPacket.ObjectState.Name = player.ObjectState.Name;
 
-            // positionInfo
+            // positionInfo 초기화
+            player.ObjectState.Position.X = 0;
+            player.ObjectState.Position.Y = 10;
+            player.ObjectState.Position.Z = 0;
             enterWaitingRoomPacket.ObjectState.Position.X = 0;
-            enterWaitingRoomPacket.ObjectState.Position.Y = 2;
+            enterWaitingRoomPacket.ObjectState.Position.Y = 10;
             enterWaitingRoomPacket.ObjectState.Position.Z = 0;
 
             // TODO - stat
 
-            // creatureState
+            // creatureState 초기화
             player.ObjectState.CreatureState = CreatureState.Idle;
             enterWaitingRoomPacket.ObjectState.CreatureState = CreatureState.Idle;
 
