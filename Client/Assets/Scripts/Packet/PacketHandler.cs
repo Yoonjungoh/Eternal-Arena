@@ -184,9 +184,9 @@ class PacketHandler
     {
         S_Spawn spawnPacket = packet as S_Spawn;
 
-        foreach (ObjectState player in spawnPacket.ObjectStates)
+        foreach (ObjectState objectState in spawnPacket.ObjectStates)
         {
-            Managers.Object.Add(player, isMyPlayer: false);
+            Managers.Object.Add(objectState, isMyPlayer: false);
         }
     }
 

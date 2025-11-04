@@ -80,11 +80,10 @@ namespace Server.Game
             //나를 제외하고 접속한 플레이어를 spawnPacket에 저장
             foreach (Player p in _players.Values)
             {
-                if (p == null)
+                if (p == null || player == p)
                     continue;
 
-                if (player != p)
-                    spawnToMePacket.ObjectStates.Add(p.ObjectState);
+                spawnToMePacket.ObjectStates.Add(p.ObjectState);
             }
             player.Session.Send(spawnToMePacket);
 
@@ -93,8 +92,10 @@ namespace Server.Game
             spawnToOthersPacket.ObjectStates.Add(player.ObjectState);
             foreach (Player p in _players.Values)
             {
-                if (p.Id != player.Id)
-                    p.Session.Send(spawnToOthersPacket);
+                if (p.Id == player.Id)
+                    continue;
+
+                p.Session.Send(spawnToOthersPacket);
             }
         }
 
@@ -133,8 +134,10 @@ namespace Server.Game
 
                 foreach (Player p in _players.Values)
                 {
-                    if (p.Id != playerId)
-                        p.Session.Send(despawnPacket);
+                    if (p.Id == playerId)
+                        continue;
+
+                    p.Session.Send(despawnPacket);
                 }
             }
 
@@ -191,7 +194,7 @@ namespace Server.Game
             // 다른 유저들에게 브로드캐스트
             S_Move res = new S_Move { ObjectState = movePacket.ObjectState };
             res.ObjectState.ServerReceivedTime = Util.GetTimestampMs();
-            
+
             Console.WriteLine($"playerId {player.Id}: Pos => {player.ObjectState.Position.X}, {player.ObjectState.Position.Y}, {player.ObjectState.Position.Z}");
             Console.WriteLine($"playerId {player.Id}: Vel => {player.ObjectState.Velocity.X}, {player.ObjectState.Velocity.Y}, {player.ObjectState.Velocity.Z}");
             Console.WriteLine($"playerId {player.Id}: Rot => {player.ObjectState.Rotation.X}, {player.ObjectState.Rotation.Y}, {player.ObjectState.Rotation.Z}, {player.ObjectState.Rotation.W},");

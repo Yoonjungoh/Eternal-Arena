@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ObjectManager
@@ -28,6 +27,7 @@ public class ObjectManager
 
             MyPlayer.ObjectState = objectState;
             MyPlayer.GameObjectType = objectType;
+
             _objects.Add(objectState.ObjectId, MyPlayer.gameObject);
             Debug.Log($"소환: {MyPlayer.Id}, isMyPlayer: {isMyPlayer}");
 
@@ -40,8 +40,22 @@ public class ObjectManager
 
             otherPlayer.ObjectState = objectState;
             otherPlayer.GameObjectType = objectType;
+
+            otherPlayer.transform.position = new Vector3(
+                objectState.Position.X,
+                objectState.Position.Y,
+                objectState.Position.Z
+            );
+            otherPlayer.transform.rotation = new Quaternion(
+                objectState.Rotation.X,
+                objectState.Rotation.Y,
+                objectState.Rotation.Z,
+                objectState.Rotation.W
+            );
+
+
             _objects.Add(objectState.ObjectId, otherPlayer.gameObject);
-            Debug.Log($"소환: {objectState.ObjectId}, isMyPlayer: {isMyPlayer}");
+            Debug.Log($"소환: {objectState.ObjectId}, 위치: ({objectState.Position.X}, {objectState.Position.Y}, {objectState.Position.Z})");
         }
     }
 

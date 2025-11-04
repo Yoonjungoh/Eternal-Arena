@@ -33,6 +33,12 @@ public class MyPlayerController : PlayerController
     {
         base.OnUpdate();
         HandleInput();
+
+    }
+
+    private void FixedUpdate()
+    {
+        HandlePhysicsMovement();
     }
 
     private void HandleInput()
@@ -95,12 +101,23 @@ public class MyPlayerController : PlayerController
         }
     }
 
+    // 속도가 의미 있을 때만 패킷 전송 (무언가에 의해서 밀리거나 낙하 중일 때)
+    private void HandlePhysicsMovement()
+    {
+        if (_rb == null) 
+            return;
+
+        Vector3 velocity = _rb.velocity;
+
+        if (velocity.sqrMagnitude > 0.0001f)
+        {
+            CreatureState = CreatureState.Move; // TODO - 달리기가 아닐 수도 있으니
+            SendMovePacket(velocity);
+        }
+    }
+
     private void SendMovePacket(Vector3 velocity)
     {
-        Debug.Log($"SendMovePacket: Pos({transform.position.x}, {transform.position.y}, {transform.position.z}) " +
-            $"Vel({velocity.x}, {velocity.y}, {velocity.z}) " +
-            $"Rot({transform.rotation.x}, {transform.rotation.y}, {transform.rotation.z}, {transform.rotation.w}) " +
-            $"State({CreatureState})");
         C_Move movePacket = new C_Move();
         movePacket.ObjectState = new ObjectState()
         {

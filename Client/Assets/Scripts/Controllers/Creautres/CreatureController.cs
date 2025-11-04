@@ -13,6 +13,7 @@ public class CreatureController : MonoBehaviour
     public double _serverReceivedTimeMs = 0.0;  // 서버에서 패킷을 보낸 시간
 
     protected Animator _anim;
+    protected Rigidbody _rb;
     public ObjectState ObjectState { get; set; } = new ObjectState();
     public int Id { get { return ObjectState.ObjectId; } set { ObjectState.ObjectId = value; } }
     public CreatureState CreatureState 
@@ -82,7 +83,6 @@ public class CreatureController : MonoBehaviour
 
     protected virtual void OnUpdate()
     {
-        Debug.Log($"playerId: {Id}, {CreatureState}");
         switch (CreatureState)
         {
             case CreatureState.Die:
@@ -106,6 +106,7 @@ public class CreatureController : MonoBehaviour
     public virtual void Init()
     {
         _anim = GetComponent<Animator>();
+        _rb = GetComponent<Rigidbody>();
     }
 
     protected virtual void UpdateDie() { }
@@ -118,7 +119,7 @@ public class CreatureController : MonoBehaviour
     {
         double serverNowMs = Managers.Network.GetServerNowMs();
 
-        // Ms 단위 s로 바꿔주기...
+        // Ms 단위 s로 바꿔주기... 이거 안 해줘서 엄청 헤맸다..
         double deltaSec = Mathf.Max(0f, (float)((serverNowMs - _serverReceivedTimeMs) / 1000.0));
 
         // 예측 위치
