@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using System.Collections;
 using UnityEngine;
 
 public class MyPlayerController : PlayerController
@@ -34,11 +35,6 @@ public class MyPlayerController : PlayerController
         base.OnUpdate();
         HandleInput();
 
-    }
-
-    private void FixedUpdate()
-    {
-        HandlePhysicsMovement();
     }
 
     private void HandleInput()
@@ -101,21 +97,6 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    // 속도가 의미 있을 때만 패킷 전송 (무언가에 의해서 밀리거나 낙하 중일 때)
-    private void HandlePhysicsMovement()
-    {
-        if (_rb == null) 
-            return;
-
-        Vector3 velocity = _rb.velocity;
-
-        if (velocity.sqrMagnitude > 0.0001f)
-        {
-            CreatureState = CreatureState.Move; // TODO - 달리기가 아닐 수도 있으니
-            SendMovePacket(velocity);
-        }
-    }
-
     private void SendMovePacket(Vector3 velocity)
     {
         C_Move movePacket = new C_Move();
@@ -128,6 +109,8 @@ public class MyPlayerController : PlayerController
             Rotation = new ProtoQuaternion { X = transform.rotation.x, Y = transform.rotation.y, Z = transform.rotation.z, W = transform.rotation.w },
             CreatureState = CreatureState
         };
+        Managers.UI.ShowToastPopup($"전송 위치: ({movePacket.ObjectState.Position.X}, {movePacket.ObjectState.Position.Y}, {movePacket.ObjectState.Position.Z})\n" +
+            $"속도: ({movePacket.ObjectState.Velocity.X}, {movePacket.ObjectState.Velocity.Y}, {movePacket.ObjectState.Velocity.Z})");
 
         Managers.Network.Send(movePacket);
     }

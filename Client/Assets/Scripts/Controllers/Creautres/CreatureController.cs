@@ -115,7 +115,7 @@ public class CreatureController : MonoBehaviour
     protected virtual void UpdateAttack() { }
     protected virtual void UpdateSkill() { }
 
-    protected virtual void UpdateDeadReckoningMove()
+    protected virtual void UpdateDeadReckoning()
     {
         double serverNowMs = Managers.Network.GetServerNowMs();
 

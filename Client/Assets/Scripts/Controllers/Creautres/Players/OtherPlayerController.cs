@@ -15,11 +15,6 @@ public class OtherPlayerController : PlayerController
     private void FixedUpdate()
     {
         base.OnUpdate();
-    }
-
-    protected override void UpdateMove()
-    {
-        base.UpdateMove();
-        base.UpdateDeadReckoningMove();
+        base.UpdateDeadReckoning();
     }
 }
