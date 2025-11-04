@@ -202,6 +202,8 @@ class PacketHandler
     public static void S_MoveHandler(PacketSession session, IMessage packet)
     {
         S_Move movePacket = packet as S_Move;
+
+        // 움직임 동기화 시킬 오브젝트 찾기
         GameObject go = Managers.Object.FindById(movePacket.ObjectState.ObjectId);
         if (go == null)
         {
@@ -231,7 +233,7 @@ class PacketHandler
                     movePacket.ObjectState.Position,
                     movePacket.ObjectState.Rotation,
                     movePacket.ObjectState.Velocity,
-                    movePacket.ObjectState.Timestamp
+                    movePacket.ObjectState.ServerReceivedTime
                 );
             }
         }
@@ -240,8 +242,6 @@ class PacketHandler
     public static void S_TimestampHandler(PacketSession session, IMessage packet)
     {
         S_Timestamp sereverTimestamp = packet as S_Timestamp;
-        Managers.Network.CalculateTimeOffset(sereverTimestamp.ClientSendTime, sereverTimestamp.ServerReceiveTime);
-        // TODO - 삭제 요망
-        Managers.UI.ShowToastPopup($"오프셋: {Managers.Network.ServerOffset}\nRTT: {Managers.Network.RTT}");
+        Managers.Network.CalculateTimeOffset(sereverTimestamp.ClientSendTime, sereverTimestamp.ServerReceivedTime);
     }
 }

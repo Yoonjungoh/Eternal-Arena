@@ -9,8 +9,8 @@ public class CreatureController : MonoBehaviour
     protected float _lerpSpeed = 10f; // 데드 레커닝 보간 속도 조절
     protected Vector3 _serverPosition;
     protected Quaternion _serverRotation;
-    protected Vector3 _lastReceivedVelocity;
-    protected float _lastReceiveTime;
+    protected Vector3 _serverVelocity;
+    public double _serverReceivedTimeMs = 0.0;  // 서버에서 패킷을 보낸 시간
 
     protected Animator _anim;
     public ObjectState ObjectState { get; set; } = new ObjectState();
@@ -50,15 +50,15 @@ public class CreatureController : MonoBehaviour
     {
         get
         {
-            _velocity.X = _lastReceivedVelocity.x;
-            _velocity.Y = _lastReceivedVelocity.y;
-            _velocity.Z = _lastReceivedVelocity.z;
+            _velocity.X = _serverVelocity.x;
+            _velocity.Y = _serverVelocity.y;
+            _velocity.Z = _serverVelocity.z;
             return _velocity;
         }
         set
         {
             _velocity = value;
-            _lastReceivedVelocity = new Vector3(_velocity.X, _velocity.Y, _velocity.Z);
+            _serverVelocity = new Vector3(_velocity.X, _velocity.Y, _velocity.Z);
         }
     }
 
@@ -78,14 +78,6 @@ public class CreatureController : MonoBehaviour
             _rotation = value;
             transform.rotation = new Quaternion(_rotation.X, _rotation.Y, _rotation.Z, _rotation.W);
         }
-    }
-
-    public void SetServerState(ProtoVector3 pos, ProtoQuaternion rot, ProtoVector3 vel, double timestamp)
-    {
-        _serverPosition = new Vector3(pos.X, pos.Y, pos.Z);
-        _serverRotation = new Quaternion(rot.X, rot.Y, rot.Z, rot.W);
-        _lastReceivedVelocity = new Vector3(vel.X, vel.Y, vel.Z);
-        _lastReceiveTime = Time.time;
     }
 
     protected virtual void OnUpdate()
@@ -121,10 +113,26 @@ public class CreatureController : MonoBehaviour
     protected virtual void UpdateIdle() { }
     protected virtual void UpdateAttack() { }
     protected virtual void UpdateSkill() { }
+
     protected virtual void UpdateDeadReckoningMove()
     {
-        // 단순 보간 이동 (상속 받은 Controller에서 override 예정)
-        transform.position = Vector3.Lerp(transform.position, _serverPosition, Time.deltaTime * _lerpSpeed);
+        double serverNowMs = Managers.Network.GetServerNowMs();
+
+        // Ms 단위 s로 바꿔주기...
+        double deltaSec = Mathf.Max(0f, (float)((serverNowMs - _serverReceivedTimeMs) / 1000.0));
+
+        // 예측 위치
+        Vector3 predicted = _serverPosition + _serverVelocity * (float)deltaSec;
+
+        transform.position = Vector3.Lerp(transform.position, predicted, Time.deltaTime * _lerpSpeed);
         transform.rotation = Quaternion.Slerp(transform.rotation, _serverRotation, Time.deltaTime * _lerpSpeed);
+    }
+
+    public void SetServerState(ProtoVector3 pos, ProtoQuaternion rot, ProtoVector3 vel, long serverReceivedTime)
+    {
+        _serverPosition = new Vector3(pos.X, pos.Y, pos.Z);
+        _serverRotation = new Quaternion(rot.X, rot.Y, rot.Z, rot.W);
+        _serverVelocity = new Vector3(vel.X, vel.Y, vel.Z);
+        _serverReceivedTimeMs = serverReceivedTime;
     }
 }

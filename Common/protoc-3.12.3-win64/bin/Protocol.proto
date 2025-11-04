@@ -137,7 +137,7 @@ message C_Timestamp {
 
 message S_Timestamp {
   int64 clientSendTime = 1;
-  int64 serverReceiveTime = 2;
+  int64 serverReceivedTime = 2;
 }
 
 message RoomInfo {
@@ -163,14 +163,15 @@ message ProtoQuaternion {
 
 message ObjectState {
   int32 objectId = 1;                // 유저 식별자
-  double timestamp = 2;              // 클라 기준 보낸 시점
-  ProtoVector3 position = 3;         // 현재 위치
-  ProtoVector3 velocity = 4;         // 이동 속도
-  ProtoVector3 angularVelocity = 5;  // 회전 속도
-  ProtoQuaternion rotation = 6;      // 회전 상태
-  string name = 7;               // 유저 이름
-  CreatureState creatureState = 8;	 // 캐릭터 상태 (옵션)
-  Stat stat = 9;                    // 캐릭터 스탯 (옵션)
+  int64 clientSendTime = 2;          // 클라 기준 보낸 시점
+  int64 serverReceivedTime = 3;		 // 서버 기준 보낸 시점
+  ProtoVector3 position = 4;         // 현재 위치
+  ProtoVector3 velocity = 5;         // 이동 속도
+  ProtoVector3 angularVelocity = 6;  // 회전 속도
+  ProtoQuaternion rotation = 7;      // 회전 상태
+  string name = 8;					 // 유저 이름 (todo)
+  CreatureState creatureState = 9;	 // 캐릭터 상태
+  Stat stat = 10;                    // 캐릭터 스탯 (todo)
 }
 
 message Stat {

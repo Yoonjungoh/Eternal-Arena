@@ -21,7 +21,7 @@ namespace Server
 
                 S_Timestamp serverTimestampPacket = new S_Timestamp();
                 serverTimestampPacket.ClientSendTime = clientTimestampPacket.ClientSendTime;
-                serverTimestampPacket.ServerReceiveTime = Util.GetTimestampMs();
+                serverTimestampPacket.ServerReceivedTime = Util.GetTimestampMs();
                 clientSession.Send(serverTimestampPacket);
             }
         }

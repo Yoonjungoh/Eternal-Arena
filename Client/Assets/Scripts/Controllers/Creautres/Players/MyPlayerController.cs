@@ -1,136 +1,123 @@
 ﻿using Google.Protobuf.Protocol;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MyPlayerController : PlayerController
 {
-    [SerializeField] float _moveSpeed = 5.0f;    // 이동 속도
-    [SerializeField] float _rotateSpeed = 10.0f; // 회전 속도
+    [SerializeField] private float _moveSpeed = 5.0f;
+    [SerializeField] private float _rotateSpeed = 10.0f;
+    public float RotateSpeed { get { return _rotateSpeed; } }
 
     private Vector3 _moveDir = Vector3.zero;
+    private Vector3 _prevPosition;
+    
+    [SerializeField] private float _stopThreshold = 0.01f;
+
+    // 데드 레커닝 패킷 제한에 쓸 임계값
+    [SerializeField] private float _velocityChangeThreshold = 0.1f;
+    [SerializeField] private float _rotationChangeThreshold = 2.0f;
+
+    private Vector3 _prevVelocity = Vector3.zero;
+    private Quaternion _prevRotation = Quaternion.identity;
+
     private Transform _cameraTransform;
-    public float RotateSpeed { get { return _rotateSpeed; } }
 
     public override void Init()
     {
         base.Init();
-
         _cameraTransform = Camera.main.transform;
+        _prevPosition = transform.position;
+        _prevRotation = transform.rotation;
     }
 
     private void Update()
     {
         base.OnUpdate();
-        OnKeyBoardUpdate();
+        HandleInput();
     }
 
-    private void OnKeyBoardUpdate()
+    private void HandleInput()
     {
         _moveDir = Vector3.zero;
 
-        // 기존에는 Input.anyKey로 조기 리턴하여 서버에 멈춤 상태가 전송되지 않는 경우가 있어 제거했습니다.
-
-        // 카메라 기준 벡터
+        // 카메라 방향 기준
         Vector3 camForward = _cameraTransform.forward;
         Vector3 camRight = _cameraTransform.right;
         camForward.y = 0; camRight.y = 0;
-        camForward.Normalize();
-        camRight.Normalize();
+        camForward.Normalize(); camRight.Normalize();
 
-        // 이동 방향 설정
-        if (Input.GetKey(KeyCode.W))
-        {
-            _moveDir += camForward;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            _moveDir -= camForward;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            _moveDir -= camRight;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            _moveDir += camRight;
-        }
+        if (Input.GetKey(KeyCode.W)) _moveDir += camForward;
+        if (Input.GetKey(KeyCode.S)) _moveDir -= camForward;
+        if (Input.GetKey(KeyCode.A)) _moveDir -= camRight;
+        if (Input.GetKey(KeyCode.D)) _moveDir += camRight;
 
         _moveDir.Normalize();
 
-        // Move -> Idle
-        // 움직이다 멈춘 경우
-        if (_moveDir.sqrMagnitude < 0.01f)
+        // Idle 상태 (멈춤 전송 보장)
+        if (_moveDir.sqrMagnitude < _stopThreshold)
         {
-            // 멈춘 상태는 반드시 서버에 전송하여 다른 클라이언트가 올바른 상태를 보도록 함
             if (CreatureState != CreatureState.Idle)
             {
                 CreatureState = CreatureState.Idle;
-                SendMovePacket();
+                // 보낼 때는 명시적으로 0 벡터 전송
+                SendMovePacket(Vector3.zero);
+                // 업데이트 이전 상태
+                _prevVelocity = Vector3.zero;
+                _prevRotation = transform.rotation;
+                _prevPosition = transform.position;
             }
             return;
         }
 
-        // 이동 및 회전
+        // 이동 처리
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(_moveDir), Time.deltaTime * _rotateSpeed);
         transform.position += _moveDir * Time.deltaTime * _moveSpeed;
-
         CreatureState = CreatureState.Move;
 
-        // 데드 레커닝 정보 전송
-        if (HasMoveInput())
+        // 속도 및 회전 변화가 임계값을 넘을 때만 전송
+        Vector3 curPos = transform.position;
+        Vector3 curVelocity = (curPos - _prevPosition) / Time.deltaTime;
+        Quaternion curRotation = transform.rotation;
+
+        bool velocityChanged = (curVelocity - _prevVelocity).magnitude > _velocityChangeThreshold;
+        bool rotationChanged = Quaternion.Angle(curRotation, _prevRotation) > _rotationChangeThreshold;
+
+        if (velocityChanged || rotationChanged)
         {
-            SendMovePacket();
-        }   
+            SendMovePacket(curVelocity);
+            _prevVelocity = curVelocity;
+            _prevRotation = curRotation;
+            _prevPosition = curPos;
+        }
+        else
+        {
+            // 여전히 이전 포지션만 업데이트하여 다음 프레임 비교에 사용
+            _prevPosition = curPos;
+        }
     }
 
-    private void SendMovePacket()
+    private void SendMovePacket(Vector3 velocity)
     {
+        Debug.Log($"SendMovePacket: Pos({transform.position.x}, {transform.position.y}, {transform.position.z}) " +
+            $"Vel({velocity.x}, {velocity.y}, {velocity.z}) " +
+            $"Rot({transform.rotation.x}, {transform.rotation.y}, {transform.rotation.z}, {transform.rotation.w}) " +
+            $"State({CreatureState})");
         C_Move movePacket = new C_Move();
-        movePacket.ObjectState = ObjectState;
-        movePacket.ObjectState.Position = Position;
-        movePacket.ObjectState.Rotation = Rotation;
-        movePacket.ObjectState.Velocity = Velocity;
-        movePacket.ObjectState.CreatureState = CreatureState;
+        movePacket.ObjectState = new ObjectState()
+        {
+            ObjectId = Id,
+            ClientSendTime = Util.GetTimestampMs(),
+            Position = new ProtoVector3 { X = transform.position.x, Y = transform.position.y, Z = transform.position.z },
+            Velocity = new ProtoVector3 { X = velocity.x, Y = velocity.y, Z = velocity.z },
+            Rotation = new ProtoQuaternion { X = transform.rotation.x, Y = transform.rotation.y, Z = transform.rotation.z, W = transform.rotation.w },
+            CreatureState = CreatureState
+        };
+
         Managers.Network.Send(movePacket);
     }
 
-    // 패킷 생성
-    private C_Move MakeMovePacket(Vector3 curVelocity, Quaternion curRotation, long timestampMs)
-    {
-        C_Move movePacket = new C_Move();
-        movePacket.ObjectState = ObjectState;
-        movePacket.ObjectState.Position = Position;
-        movePacket.ObjectState.Rotation = new ProtoQuaternion
-        {
-            X = curRotation.x,
-            Y = curRotation.y,
-            Z = curRotation.z,
-            W = curRotation.w
-        };
-        movePacket.ObjectState.Velocity = new ProtoVector3
-        {
-            X = curVelocity.x,
-            Y = curVelocity.y,
-            Z = curVelocity.z
-        };
-        movePacket.ObjectState.Timestamp = timestampMs;
-        movePacket.ObjectState.CreatureState = CreatureState;
-        Debug.Log(CreatureState);
-
-        return movePacket;
-    }
     private void Start()
     {
         Init();
-    }
-
-    private bool HasMoveInput()
-    {
-        return Input.GetKey(KeyCode.W) ||
-               Input.GetKey(KeyCode.A) ||
-               Input.GetKey(KeyCode.S) ||
-               Input.GetKey(KeyCode.D);
     }
 
     private void OnMouseClicked(Define.MouseEvent evt)

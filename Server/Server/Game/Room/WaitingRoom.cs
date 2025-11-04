@@ -170,21 +170,33 @@ namespace Server.Game
 
         public void HandleMove(Player player, C_Move movePacket)
         {
-            if (player == null)
+            if (player == null || movePacket == null)
                 return;
 
-            // 클라 패킷 적용
-            player.Position = movePacket.ObjectState.Position;
-            player.Velocity = movePacket.ObjectState.Velocity;
-            player.Rotation = movePacket.ObjectState.Rotation;
-            player.CreatureState = movePacket.ObjectState.CreatureState;
+            // 서버에서 상태 업데이트
+            player.ObjectState = movePacket.ObjectState;
 
-            // 서버에서 클라로 보낼 패킷 생성
-            S_Move resMovePacket = new S_Move();
-            resMovePacket.ObjectState = player.ObjectState;
+            //// TODO - 일정 거리 이상 순간이동 방지
+            //Vector3 serverPos = new Vector3(player.ObjectState.Position.X, player.ObjectState.Position.Y, player.ObjectState.Position.Z);
+            //Vector3 clientPos = new Vector3(movePacket.ObjectState.Position.X, movePacket.ObjectState.Position.Y, movePacket.ObjectState.Position.Z);
 
-            // 다른 플레이어들한테도 myPlayer가 움직이는 것을 알려준다
-            Broadcast(resMovePacket);
+            //float dist = Vector3.Distance(serverPos, clientPos);
+            //if (dist > 10.0f)
+            //{
+            //    Console.WriteLine($"[Warning] Player {player.Id} position correction ({dist})");
+            //    movePacket.ObjectState.Position = player.ObjectState.Position;
+            //    movePacket.ObjectState.Velocity = new ProtoVector3 { X = 0, Y = 0, Z = 0 };
+            //}
+            
+            // 다른 유저들에게 브로드캐스트
+            S_Move res = new S_Move { ObjectState = movePacket.ObjectState };
+            res.ObjectState.ServerReceivedTime = Util.GetTimestampMs();
+            
+            Console.WriteLine($"playerId {player.Id}: Pos => {player.ObjectState.Position.X}, {player.ObjectState.Position.Y}, {player.ObjectState.Position.Z}");
+            Console.WriteLine($"playerId {player.Id}: Vel => {player.ObjectState.Velocity.X}, {player.ObjectState.Velocity.Y}, {player.ObjectState.Velocity.Z}");
+            Console.WriteLine($"playerId {player.Id}: Rot => {player.ObjectState.Rotation.X}, {player.ObjectState.Rotation.Y}, {player.ObjectState.Rotation.Z}, {player.ObjectState.Rotation.W},");
+
+            Broadcast(res, player.Id);
         }
 
         public Player FindPlayer(Func<GameObject, bool> condition)
@@ -198,11 +210,14 @@ namespace Server.Game
             return null;
         }
 
-        public void Broadcast(IMessage packet)
+        public void Broadcast(IMessage packet, int? exceptId = null)
         {
-            foreach (Player player in _players.Values)
+            foreach (Player p in _players.Values)
             {
-                player.Session.Send(packet);
+                if (exceptId.HasValue && p.Id == exceptId.Value)
+                    continue;
+
+                p.Session.Send(packet);
             }
         }
     }
