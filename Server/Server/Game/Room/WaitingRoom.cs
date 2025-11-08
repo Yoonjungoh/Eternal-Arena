@@ -86,13 +86,14 @@ namespace Server.Game
 
             // 본인한테 맵안의 플레이어 정보 전송
             S_Spawn spawnToMePacket = new S_Spawn();
-
             // 나를 제외하고 접속한 플레이어를 spawnPacket에 저장
+            long serverReceivedTime = Util.GetTimestampMs();
             foreach (Player p in _players.Values)
             {
                 if (p == null || player == p)
                     continue;
 
+                p.ObjectState.ServerReceivedTime = serverReceivedTime;
                 spawnToMePacket.ObjectStates.Add(p.ObjectState);
             }
             player.Session.Send(spawnToMePacket);
@@ -105,6 +106,7 @@ namespace Server.Game
                 if (p.Id == player.Id)
                     continue;
 
+                p.ObjectState.ServerReceivedTime = serverReceivedTime;
                 p.Session.Send(spawnToOthersPacket);
                 ConsoleLogManager.Instance.Log($"[WaitingRoom Update] Player {p.Id} Pos({p.Position.X}, {p.Position.Y}, {p.Position.Z})");
             }
