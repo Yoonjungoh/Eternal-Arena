@@ -14,8 +14,8 @@ public class MyPlayerController : PlayerController
     [SerializeField] private float _stopThreshold = 0.01f;
 
     // 데드 레커닝 패킷 제한에 쓸 임계값
-    [SerializeField] private float _velocityChangeThreshold = 0.1f;
-    [SerializeField] private float _rotationChangeThreshold = 2.0f;
+    private float _velocityChangeThreshold = 1.0f;
+    private float _rotationChangeThreshold = 2.0f;
 
     private Vector3 _prevVelocity = Vector3.zero;
     private Quaternion _prevRotation = Quaternion.identity;
@@ -34,34 +34,13 @@ public class MyPlayerController : PlayerController
     {
         base.OnUpdate();
         HandleInput();
-
     }
 
     private void FixedUpdate()
     {
-        HandlePhysicsMovement();
-    }
-
-    // 속도가 의미 있을 때만 패킷 전송 (무언가에 의해서 밀리거나 낙하 중일 때)
-    private void HandlePhysicsMovement()
-    {
-        Vector3 velocity = _rb.velocity;
-
-        bool wasFalling = _prevVelocity.y < -0.01f; // 이전 프레임에서 낙하 중이었는지
-        bool isNearlyStopped = velocity.sqrMagnitude <= 0.0001f; // 지금 거의 멈췄는지
-
-        // 낙하 중인 경우 (속도 유의미)
-        if (velocity.sqrMagnitude > 0.0001f)
-        {
-            SendMovePacket(velocity);
-        }
-        // 착지한 경우 (처음으로 멈춘 순간)
-        else if (wasFalling && isNearlyStopped)
-        {
-            SendMovePacket(Vector3.zero);
-        }
-
-        _prevVelocity = velocity;
+        HandlePhysicsMovement();    // 물리 기반 이동 처리
+        ApplyMovement();    // 실제 인풋에 따른 이동 처리
+        CheckMovePacket(); // 이동 감지 및 패킷 전송
     }
 
     private void HandleInput()
@@ -97,17 +76,59 @@ public class MyPlayerController : PlayerController
             return;
         }
 
-        // 이동 처리
+        // 회전 및 상태 처리
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(_moveDir), Time.deltaTime * _rotateSpeed);
-        transform.position += _moveDir * Time.deltaTime * _moveSpeed;
         CreatureState = CreatureState.Move;
+    }
 
-        // 속도 및 회전 변화가 임계값을 넘을 때만 전송
-        Vector3 curPos = transform.position;
-        Vector3 curVelocity = (curPos - _prevPosition) / Time.deltaTime;
-        Quaternion curRotation = transform.rotation;
+    private void ApplyMovement()
+    {
+        if (_rb == null)
+            return;
 
-        bool velocityChanged = (curVelocity - _prevVelocity).magnitude > _velocityChangeThreshold;
+        // 이동 방향이 없는 경우 무시
+        if (_moveDir.sqrMagnitude < _stopThreshold)
+            return;
+
+        // 현재 위치 + 이동량 (FixedDeltaTime 사용!)
+        Vector3 newPosition = _rb.position + _moveDir * _moveSpeed * Time.fixedDeltaTime;
+        _rb.MovePosition(newPosition);
+
+        // 회전도 MoveRotation으로
+        Quaternion targetRot = Quaternion.LookRotation(_moveDir);
+        _rb.MoveRotation(Quaternion.Lerp(_rb.rotation, targetRot, _rotateSpeed * Time.fixedDeltaTime));
+
+        CreatureState = CreatureState.Move;
+    }
+
+    // 속도가 의미 있을 때만 패킷 전송 (무언가에 의해서 밀리거나 낙하 중일 때)
+    private void HandlePhysicsMovement()
+    {
+        Vector3 velocity = _rb.velocity;
+
+        bool wasFalling = _prevVelocity.y < -0.01f; // 이전 프레임에서 낙하 중이었는지
+        bool isNearlyStopped = velocity.sqrMagnitude <= 0.0001f; // 지금 거의 멈췄는지
+
+        // 낙하 중인 경우 (속도 유의미)
+        if (velocity.sqrMagnitude > 0.0001f)
+        {
+            SendMovePacket(velocity);
+        }
+        // 착지한 경우 (처음으로 멈춘 순간)
+        else if (wasFalling && isNearlyStopped)
+        {
+            _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);  // Y축 속도 제거
+            SendMovePacket(Vector3.zero);
+        }
+    }
+
+    private void CheckMovePacket()
+    {
+        Vector3 curPos = _rb.position;
+        Vector3 curVelocity = (curPos - _prevPosition) / Time.fixedDeltaTime;
+        Quaternion curRotation = _rb.rotation;
+
+        bool velocityChanged = (curVelocity - _prevVelocity).sqrMagnitude > (_velocityChangeThreshold * _velocityChangeThreshold);
         bool rotationChanged = Quaternion.Angle(curRotation, _prevRotation) > _rotationChangeThreshold;
 
         if (velocityChanged || rotationChanged)
@@ -119,25 +140,25 @@ public class MyPlayerController : PlayerController
         }
         else
         {
-            // 여전히 이전 포지션만 업데이트하여 다음 프레임 비교에 사용
             _prevPosition = curPos;
         }
     }
 
     private void SendMovePacket(Vector3 velocity)
     {
+        Vector3 pos = _rb.position;  // 실제 물리 위치 사용 (transform.position은 렌더링 프레임에서 보간된 값이므로 미세한 차이 존재)
+        Quaternion rot = _rb.rotation;
+
         C_Move movePacket = new C_Move();
         movePacket.ObjectState = new ObjectState()
         {
             ObjectId = Id,
             ClientSendTime = Util.GetTimestampMs(),
-            Position = new ProtoVector3 { X = transform.position.x, Y = transform.position.y, Z = transform.position.z },
+            Position = new ProtoVector3 { X = pos.x, Y = pos.y, Z = pos.z },
             Velocity = new ProtoVector3 { X = velocity.x, Y = velocity.y, Z = velocity.z },
-            Rotation = new ProtoQuaternion { X = transform.rotation.x, Y = transform.rotation.y, Z = transform.rotation.z, W = transform.rotation.w },
+            Rotation = new ProtoQuaternion { X = rot.x, Y = rot.y, Z = rot.z, W = rot.w },
             CreatureState = CreatureState
         };
-        Managers.UI.ShowToastPopup($"전송 위치: ({movePacket.ObjectState.Position.X}, {movePacket.ObjectState.Position.Y}, {movePacket.ObjectState.Position.Z})\n" +
-            $"속도: ({movePacket.ObjectState.Velocity.X}, {movePacket.ObjectState.Velocity.Y}, {movePacket.ObjectState.Velocity.Z})");
 
         Managers.Network.Send(movePacket);
     }
