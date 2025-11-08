@@ -32,14 +32,14 @@ namespace Server.Game
         public void Update()
         {
             Flush();
-            int pid = 16777216;
-            foreach(Player p in _players.Values)
-            {
-                if (p.Id == pid)
-                {
-                    ConsoleLogManager.Instance.Log($"[WaitingRoom Update] Player {p.Id} Pos({p.Position.X}, {p.Position.Y}, {p.Position.Z})");
-                }
-            }
+            //int pid = 16777216;
+            //foreach(Player p in _players.Values)
+            //{
+            //    if (p.Id == pid)
+            //    {
+            //        ConsoleLogManager.Instance.Log($"[WaitingRoom Update] Player {p.Id} Pos({p.Position.X}, {p.Position.Y}, {p.Position.Z})");
+            //    }
+            //}
         }
 
         public void EnterRoom(Player player)
@@ -87,7 +87,7 @@ namespace Server.Game
             // 본인한테 맵안의 플레이어 정보 전송
             S_Spawn spawnToMePacket = new S_Spawn();
 
-            //나를 제외하고 접속한 플레이어를 spawnPacket에 저장
+            // 나를 제외하고 접속한 플레이어를 spawnPacket에 저장
             foreach (Player p in _players.Values)
             {
                 if (p == null || player == p)
@@ -106,6 +106,7 @@ namespace Server.Game
                     continue;
 
                 p.Session.Send(spawnToOthersPacket);
+                ConsoleLogManager.Instance.Log($"[WaitingRoom Update] Player {p.Id} Pos({p.Position.X}, {p.Position.Y}, {p.Position.Z})");
             }
         }
 

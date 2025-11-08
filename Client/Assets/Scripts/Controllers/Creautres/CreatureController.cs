@@ -27,7 +27,7 @@ public class CreatureController : MonoBehaviour
             ObjectState.CreatureState = value;
         }
     }
-    public GameObjectType GameObjectType;
+    public GameObjectType GameObjectType { get; set; }
 
     protected ProtoVector3 _position = new ProtoVector3();
     public ProtoVector3 Position

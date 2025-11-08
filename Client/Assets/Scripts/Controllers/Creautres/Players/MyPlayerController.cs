@@ -39,20 +39,29 @@ public class MyPlayerController : PlayerController
 
     private void FixedUpdate()
     {
-        //HandlePhysicsMovement();
-        StartCoroutine(CoPhysicsSync());
+        HandlePhysicsMovement();
     }
 
     // 속도가 의미 있을 때만 패킷 전송 (무언가에 의해서 밀리거나 낙하 중일 때)
-    private IEnumerator CoPhysicsSync()
+    private void HandlePhysicsMovement()
     {
-        yield return new WaitForFixedUpdate(); // 다음 물리 프레임까지 대기
         Vector3 velocity = _rb.velocity;
+
+        bool wasFalling = _prevVelocity.y < -0.01f; // 이전 프레임에서 낙하 중이었는지
+        bool isNearlyStopped = velocity.sqrMagnitude <= 0.0001f; // 지금 거의 멈췄는지
+
+        // 낙하 중인 경우 (속도 유의미)
         if (velocity.sqrMagnitude > 0.0001f)
         {
-            Debug.Log($"Physics Velocity: {_rb.velocity}");
             SendMovePacket(velocity);
         }
+        // 착지한 경우 (처음으로 멈춘 순간)
+        else if (wasFalling && isNearlyStopped)
+        {
+            SendMovePacket(Vector3.zero);
+        }
+
+        _prevVelocity = velocity;
     }
 
     private void HandleInput()
