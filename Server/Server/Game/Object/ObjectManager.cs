@@ -10,11 +10,12 @@ namespace Server.Game
 	{
 		public static ObjectManager Instance { get; } = new ObjectManager();
 
-		object _lock = new object();
-		Dictionary<int, Player> _players = new Dictionary<int, Player>();
+		private object _lock = new object();
+        private Dictionary<int, Player> _players = new Dictionary<int, Player>();
+		public Dictionary<int, Player> Players { get { return _players; } }
 
-		// [UNUSED(1)][TYPE(7)][ID(24)]
-		int _counter = 0;
+        // [UNUSED(1)][TYPE(7)][ID(24)]
+        private int _counter = 0;
 
 		public T Add<T>() where T : GameObject, new()
 		{

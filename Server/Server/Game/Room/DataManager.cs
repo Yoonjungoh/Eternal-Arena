@@ -18,10 +18,10 @@ namespace Server.Game
     {
         public List<Vector3> StartPositions = new List<Vector3>()
         {
-            new Vector3(0, 10, 0),
-            new Vector3(3, 10, 0),
-            new Vector3(-3, 10, 0),
-            new Vector3(0, 10, 3)
+            new Vector3(0, 3, 0),
+            new Vector3(1, 3, 0),
+            new Vector3(2, 3, 0),
+            new Vector3(3, 3, 3)
         };
 
         public static DataManager Instance { get; } = new DataManager();
@@ -31,7 +31,11 @@ namespace Server.Game
         public Vector3 GetStartPosition(int index)
         {
             if (index < 0 || index >= StartPositions.Count)
-                return new Vector3(0, 10, 0); // 기본값
+                return new Vector3(
+                    StartPositions[StartPositions.Count - 1].X + index,
+                    StartPositions[StartPositions.Count - 1].Y,
+                    StartPositions[StartPositions.Count - 1].Z
+                ); // 기본값
 
             return StartPositions[index];
         }

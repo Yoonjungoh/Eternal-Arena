@@ -30,6 +30,11 @@ namespace Server.Game
         public void Update()
         {
             Flush();
+            if (ObjectManager.Instance.Players.Count <= 100)
+            {
+                Player player = ObjectManager.Instance.Add<Player>();
+                EnterGame(player);
+            }
         }
 
         public void EnterGame(Player player)
@@ -53,7 +58,8 @@ namespace Server.Game
             enterWaitingRoomPacket.ObjectState.Name = player.ObjectState.Name;
 
             // position 초기화
-            int spawnIndex = _players.Count % DataManager.Instance.MaxRoomPlayerCount;
+            //int spawnIndex = _players.Count % DataManager.Instance.MaxRoomPlayerCount;
+            int spawnIndex = _players.Count;
             Vector3 startPos = DataManager.Instance.GetStartPosition(spawnIndex);
             player.ObjectState.Position.X = startPos.X;
             player.ObjectState.Position.Y = startPos.Y;
@@ -68,7 +74,10 @@ namespace Server.Game
             player.ObjectState.CreatureState = CreatureState.Idle;
             enterWaitingRoomPacket.ObjectState.CreatureState = CreatureState.Idle;
 
-            player.Session.Send(enterWaitingRoomPacket);
+            if (player.Session != null)
+            {
+                player.Session.Send(enterWaitingRoomPacket);
+            }
 
             _players.Add(player.Id, player);
             player.Init();
@@ -85,14 +94,17 @@ namespace Server.Game
                 p.ObjectState.ServerReceivedTime = serverReceivedTime;
                 spawnToMePacket.ObjectStates.Add(p.ObjectState);
             }
-            player.Session.Send(spawnToMePacket);
+            if (player.Session != null)
+            {
+                player.Session.Send(spawnToMePacket);
+            }
 
             // 다른 플레이어에게도 내가 접속한 걸 알려주기
             S_Spawn spawnToOthersPacket = new S_Spawn();
             spawnToOthersPacket.ObjectStates.Add(player.ObjectState);
             foreach (Player p in _players.Values)
             {
-                if (p == null || player.Id == p.Id )
+                if (p == null || p.Session == null || player.Id == p.Id )
                     continue;
 
                 p.ObjectState.ServerReceivedTime = serverReceivedTime;
@@ -151,6 +163,9 @@ namespace Server.Game
             foreach (Player p in _players.Values)
             {
                 if (exceptId.HasValue && p.Id == exceptId.Value)
+                    continue;
+
+                if (p.Session == null)
                     continue;
 
                 p.Session.Send(packet);
