@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class WaitingRoomObjectManager
 {
@@ -20,9 +21,12 @@ public class WaitingRoomObjectManager
     public void Add(ObjectState objectState, bool isMyPlayer = false)
     {
         GameObjectType objectType = GetObjectTypeById(objectState.ObjectId);
+        Vector3 position = new Vector3(objectState.Position.X, objectState.Position.Y, objectState.Position.Z);
+        Quaternion rotation = new Quaternion(objectState.Rotation.X, objectState.Rotation.Y, objectState.Rotation.Z, objectState.Rotation.W);
+
         if (objectType == GameObjectType.Player && isMyPlayer)
         {
-            GameObject player = Managers.Resource.Instantiate($"Creatures/Players/MyPlayers/MyPlayer_1");
+            GameObject player = Managers.Resource.Instantiate($"Creatures/Players/MyPlayers/MyPlayer_1", position, rotation);
             MyPlayer = player.GetComponent<MyPlayerController>();
 
             MyPlayer.ObjectState = objectState;
@@ -35,23 +39,12 @@ public class WaitingRoomObjectManager
         }
         else if (objectType == GameObjectType.Player && isMyPlayer == false)
         {
-            GameObject player = Managers.Resource.Instantiate($"Creatures/Players/OtherPlayers/OtherPlayer_1");
+            GameObject player = Managers.Resource.Instantiate($"Creatures/Players/OtherPlayers/OtherPlayer_1", position, rotation);
             OtherPlayerController otherPlayer = player.GetComponent<OtherPlayerController>();
 
             otherPlayer.ObjectState = objectState;
             otherPlayer.GameObjectType = objectType;
 
-            otherPlayer.transform.position = new Vector3(
-                objectState.Position.X,
-                objectState.Position.Y,
-                objectState.Position.Z
-            );
-            otherPlayer.transform.rotation = new Quaternion(
-                objectState.Rotation.X,
-                objectState.Rotation.Y,
-                objectState.Rotation.Z,
-                objectState.Rotation.W
-            );
             otherPlayer.SetServerState(
                 objectState.Position,
                 objectState.Rotation,

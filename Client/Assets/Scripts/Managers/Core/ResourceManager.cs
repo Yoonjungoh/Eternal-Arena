@@ -132,6 +132,27 @@ public class ResourceManager
         return go;
     }
 
+    public GameObject Instantiate(string path, Vector3 position, Quaternion rotation, Transform parent = null)
+    {
+        GameObject original = Load<GameObject>($"Prefabs/{path}");
+        if (original == null)
+        {
+            Debug.Log($"Failed to load prefab : {path}");
+            return null;
+        }
+
+        if (original.GetComponent<Poolable>() != null)
+        {
+            GameObject pooled = Managers.Pool.Pop(original, parent).gameObject;
+            pooled.transform.SetPositionAndRotation(position, rotation);
+            return pooled;
+        }
+
+        GameObject go = Object.Instantiate(original, position, rotation, parent);
+        go.name = original.name;
+        return go;
+    }
+
     public void Destroy(GameObject go, float destroyTime = 0f)
     {
         if (go == null)

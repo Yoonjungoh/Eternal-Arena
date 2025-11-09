@@ -31,9 +31,8 @@ namespace Server.Game
         public Vector3 GetStartPosition(int index)
         {
             if (index < 0 || index >= StartPositions.Count)
-            {
                 return new Vector3(0, 10, 0); // 기본값
-            }
+
             return StartPositions[index];
         }
     }

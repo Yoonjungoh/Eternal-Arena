@@ -129,9 +129,9 @@ namespace Server.Game
             // 다른 유저들에게 브로드캐스트
             S_Move res = new S_Move { ObjectState = movePacket.ObjectState };
             res.ObjectState.ServerReceivedTime = Util.GetTimestampMs();
-            Console.WriteLine
-                ($"Player {player.Id} -> Vel: ({player.Velocity.X}, {player.Velocity.Y}, {player.Velocity.Z})" +
-                $"Rot: ({player.Rotation.X}, {player.Rotation.Y}, {player.Rotation.Z}, {player.Rotation.W})");
+            //Console.WriteLine
+            //    ($"Player {player.Id} -> Vel: ({player.Velocity.X}, {player.Velocity.Y}, {player.Velocity.Z})" +
+            //    $"Rot: ({player.Rotation.X}, {player.Rotation.Y}, {player.Rotation.Z}, {player.Rotation.W})");
             Broadcast(res, player.Id);
         }
 
