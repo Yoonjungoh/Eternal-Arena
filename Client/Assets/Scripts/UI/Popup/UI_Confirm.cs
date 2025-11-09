@@ -46,7 +46,7 @@ public class UI_Confirm : UI_Popup<ConfirmPopupData>
         roomInfo.CurrentPlayerCount = _data.CurrentPlayerCount;
         roomInfo.MaxPlayerCount = _data.MaxPlayerCount;
         
-        Managers.Room.EnterRoom(roomInfo);
+        Managers.WaitingRoom.EnterRoom(roomInfo);
         ClosePopupUI();
     }
 

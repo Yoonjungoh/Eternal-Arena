@@ -19,6 +19,8 @@ enum MsgId {
   C_EXIT_ROOM = 11;
   C_ENTER_LOBBY = 12;
   S_UPDATE_WAITING_ROOM_INFO = 13;
+  C_START_GAME = 14;
+  S_START_GAME = 15;
   S_ENTER_GAME = 90;
   S_LEAVE_GAME = 100;
   S_SPAWN = 101;
@@ -95,6 +97,14 @@ message C_ExitRoom {
 
 message S_UpdateWaitingRoomInfo{
   RoomInfo roomInfo = 1;
+}
+
+message C_StartGame{
+  int32 roomId = 1;
+}
+
+message S_StartGame{
+  repeated int32 playerIdList = 1;
 }
 
 message S_EnterGame {

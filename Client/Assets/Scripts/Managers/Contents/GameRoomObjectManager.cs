@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectManager
+public class GameRoomObjectManager
 {
     public int UserId;  // 현재 UserId랑 Player의 Id랑 같이 쓰는 중
     public MyPlayerController MyPlayer { get; set; }

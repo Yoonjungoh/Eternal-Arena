@@ -11,8 +11,8 @@ public class WatingRoomScene : BaseScene
 
         // 방 입장 하겠다고 패킷 전송
         C_EnterWaitingRoom enterRoomPacket = new C_EnterWaitingRoom();
-        enterRoomPacket.UserId = Managers.Object.UserId;
-        enterRoomPacket.RoomId = Managers.Room.RoomInfo.RoomId;
+        enterRoomPacket.UserId = Managers.WaitingRoomObject.UserId;
+        enterRoomPacket.RoomId = Managers.WaitingRoom.RoomInfo.RoomId;
         Managers.Network.Send(enterRoomPacket);
 
         Managers.UI.ShowSceneUI<UI_WaitingRoom>();

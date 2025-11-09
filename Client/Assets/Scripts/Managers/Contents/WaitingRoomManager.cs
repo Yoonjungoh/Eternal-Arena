@@ -4,11 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoomManager
+public class WaitingRoomManager
 {
     // 현재 Room Id, -1이면 방에 없음
     public RoomInfo RoomInfo { get; set; } = new RoomInfo();
-    public bool IsRoomOwner { get { return RoomInfo.RoomOwnerId == Managers.Object.UserId; } }
+    public bool IsRoomOwner { get { return RoomInfo.RoomOwnerId == Managers.WaitingRoomObject.UserId; } }
     public bool CanEnterWaitingRoom { get { return RoomInfo.CurrentPlayerCount < RoomInfo.MaxPlayerCount; } }
     public bool CanEnterGame { get { return RoomInfo.CurrentPlayerCount == RoomInfo.MaxPlayerCount; } }
 
@@ -30,7 +30,7 @@ public class RoomManager
     {
         RoomInfo = new RoomInfo();
         RoomInfo.RoomId = -1;
-        Managers.Object.Clear();
+        Managers.WaitingRoomObject.Clear();
         Managers.Scene.LoadScene(Define.Scene.Lobby);
     }
 }

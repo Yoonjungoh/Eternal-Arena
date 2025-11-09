@@ -32,14 +32,6 @@ namespace Server.Game
         public void Update()
         {
             Flush();
-            //int pid = 16777216;
-            //foreach(Player p in _players.Values)
-            //{
-            //    if (p.Id == pid)
-            //    {
-            //        ConsoleLogManager.Instance.Log($"[WaitingRoom Update] Player {p.Id} Pos({p.Position.X}, {p.Position.Y}, {p.Position.Z})");
-            //    }
-            //}
         }
 
         public void EnterRoom(Player player)
@@ -211,6 +203,35 @@ namespace Server.Game
                 ($"Player {player.Id} -> Vel: ({player.Velocity.X}, {player.Velocity.Y}, {player.Velocity.Z})" +
                 $"Rot: ({player.Rotation.X}, {player.Rotation.Y}, {player.Rotation.Z}, {player.Rotation.W})");
             Broadcast(res, player.Id);
+        }
+
+        public void StartGame(int userId, int roomId)
+        {
+            int userRoomId = -1;
+            if (_players.TryGetValue(userId, out Player user))
+            {
+                if (user.WaitingRoom != null)
+                {
+                    userRoomId = user.WaitingRoom.RoomId;
+                }
+            }
+            if (CanStartGame(userRoomId, roomId) == false)
+            {
+                ConsoleLogManager.Instance.Log($"Failed to start game. UserId: {userId}, RoomId: {roomId}");
+                return;
+            }
+            S_StartGame startGamePacket = new S_StartGame();
+            foreach (int playerId in _players.Keys)
+            {
+                startGamePacket.PlayerIdList.Add(playerId);
+            }
+            Broadcast(startGamePacket);
+        }
+
+        private bool CanStartGame(int userRoomId, int roomId)
+        {
+            // 인원 체크, 방 번호가 요청한 사용자와 동일한지 체크
+            return this.RoomId == userRoomId && this.RoomId == roomId && CurrentPlayerCount == DataManager.Instance.MaxRoomPlayerCount;
         }
 
         public Player FindPlayer(Func<GameObject, bool> condition)

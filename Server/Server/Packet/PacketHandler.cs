@@ -123,7 +123,18 @@ class PacketHandler
             return;
 
         LobbyManager.Instance.EnterLobby(1, user);	// TODO - 1번 로비로 강제 이동
+    }
 
+    public static void C_StartGameHandler(PacketSession session, IMessage packet)
+    {
+        C_StartGame startGamePacket = packet as C_StartGame;
+        ClientSession clientSession = session as ClientSession;
+
+        Player user = clientSession.MyPlayer;
+        if (user == null || user.Lobby == null)
+            return;
+
+        user.WaitingRoom.Push(user.WaitingRoom.StartGame, user.Id, startGamePacket.RoomId);
     }
 
     public static void C_TimestampHandler(PacketSession session, IMessage packet)

@@ -8,12 +8,13 @@ public class Managers : MonoBehaviour
     private static Managers s_instance; // 유일성이 보장된다
     private static Managers Instance { get { Init(); return s_instance; } } // 유일한 매니저를 갖고온다
 
-    private GameManager _game = new GameManager();
+    private GameRoomManager _gameRoom = new GameRoomManager();
+    private GameRoomObjectManager _gameRoomObject = new GameRoomObjectManager();
     private LobbyManager _lobby = new LobbyManager();
     private MapManager _map = new MapManager();
     private NetworkManager _network = new NetworkManager();
-    private ObjectManager _object = new ObjectManager();
-    private RoomManager _room = new RoomManager();
+    private WaitingRoomObjectManager _waitingRoomObject = new WaitingRoomObjectManager();
+    private WaitingRoomManager _waitingRoom = new WaitingRoomManager();
     private PoolManager _pool = new PoolManager();
     private InputManager _input = new InputManager();
     private DataManager _data = new DataManager();
@@ -23,12 +24,13 @@ public class Managers : MonoBehaviour
     private UIManager _ui = new UIManager();
     private URLManager _url = new URLManager();
 
-    public static GameManager Game { get { return Instance._game; } }
+    public static GameRoomManager GameRoom { get { return Instance._gameRoom; } }
+    public static GameRoomObjectManager GameRoomObject { get { return Instance._gameRoomObject; } }
     public static LobbyManager Lobby { get { return Instance._lobby; } }
     public static MapManager Map { get { return Instance._map; } }
     public static NetworkManager Network { get { return Instance._network; } }
-    public static ObjectManager Object { get { return Instance._object; } }
-    public static RoomManager Room { get { return Instance._room; } }
+    public static WaitingRoomObjectManager WaitingRoomObject { get { return Instance._waitingRoomObject; } }
+    public static WaitingRoomManager WaitingRoom { get { return Instance._waitingRoom; } }
     public static PoolManager Pool { get { return Instance._pool; } }
     public static DataManager Data { get { return Instance._data; } }
     public static InputManager Input { get { return Instance._input; } }
@@ -70,7 +72,7 @@ public class Managers : MonoBehaviour
             s_instance._data.Init();
             s_instance._sound.Init();
             s_instance._resource.Init();
-            s_instance._room.Init();
+            s_instance._waitingRoom.Init();
         }
     }
 
@@ -80,7 +82,7 @@ public class Managers : MonoBehaviour
         UI.Clear();
 
         Pool.Clear();
-        Object.Clear();
+        WaitingRoomObject.Clear();
     }
     public IEnumerator CoDataManagerInit()
     {

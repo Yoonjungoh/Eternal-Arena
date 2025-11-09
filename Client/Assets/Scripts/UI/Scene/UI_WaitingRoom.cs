@@ -21,7 +21,7 @@ public class UI_WaitingRoom : UI_Scene
         GetButton((int)Buttons.StartGameButton).onClick.AddListener(OnClickStartGameButton);
 
         // 방장만 게임 시작 버튼 활성화
-        GetButton((int)Buttons.StartGameButton).gameObject.SetActive(Managers.Room.IsRoomOwner);
+        GetButton((int)Buttons.StartGameButton).gameObject.SetActive(Managers.WaitingRoom.IsRoomOwner);
     }
 
     private void OnClickExitRoomButton()
@@ -33,9 +33,13 @@ public class UI_WaitingRoom : UI_Scene
     private void OnClickStartGameButton()
     {
         // 내가 방장이고 게임에 들어갈 수 있는 조건을 만족할 때 게임 진입 가능
-        if (Managers.Room.IsRoomOwner && Managers.Room.CanEnterGame)
+        if (Managers.WaitingRoom.IsRoomOwner && Managers.WaitingRoom.CanEnterGame)
         {
-            Managers.UI.ShowToastPopup("게임 시작!");
+            Managers.UI.ShowToastPopup("게임 시작 요청");
+            // 서버한테 패킷 전송
+            C_StartGame startGamePacket = new C_StartGame();
+            startGamePacket.RoomId = Managers.WaitingRoom.RoomInfo.RoomId;
+            Managers.Network.Send(startGamePacket);
         }
         else
         {

@@ -19,7 +19,7 @@ class PacketHandler
             Debug.Log("S_AssignUserId 패킷이 null입니다");
             return;
         }
-        Managers.Object.UserId = assignUserIdPacket.UserId;
+        Managers.WaitingRoomObject.UserId = assignUserIdPacket.UserId;
     }
 
     // 로비에 입장했을 때
@@ -72,7 +72,7 @@ class PacketHandler
             return;
         }
 
-        Managers.Object.Add(enterWaitingRoomPacket.ObjectState, isMyPlayer: true);
+        Managers.WaitingRoomObject.Add(enterWaitingRoomPacket.ObjectState, isMyPlayer: true);
     }
 
     public static void S_AddRoomHandler(PacketSession session, IMessage packet)
@@ -97,9 +97,9 @@ class PacketHandler
 
         int roomInfoListCount = roomInfoList.Count;
         // 내가 방 주인인지 확인 후 바로 입장
-        if (roomInfoListCount == 1 && roomInfoList[0].RoomOwnerId == Managers.Object.UserId)
+        if (roomInfoListCount == 1 && roomInfoList[0].RoomOwnerId == Managers.WaitingRoomObject.UserId)
         {
-            Managers.Room.EnterRoom(roomInfoList[0]);
+            Managers.WaitingRoom.EnterRoom(roomInfoList[0]);
         }
 
     }
@@ -133,7 +133,7 @@ class PacketHandler
             return;
         }
 
-        Managers.Room.ExitRoom();
+        Managers.WaitingRoom.ExitRoom();
     }
 
     // 유저가 로비에 있으면 방 정보 갱신
@@ -159,8 +159,25 @@ class PacketHandler
         }
         else if (Managers.Scene.CurrentScene == Define.Scene.WaitingRoom)
         {
-            Managers.Room.RoomInfo = updateWatingRoomInfoPacket.RoomInfo;
+            Managers.WaitingRoom.RoomInfo = updateWatingRoomInfoPacket.RoomInfo;
         }
+    }
+    public static void S_StartGameHandler(PacketSession session, IMessage packet)
+    {
+        S_StartGame startGamePacket = packet as S_StartGame;
+        if (startGamePacket == null)
+        {
+            Debug.Log("S_StartGame 패킷이 null입니다");
+            return;
+        }
+        if (Managers.Scene.CurrentScene != Define.Scene.WaitingRoom)
+        {
+            Managers.UI.ShowToastPopup("현재 대기방에 있지 않아 게임에 입장할 수 없습니다.");
+            return;
+        }
+        
+        // 대기방의 정보 그대로 넘겨주고 서버에서 받은 유저 아이디 리스트 넘겨줌
+        Managers.GameRoom.EnterGame(Managers.WaitingRoom.RoomInfo, startGamePacket.PlayerIdList);
     }
 
     // 내가 게임에 입장할 때 패킷
@@ -186,7 +203,7 @@ class PacketHandler
 
         foreach (ObjectState objectState in spawnPacket.ObjectStates)
         {
-            Managers.Object.Add(objectState, isMyPlayer: false);
+            Managers.WaitingRoomObject.Add(objectState, isMyPlayer: false);
         }
     }
 
@@ -195,7 +212,7 @@ class PacketHandler
         S_Despawn despawnPacket = packet as S_Despawn;
         foreach (int id in despawnPacket.ObjectIds)
         {
-            Managers.Object.Remove(id);
+            Managers.WaitingRoomObject.Remove(id);
         }
     }
 
@@ -204,7 +221,7 @@ class PacketHandler
         S_Move movePacket = packet as S_Move;
 
         // 움직임 동기화 시킬 오브젝트 찾기
-        GameObject go = Managers.Object.FindById(movePacket.ObjectState.ObjectId);
+        GameObject go = Managers.WaitingRoomObject.FindById(movePacket.ObjectState.ObjectId);
         if (go == null)
         {
             Debug.Log($"Cant find GameObject {movePacket.ObjectState.ObjectId}");
@@ -223,7 +240,7 @@ class PacketHandler
         cc.ObjectState.Velocity = movePacket.ObjectState.Velocity;
         cc.ObjectState.CreatureState = movePacket.ObjectState.CreatureState;
 
-        GameObjectType type = Managers.Object.GetObjectTypeById(cc.Id);
+        GameObjectType type = Managers.WaitingRoomObject.GetObjectTypeById(cc.Id);
         if (type == GameObjectType.Player)
         {
             OtherPlayerController otherPlayer = go.GetComponent<OtherPlayerController>();
