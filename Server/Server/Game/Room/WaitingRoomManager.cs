@@ -15,10 +15,11 @@ namespace Server.Game
         List<System.Timers.Timer> _timers = new List<System.Timers.Timer>();
         public event Action<int> OnRemoveRoom; // 방이 비었을 때 알림 (roomId)
         public event Action<int> OnRoomInfoChanged; // 방 정보 바뀌었을 때 알림 (roomId)
+        public event Action<int> OnStartGame;  // 게임이 시작 됐을 때 알림 (roomId)
 
         public WaitingRoomManager(int lobbyId)
         {
-            ConsoleLogManager.Instance.Log($"RoomManager created for Lobby {lobbyId}");
+            ConsoleLogManager.Instance.Log($"WaitingRoomManager created for Lobby {lobbyId}");
         }
 
         public void TickRoom(WaitingRoom room, int tick = 50)
@@ -54,6 +55,9 @@ namespace Server.Game
 
                 newRoom.OnRoomInfoChanged -= HandleRoomInfoChanged;
                 newRoom.OnRoomInfoChanged += HandleRoomInfoChanged;
+
+                newRoom.OnStartGame -= HandleStartGame;
+                newRoom.OnStartGame += HandleStartGame;
 
                 _rooms.Add(_roomId, newRoom);
                 _roomId++;
@@ -94,6 +98,16 @@ namespace Server.Game
                 return;
             }
             OnRemoveRoom?.Invoke(roomId);
+        }
+
+        private void HandleStartGame(int roomId)
+        {
+            if (_rooms.ContainsKey(roomId) == false)
+            {
+                ConsoleLogManager.Instance.Log($"Cant Find Room {roomId}");
+                return;
+            }
+            OnStartGame?.Invoke(roomId);
         }
 
         public WaitingRoom Find(int roomId)

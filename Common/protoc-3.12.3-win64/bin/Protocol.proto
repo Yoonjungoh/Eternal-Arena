@@ -21,6 +21,7 @@ enum MsgId {
   S_UPDATE_WAITING_ROOM_INFO = 13;
   C_START_GAME = 14;
   S_START_GAME = 15;
+  C_ENTER_GAME = 16;
   S_ENTER_GAME = 90;
   S_LEAVE_GAME = 100;
   S_SPAWN = 101;
@@ -112,7 +113,7 @@ message S_EnterGame {
 }
 
 message C_EnterGame {
-  ObjectState objectState = 1;
+  int32 roomId = 1;
 }
 
 message C_EnterLobby {

@@ -23,6 +23,7 @@ namespace Server.Game
 
         public event Action<int> OnEmptyRoom; // 방이 비었을 때 알림 (roomId)
         public event Action<int> OnRoomInfoChanged;  // 방 정보 바뀌었을 때 알림 (roomId)
+        public event Action<int> OnStartGame;  // 게임이 시작 됐을 때 알림 (roomId)
         public void Init()
         {
             //TestTimer();
@@ -54,13 +55,15 @@ namespace Server.Game
             // name 초기화
             enterWaitingRoomPacket.ObjectState.Name = player.ObjectState.Name;
 
-            // positionInfo 초기화
-            player.ObjectState.Position.X = 0;
-            player.ObjectState.Position.Y = 10;
-            player.ObjectState.Position.Z = 0;
-            enterWaitingRoomPacket.ObjectState.Position.X = 0;
-            enterWaitingRoomPacket.ObjectState.Position.Y = 10;
-            enterWaitingRoomPacket.ObjectState.Position.Z = 0;
+            // position 초기화
+            int spawnIndex = _players.Count % DataManager.Instance.MaxRoomPlayerCount;
+            Vector3 startPos = DataManager.Instance.GetStartPosition(spawnIndex);
+            player.ObjectState.Position.X = startPos.X;
+            player.ObjectState.Position.Y = startPos.Y;
+            player.ObjectState.Position.Z = startPos.Z;
+            enterWaitingRoomPacket.ObjectState.Position.X = player.ObjectState.Position.X;
+            enterWaitingRoomPacket.ObjectState.Position.Y = player.ObjectState.Position.Y;
+            enterWaitingRoomPacket.ObjectState.Position.Z = player.ObjectState.Position.Z;
 
             // TODO - stat
 
@@ -220,6 +223,10 @@ namespace Server.Game
                 ConsoleLogManager.Instance.Log($"Failed to start game. UserId: {userId}, RoomId: {roomId}");
                 return;
             }
+            // TODO - 대기방 로비에서 못 들어오게 처리하기
+            // 만들어진 방으로 유저들을 초대
+            OnStartGame?.Invoke(roomId);
+
             S_StartGame startGamePacket = new S_StartGame();
             foreach (int playerId in _players.Keys)
             {

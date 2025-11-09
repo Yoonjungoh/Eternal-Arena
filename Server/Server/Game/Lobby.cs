@@ -19,16 +19,21 @@ namespace Server.Game
         
         Dictionary<int, Player> _users = new Dictionary<int, Player>();
         public WaitingRoomManager WaitingRoomManager;
+        public GameRoomManager GameRoomManager;
 
         public void Init()
         {
             WaitingRoomManager = new WaitingRoomManager(LobbyId);
+            GameRoomManager = new GameRoomManager(LobbyId);
 
             WaitingRoomManager.OnRemoveRoom -= HandleRemoveRoom;
             WaitingRoomManager.OnRemoveRoom += HandleRemoveRoom;
 
             WaitingRoomManager.OnRoomInfoChanged -= HandleRoomInfoChanged;
             WaitingRoomManager.OnRoomInfoChanged += HandleRoomInfoChanged;
+
+            WaitingRoomManager.OnStartGame -= HandleStartGame;
+            WaitingRoomManager.OnStartGame += HandleStartGame;
         }
 
         public void HandleAddRoom(Player user, string roomName)
@@ -96,6 +101,22 @@ namespace Server.Game
             ConsoleLogManager.Instance.Log($"[Manager] Room {roomId} deleted (no players left)");
         }
 
+        private void HandleStartGame(int roomId)
+        {
+            if (GameRoomManager.Rooms.ContainsKey(roomId))
+            {
+                ConsoleLogManager.Instance.Log($"Already Exist Room {roomId}");
+                return;
+            }
+            // 방 정보 전달
+            WaitingRoom waitingRoom = WaitingRoomManager.Find(roomId);
+            if (waitingRoom == null)
+            {
+                ConsoleLogManager.Instance.Log($"Cant Find Room {roomId}");
+                return;
+            }
+            GameRoomManager.Add(waitingRoom.RoomId, waitingRoom.RoomName, waitingRoom.RoomOwnerId);
+        }
         public void EnterLobby(Player user)
         {
             if (user == null)

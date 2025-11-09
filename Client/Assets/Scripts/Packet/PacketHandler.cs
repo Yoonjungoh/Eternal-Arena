@@ -183,9 +183,14 @@ class PacketHandler
     // 내가 게임에 입장할 때 패킷
     public static void S_EnterGameHandler(PacketSession session, IMessage packet)
     {
-        //S_EnterGame enterGamePacket = packet as S_EnterGame;
-        //Managers.Object.Add(enterGamePacket.ObjectInfo, isMyPlayer: true);
-        //Debug.Log($"(아이디: {enterGamePacket.ObjectInfo.ObjectId}, 이름: {enterGamePacket.ObjectInfo.Name})");
+        S_EnterGame enterGamePacket = packet as S_EnterGame;
+        if (enterGamePacket == null)
+        {
+            Debug.Log("S_EnterGame 패킷이 null입니다");
+            return;
+        }
+
+        Managers.GameRoomObject.Add(enterGamePacket.ObjectState, isMyPlayer: true);
     }
 
     // 게임에서 죽었을 때
@@ -201,18 +206,39 @@ class PacketHandler
     {
         S_Spawn spawnPacket = packet as S_Spawn;
 
-        foreach (ObjectState objectState in spawnPacket.ObjectStates)
+        if (Managers.Scene.CurrentScene == Define.Scene.WaitingRoom)
         {
-            Managers.WaitingRoomObject.Add(objectState, isMyPlayer: false);
+            foreach (ObjectState objectState in spawnPacket.ObjectStates)
+            {
+                Managers.WaitingRoomObject.Add(objectState, isMyPlayer: false);
+            }
+        }
+        else if (Managers.Scene.CurrentScene == Define.Scene.GameRoom)
+        {
+            foreach (ObjectState objectState in spawnPacket.ObjectStates)
+            {
+                Managers.GameRoomObject.Add(objectState, isMyPlayer: false);
+            }
         }
     }
 
     public static void S_DespawnHandler(PacketSession session, IMessage packet)
     {
         S_Despawn despawnPacket = packet as S_Despawn;
-        foreach (int id in despawnPacket.ObjectIds)
+
+        if (Managers.Scene.CurrentScene == Define.Scene.WaitingRoom)
         {
-            Managers.WaitingRoomObject.Remove(id);
+            foreach (int id in despawnPacket.ObjectIds)
+            {
+                Managers.WaitingRoomObject.Remove(id);
+            }
+        }
+        else if (Managers.Scene.CurrentScene == Define.Scene.GameRoom)
+        {
+            foreach (int id in despawnPacket.ObjectIds)
+            {
+                Managers.GameRoomObject.Remove(id);
+            }
         }
     }
 
@@ -221,7 +247,15 @@ class PacketHandler
         S_Move movePacket = packet as S_Move;
 
         // 움직임 동기화 시킬 오브젝트 찾기
-        GameObject go = Managers.WaitingRoomObject.FindById(movePacket.ObjectState.ObjectId);
+        GameObject go = null;
+        if (Managers.Scene.CurrentScene == Define.Scene.WaitingRoom)
+        {
+            go = Managers.WaitingRoomObject.FindById(movePacket.ObjectState.ObjectId);
+        }
+        else if (Managers.Scene.CurrentScene == Define.Scene.GameRoom)
+        {
+            go = Managers.GameRoomObject.FindById(movePacket.ObjectState.ObjectId);
+        }
         if (go == null)
         {
             Debug.Log($"Cant find GameObject {movePacket.ObjectState.ObjectId}");
@@ -240,7 +274,16 @@ class PacketHandler
         cc.ObjectState.Velocity = movePacket.ObjectState.Velocity;
         cc.ObjectState.CreatureState = movePacket.ObjectState.CreatureState;
 
-        GameObjectType type = Managers.WaitingRoomObject.GetObjectTypeById(cc.Id);
+        GameObjectType type = GameObjectType.None;
+        if (Managers.Scene.CurrentScene == Define.Scene.WaitingRoom)
+        {
+            type = Managers.WaitingRoomObject.GetObjectTypeById(cc.Id);
+        }
+        else if (Managers.Scene.CurrentScene == Define.Scene.GameRoom)
+        {
+            type = Managers.GameRoomObject.GetObjectTypeById(cc.Id);
+        }
+
         if (type == GameObjectType.Player)
         {
             OtherPlayerController otherPlayer = go.GetComponent<OtherPlayerController>();

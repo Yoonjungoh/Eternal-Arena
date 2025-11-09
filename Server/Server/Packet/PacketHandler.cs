@@ -28,13 +28,16 @@ class PacketHandler
         C_EnterGame enterGamePacket = packet as C_EnterGame;
         ClientSession clientSession = session as ClientSession;
 
-        Player player = clientSession.MyPlayer;
-        if (player == null)
+        Player user = clientSession.MyPlayer;
+        if (user == null || user.Lobby == null)
             return;
-        //GameRoom room = player.Room;
-        //if (room == null)
-        //    return;
-        //room.Push(room.HandleMove, player, movePacket);
+
+        // 해당 유저를 방에 추가하기
+        GameRoom gameRoom = user.Lobby.GameRoomManager.Find(enterGamePacket.RoomId);
+        if (gameRoom == null)
+            return;
+
+        gameRoom.EnterGame(user);
     }
 
     public static void C_MoveHandler(PacketSession session, IMessage packet)
@@ -45,11 +48,19 @@ class PacketHandler
 		Player player = clientSession.MyPlayer;
 		if (player == null)
 			return;
-        WaitingRoom room = player.WaitingRoom;
-		if (room == null)
-			return;
 
-		room.Push(room.HandleMove, player, movePacket);
+        // 게임 룸이면 게임 룸에 전달
+        GameRoom gameRoom = player.GameRoom;
+        if (gameRoom != null)
+        {
+            gameRoom.Push(gameRoom.HandleMove, player, movePacket);
+        }
+
+        WaitingRoom waitingRoom = player.WaitingRoom;
+        if (waitingRoom != null)
+        {
+            waitingRoom.Push(waitingRoom.HandleMove, player, movePacket);
+        }
 	}
 
     public static void C_LeaveLobbyHandler(PacketSession session, IMessage packet)
@@ -62,31 +73,6 @@ class PacketHandler
             return;
 
         user.Lobby.Push(user.Lobby.LeaveLobby, user.Id);
-    }
-
-
-    public static void C_EnterWaitingRoomHandler(PacketSession session, IMessage packet)
-    {
-        C_EnterWaitingRoom enterWaitingRoomPacket = packet as C_EnterWaitingRoom;
-        ClientSession clientSession = session as ClientSession;
-
-        Player user = clientSession.MyPlayer;
-        if (user == null || user.Lobby == null)
-            return;
-
-        // 로비에 해당 유저를 먼저 떠나게 하고
-        user.Lobby.Push(user.Lobby.LeaveLobby, user.Id);
-
-        // 해당 유저를 방에 추가하기
-        WaitingRoom watingRoom = user.Lobby.WaitingRoomManager.Find(enterWaitingRoomPacket.RoomId);
-        if (watingRoom == null)
-            return;
-
-        // 방 인원 수 초과 체크
-        if (watingRoom.CanEnterWaitingRoom == false)
-            return;
-
-        watingRoom.EnterRoom(user);
     }
 
     public static void C_AddRoomHandler(PacketSession session, IMessage packet)
@@ -135,6 +121,30 @@ class PacketHandler
             return;
 
         user.WaitingRoom.Push(user.WaitingRoom.StartGame, user.Id, startGamePacket.RoomId);
+    }
+
+    public static void C_EnterWaitingRoomHandler(PacketSession session, IMessage packet)
+    {
+        C_EnterWaitingRoom enterWaitingRoomPacket = packet as C_EnterWaitingRoom;
+        ClientSession clientSession = session as ClientSession;
+
+        Player user = clientSession.MyPlayer;
+        if (user == null || user.Lobby == null)
+            return;
+
+        // 로비에 해당 유저를 먼저 떠나게 하고
+        user.Lobby.Push(user.Lobby.LeaveLobby, user.Id);
+
+        // 해당 유저를 방에 추가하기
+        WaitingRoom watingRoom = user.Lobby.WaitingRoomManager.Find(enterWaitingRoomPacket.RoomId);
+        if (watingRoom == null)
+            return;
+
+        // 방 인원 수 초과 체크
+        if (watingRoom.CanEnterWaitingRoom == false)
+            return;
+
+        watingRoom.EnterRoom(user);
     }
 
     public static void C_TimestampHandler(PacketSession session, IMessage packet)

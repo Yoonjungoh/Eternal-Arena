@@ -27,7 +27,7 @@ namespace Server.Game
 
 		public GameObject()
 		{
-			ObjectState = new ObjectState();
+            ObjectState = new ObjectState();
 			ObjectState.Position = new ProtoVector3();
 			ObjectState.Velocity = new ProtoVector3();
 			ObjectState.Rotation = new ProtoQuaternion();

@@ -59,6 +59,7 @@ public class WaitingRoomObjectManager
                 objectState.ServerReceivedTime
             );
             _objects.Add(objectState.ObjectId, otherPlayer.gameObject);
+            Debug.Log($"소환: {otherPlayer.ObjectState.ObjectId}, isMyPlayer: {otherPlayer.transform.position.x}, {otherPlayer.transform.position.y}, {otherPlayer.transform.position.z}");
         }
     }
 
