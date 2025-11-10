@@ -29,7 +29,7 @@ class PacketHandler
         ClientSession clientSession = session as ClientSession;
 
         Player user = clientSession.MyPlayer;
-        if (user == null || user.Lobby == null)
+        if (user == null || user.Lobby == null || user.WaitingRoom == null)
             return;
 
         // 해당 유저를 방에 추가하기
@@ -37,7 +37,19 @@ class PacketHandler
         if (gameRoom == null)
             return;
 
-        gameRoom.EnterGame(user);
+        gameRoom.Push(gameRoom.EnterGame, user);
+    }
+
+    public static void C_AttackHandler(PacketSession session, IMessage packet)
+    {
+        C_Attack attackPacket = packet as C_Attack;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null || player.Lobby == null || player.WaitingRoom == null || player.GameRoom == null)
+            return;
+
+        player.GameRoom.Push(player.GameRoom.HandleAttack, player, attackPacket.AttackType);
     }
 
     public static void C_MoveHandler(PacketSession session, IMessage packet)
@@ -54,12 +66,14 @@ class PacketHandler
         if (gameRoom != null)
         {
             gameRoom.Push(gameRoom.HandleMove, player, movePacket);
+            return;
         }
 
         WaitingRoom waitingRoom = player.WaitingRoom;
         if (waitingRoom != null)
         {
             waitingRoom.Push(waitingRoom.HandleMove, player, movePacket);
+            return;
         }
 	}
 
@@ -144,7 +158,7 @@ class PacketHandler
         if (watingRoom.CanEnterWaitingRoom == false)
             return;
 
-        watingRoom.EnterRoom(user);
+        watingRoom.Push(watingRoom.EnterRoom, user);
     }
 
     public static void C_TimestampHandler(PacketSession session, IMessage packet)

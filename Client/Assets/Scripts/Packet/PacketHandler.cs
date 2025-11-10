@@ -193,6 +193,24 @@ class PacketHandler
         Managers.GameRoomObject.Add(enterGamePacket.ObjectState, isMyPlayer: true);
     }
 
+    public static void S_AttackHandler(PacketSession session, IMessage packet)
+    {
+        S_Attack attackPacket = packet as S_Attack;
+        if (attackPacket == null)
+        {
+            Debug.Log("S_Attack 패킷이 null입니다");
+            return;
+        }
+        string s = $"Range: {Managers.GameRoomObject.MyPlayer.Stat.AttackRange}, Deg: {Managers.GameRoomObject.MyPlayer.Stat.AttackHalfAngleDeg}\n";
+        foreach (var hitInfo in attackPacket.HitObjectList)
+        {
+            s += hitInfo.ToString();
+            s += ' ';
+        }
+        Managers.UI.ShowToastPopup(s);
+        //Managers.GameRoomObject.Add(enterGamePacket.ObjectState, isMyPlayer: true);
+    }
+
     // 게임에서 죽었을 때
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
     {
@@ -208,14 +226,14 @@ class PacketHandler
 
         if (Managers.Scene.CurrentScene == Define.Scene.WaitingRoom)
         {
-            foreach (ObjectState objectState in spawnPacket.ObjectStates)
+            foreach (ObjectState objectState in spawnPacket.ObjectStateList)
             {
                 Managers.WaitingRoomObject.Add(objectState, isMyPlayer: false);
             }
         }
         else if (Managers.Scene.CurrentScene == Define.Scene.GameRoom)
         {
-            foreach (ObjectState objectState in spawnPacket.ObjectStates)
+            foreach (ObjectState objectState in spawnPacket.ObjectStateList)
             {
                 Managers.GameRoomObject.Add(objectState, isMyPlayer: false);
             }
@@ -228,14 +246,14 @@ class PacketHandler
 
         if (Managers.Scene.CurrentScene == Define.Scene.WaitingRoom)
         {
-            foreach (int id in despawnPacket.ObjectIds)
+            foreach (int id in despawnPacket.ObjectIdList)
             {
                 Managers.WaitingRoomObject.Remove(id);
             }
         }
         else if (Managers.Scene.CurrentScene == Define.Scene.GameRoom)
         {
-            foreach (int id in despawnPacket.ObjectIds)
+            foreach (int id in despawnPacket.ObjectIdList)
             {
                 Managers.GameRoomObject.Remove(id);
             }

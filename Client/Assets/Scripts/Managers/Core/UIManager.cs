@@ -24,7 +24,6 @@ public class UIManager
     }
 
     private UI_ToastPopup _toastPopup;
-    private Coroutine _toastCoroutine;
 
     public void ShowToastPopup(string message, float duration = 1f)
     {

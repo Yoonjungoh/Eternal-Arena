@@ -117,6 +117,7 @@ namespace Server.Game
             }
             GameRoomManager.Add(waitingRoom.RoomId, waitingRoom.RoomName, waitingRoom.RoomOwnerId);
         }
+
         public void EnterLobby(Player user)
         {
             if (user == null)

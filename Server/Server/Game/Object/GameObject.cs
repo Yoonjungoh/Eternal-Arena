@@ -19,23 +19,19 @@ namespace Server.Game
 
 		public ObjectState ObjectState { get; set; }
         public ProtoVector3 Position { get { return ObjectState.Position; } set { ObjectState.Position = value; } }
-        public ProtoVector3 Velocity { get { return ObjectState.Velocity; } set { ObjectState.Velocity = value; } }
-        public ProtoQuaternion Rotation { get { return ObjectState.Rotation; } set { ObjectState.Rotation = value; } }
-        public Stat Stat { get { return ObjectState.Stat; } set { ObjectState.Stat = value; } }
 		public CreatureState CreatureState { get { return ObjectState.CreatureState; } set { ObjectState.CreatureState = value; } }
-		public float Hp { get { return Stat.Hp; } set { Stat.Hp = Math.Clamp(value, 0, Stat.MaxHp); } }
-
-		public GameObject()
-		{
+		public float Hp { get { return ObjectState.Stat.Hp; } set { ObjectState.Stat.Hp = Math.Clamp(value, 0, ObjectState.Stat.MaxHp); } }
+        public GameObject()
+        {
             ObjectState = new ObjectState();
-			ObjectState.Position = new ProtoVector3();
-			ObjectState.Velocity = new ProtoVector3();
-			ObjectState.Rotation = new ProtoQuaternion();
-			ObjectState.Stat = new Stat();
-			ObjectState.CreatureState = new CreatureState();
+            ObjectState.Position = new ProtoVector3();
+            ObjectState.Velocity = new ProtoVector3();
+            ObjectState.Rotation = new ProtoQuaternion();
+            ObjectState.Stat = new Stat();
+            ObjectState.CreatureState = new CreatureState();
         }
 
-		public virtual void Update()
+        public virtual void Update()
 		{
 
 		}
@@ -45,7 +41,7 @@ namespace Server.Game
 			if (GameRoom == null)
 				return;
 
-			if (Stat.Hp <= 0)
+			if (ObjectState.Stat.Hp <= 0)
 			{
                 // 죽음 처리 부분
                 OnDead(hitter);

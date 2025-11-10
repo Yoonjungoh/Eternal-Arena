@@ -21,7 +21,16 @@ public class CameraController : MonoBehaviour
     public void Init()
     {
         if (_target == null)
-            _target = Managers.WaitingRoomObject.MyPlayer;
+        {
+            if (Managers.Scene.CurrentScene == Define.Scene.WaitingRoom)
+            {
+                _target = Managers.WaitingRoomObject.MyPlayer;
+            }
+            else if (Managers.Scene.CurrentScene == Define.Scene.GameRoom)
+            {
+                _target = Managers.GameRoomObject.MyPlayer;
+            }
+        }
 
         Vector3 angles = transform.eulerAngles;
         _yaw = angles.y;

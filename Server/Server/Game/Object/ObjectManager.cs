@@ -24,8 +24,8 @@ namespace Server.Game
 			lock (_lock)
 			{
                 try
-				{
-					gameObject.Id = GenerateId(gameObject.ObjectType);
+                {
+                    gameObject.Id = GenerateId(gameObject.ObjectType);
 
 					if (gameObject.ObjectType == GameObjectType.Player)
 					{
@@ -35,7 +35,7 @@ namespace Server.Game
                     gameObject.ObjectState.Name = $"{gameObject.ObjectType}_{gameObject.ObjectState.ObjectId}";
 
                 }
-				catch(Exception e)
+				catch (Exception e)
                 {
                     ConsoleLogManager.Instance.Log(e);
                     ConsoleLogManager.Instance.Log("Dictionary Key-Value Problem");	

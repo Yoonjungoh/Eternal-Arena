@@ -22,12 +22,84 @@ public class MyPlayerController : PlayerController
 
     private Transform _cameraTransform;
 
+
+    [Header("Gizmo Debug")]
+    public Color gizmoColor = new Color(1f, 0.3f, 0f, 0.25f); private void OnDrawGizmos()
+    {
+        if (Stat == null)
+            return;
+
+        Gizmos.color = gizmoColor;
+
+        float range = Stat.AttackRange;
+        float halfAngle = Stat.AttackHalfAngleDeg;
+        float height = Stat.AttackHeight;
+        AttackAreaMode mode = Stat.AttackAreaMode;
+
+        if (range <= 0f)
+            return;
+
+        Vector3 origin = transform.position;
+        Vector3 forward = transform.forward;
+
+        if (mode == AttackAreaMode.HorizontalSector)
+            DrawHorizontalSector(origin, forward, range, halfAngle, height);
+        else if (mode == AttackAreaMode.Cone3D)
+            Draw3DCone(origin, forward, range, halfAngle);
+    }
+
+    private void DrawHorizontalSector(Vector3 origin, Vector3 forward, float radius, float halfAngle, float height)
+    {
+        int segments = 30;
+        float step = halfAngle * 2f / segments;
+        Quaternion leftRot = Quaternion.AngleAxis(-halfAngle, Vector3.up);
+        Vector3 prev = origin + leftRot * forward * radius;
+
+        for (int i = 1; i <= segments; i++)
+        {
+            float angle = -halfAngle + step * i;
+            Quaternion rot = Quaternion.AngleAxis(angle, Vector3.up);
+            Vector3 next = origin + rot * forward * radius;
+            Gizmos.DrawLine(origin, next);
+            Gizmos.DrawLine(prev, next);
+            prev = next;
+        }
+
+        // 높이 표현 (실린더 형태 시각화)
+        Gizmos.DrawLine(origin + Vector3.up * (height * 0.5f), origin - Vector3.up * (height * 0.5f));
+    }
+
+    private void Draw3DCone(Vector3 origin, Vector3 forward, float radius, float halfAngle)
+    {
+        int rings = 12;
+        int segments = 24;
+
+        for (int r = 0; r < rings; r++)
+        {
+            float t = (float)r / rings;
+            float currRadius = Mathf.Tan(halfAngle * Mathf.Deg2Rad) * radius * t;
+            Vector3 ringCenter = origin + forward * radius * t;
+
+            Vector3 prev = ringCenter + Quaternion.AngleAxis(0, forward) * Vector3.right * currRadius;
+            for (int i = 1; i <= segments; i++)
+            {
+                float angle = (360f / segments) * i;
+                Vector3 next = ringCenter + Quaternion.AngleAxis(angle, forward) * Vector3.right * currRadius;
+                Gizmos.DrawLine(prev, next);
+                prev = next;
+            }
+        }
+
+        Gizmos.DrawLine(origin, origin + forward * radius);
+    }
+
     public override void Init()
     {
         base.Init();
         _cameraTransform = Camera.main.transform;
         _prevPosition = transform.position;
         _prevRotation = transform.rotation;
+        Managers.Input.RegisterKeyAction(KeyCode.K, () => Attack());
     }
 
     private void Update()
@@ -41,6 +113,13 @@ public class MyPlayerController : PlayerController
         HandlePhysicsMovement();    // 물리 기반 이동 처리
         ApplyMovement();    // 실제 인풋에 따른 이동 처리
         CheckMovePacket(); // 이동 감지 및 패킷 전송
+    }
+
+    private void Attack()
+    {
+        C_Attack attackPacket = new C_Attack();
+        attackPacket.AttackType = AttackType.Common;
+        Managers.Network.Send(attackPacket);
     }
 
     private void HandleInput()
@@ -157,7 +236,8 @@ public class MyPlayerController : PlayerController
             Position = new ProtoVector3 { X = pos.x, Y = pos.y, Z = pos.z },
             Velocity = new ProtoVector3 { X = velocity.x, Y = velocity.y, Z = velocity.z },
             Rotation = new ProtoQuaternion { X = rot.x, Y = rot.y, Z = rot.z, W = rot.w },
-            CreatureState = CreatureState
+            CreatureState = CreatureState,
+            Stat = Stat,
         };
 
         Managers.Network.Send(movePacket);

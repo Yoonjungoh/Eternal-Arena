@@ -81,6 +81,8 @@ public class CreatureController : MonoBehaviour
         }
     }
 
+    public Stat Stat { get { return ObjectState.Stat; } set { ObjectState.Stat = value; } }
+
     protected virtual void OnUpdate()
     {
         switch (CreatureState)

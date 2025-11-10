@@ -18,10 +18,11 @@ namespace Server.Game
     {
         public List<Vector3> StartPositions = new List<Vector3>()
         {
-            new Vector3(0, 3, 0),
-            new Vector3(1, 3, 0),
-            new Vector3(2, 3, 0),
-            new Vector3(3, 3, 3)
+            //new Vector3(-150, -18, 112),  // 숲풀
+            new Vector3(-676, 8, -471),
+            new Vector3(-677, 8, -471),
+            new Vector3(-678, 8, -471),
+            new Vector3(-679, 8, -471),
         };
 
         public static DataManager Instance { get; } = new DataManager();

@@ -83,7 +83,9 @@ public class Managers : MonoBehaviour
 
         Pool.Clear();
         WaitingRoomObject.Clear();
+        GameRoomObject.Clear();
     }
+
     public IEnumerator CoDataManagerInit()
     {
         // 추가될 json 데이터들 가져오는 코루틴 넣어주기

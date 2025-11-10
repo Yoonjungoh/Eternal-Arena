@@ -30,12 +30,82 @@ namespace Server.Game
         public void Update()
         {
             Flush();
-            if (ObjectManager.Instance.Players.Count <= 100)
-            {
-                Player player = ObjectManager.Instance.Add<Player>();
-                EnterGame(player);
-            }
+            //if (ObjectManager.Instance.Players.Count <= 100)
+            //{
+            //    Player player = ObjectManager.Instance.Add<Player>();
+            //    EnterGame(player);
+            //}
         }
+        public void HandleAttack(Player attacker, AttackType attackType)
+        {
+            if (attacker == null) return;
+
+            // 서버 기준 공격 시간 (플레이어 위치, 방향 예상하기 위함)
+            long attackTimeMs = Util.GetTimestampMs();
+
+            // 1. 공격자 위치 구하기
+            // attacker.ObjectState.ServerReceivedTime 자주 갱신하면 더 정확해지더라 (당연한 말 -> HandleMove에서 업뎃 중임)
+            Vector3 attackPos = MovementHelper.PredictPosition(
+                MovementHelper.PVec3ToVec3(attacker.ObjectState.Position),
+                MovementHelper.PVec3ToVec3(attacker.ObjectState.Velocity),
+                attacker.ObjectState.ServerReceivedTime,
+                attackTimeMs
+            );
+
+            // 2. 공격자 방향 구하기
+            Vector3 attackForward = MovementHelper.ForwardFrom(attacker.ObjectState.Rotation);
+            if (attackForward.LengthSquared() < 1e-6f) attackForward = new Vector3(0, 0, 1);
+            attackForward = Vector3.Normalize(attackForward);
+
+            // [2] 스탯에서 범위 파라미터 읽기 (기본값 안전장치)
+            Stat s = attacker.ObjectState.Stat ?? new Stat();
+            float radius = s.AttackRange > 0 ? s.AttackRange : 2f;
+            float halfDeg = s.AttackHalfAngleDeg > 0 ? s.AttackHalfAngleDeg : 60f;
+            float height = s.AttackHeight > 0 ? s.AttackHeight : 3f;
+
+            float cosLimit = (float)MathF.Cos(halfDeg * (MathF.PI / 180f));
+            float radiusSqr = radius * radius;
+
+            // [3] 후보 전부 검사 (규모 커지면 공간 분할/그리드 등으로 최적화)
+            List<int> hits = new List<int>();
+
+            foreach (var kv in _players)
+            {
+                Player target = kv.Value;
+                if (target == null) continue;
+                if (target.Id == attacker.Id) continue;
+
+                // 대상 예측 위치
+                Vector3 tPos = MovementHelper.PredictPosition(
+                    MovementHelper.PVec3ToVec3(target.ObjectState.Position),
+                    MovementHelper.PVec3ToVec3(target.ObjectState.Velocity),
+                    target.ObjectState.ServerReceivedTime,
+                    attackTimeMs
+                );
+
+                if (CollisionHelper.IsInHorizontalSector(attackPos, attackForward, tPos, radius, cosLimit, height, out _))
+                {
+                    hits.Add(target.Id);
+                }
+            }
+
+            // [4] 결과 브로드캐스트
+            S_Attack res = new S_Attack
+            {
+                AttackType = attackType
+            };
+
+            ConsoleLogManager.Instance.Log($"Attacker: {attacker.Id}");
+            foreach (int objectId in hits)
+            {
+                HitInfo hitInfo = new HitInfo();
+                hitInfo.ObjectId = objectId;
+                res.HitObjectList.Add(hitInfo);
+                ConsoleLogManager.Instance.Log($"Hitted: {objectId}");
+            }
+            Broadcast(res);
+        }
+
 
         public void EnterGame(Player player)
         {
@@ -45,42 +115,43 @@ namespace Server.Game
             player.GameRoom = this;
             player.ObjectState.Name = $"Player_{player.ObjectState.ObjectId}";
 
-            S_EnterWaitingRoom enterWaitingRoomPacket = new S_EnterWaitingRoom();
-            enterWaitingRoomPacket.ObjectState = new ObjectState();
-            enterWaitingRoomPacket.ObjectState.Position = new ProtoVector3();
-            enterWaitingRoomPacket.ObjectState.Velocity = new ProtoVector3();
-            enterWaitingRoomPacket.ObjectState.Rotation = new ProtoQuaternion();
+            S_EnterGame enteGamePacket = new S_EnterGame();
+            enteGamePacket.ObjectState = new ObjectState();
+            enteGamePacket.ObjectState.Position = new ProtoVector3();
+            enteGamePacket.ObjectState.Velocity = new ProtoVector3();
+            enteGamePacket.ObjectState.Rotation = new ProtoQuaternion();
+            enteGamePacket.ObjectState.Stat = new Stat();
 
             // objectId 초기화
-            enterWaitingRoomPacket.ObjectState.ObjectId = player.Id;
+            enteGamePacket.ObjectState.ObjectId = player.Id;
 
             // name 초기화
-            enterWaitingRoomPacket.ObjectState.Name = player.ObjectState.Name;
+            enteGamePacket.ObjectState.Name = player.ObjectState.Name;
 
             // position 초기화
-            //int spawnIndex = _players.Count % DataManager.Instance.MaxRoomPlayerCount;
-            int spawnIndex = _players.Count;
+            int spawnIndex = _players.Count % DataManager.Instance.MaxRoomPlayerCount;
             Vector3 startPos = DataManager.Instance.GetStartPosition(spawnIndex);
             player.ObjectState.Position.X = startPos.X;
             player.ObjectState.Position.Y = startPos.Y;
             player.ObjectState.Position.Z = startPos.Z;
-            enterWaitingRoomPacket.ObjectState.Position.X = player.ObjectState.Position.X;
-            enterWaitingRoomPacket.ObjectState.Position.Y = player.ObjectState.Position.Y;
-            enterWaitingRoomPacket.ObjectState.Position.Z = player.ObjectState.Position.Z;
+            enteGamePacket.ObjectState.Position.X = player.ObjectState.Position.X;
+            enteGamePacket.ObjectState.Position.Y = player.ObjectState.Position.Y;
+            enteGamePacket.ObjectState.Position.Z = player.ObjectState.Position.Z;
 
-            // TODO - stat
+            // stat 초기화
+            enteGamePacket.ObjectState.Stat = player.ObjectState.Stat;
 
             // creatureState 초기화
             player.ObjectState.CreatureState = CreatureState.Idle;
-            enterWaitingRoomPacket.ObjectState.CreatureState = CreatureState.Idle;
+            enteGamePacket.ObjectState.CreatureState = CreatureState.Idle;
 
             if (player.Session != null)
             {
-                player.Session.Send(enterWaitingRoomPacket);
+                player.Session.Send(enteGamePacket);
             }
 
             _players.Add(player.Id, player);
-            player.Init();
+            //player.Init();
 
             // 본인한테 맵안의 플레이어 정보 전송
             S_Spawn spawnToMePacket = new S_Spawn();
@@ -92,7 +163,7 @@ namespace Server.Game
                     continue;
 
                 p.ObjectState.ServerReceivedTime = serverReceivedTime;
-                spawnToMePacket.ObjectStates.Add(p.ObjectState);
+                spawnToMePacket.ObjectStateList.Add(p.ObjectState);
             }
             if (player.Session != null)
             {
@@ -101,15 +172,15 @@ namespace Server.Game
 
             // 다른 플레이어에게도 내가 접속한 걸 알려주기
             S_Spawn spawnToOthersPacket = new S_Spawn();
-            spawnToOthersPacket.ObjectStates.Add(player.ObjectState);
+            spawnToOthersPacket.ObjectStateList.Add(player.ObjectState);
             foreach (Player p in _players.Values)
             {
                 if (p == null || p.Session == null || player.Id == p.Id )
                     continue;
-
+                
                 p.ObjectState.ServerReceivedTime = serverReceivedTime;
                 p.Session.Send(spawnToOthersPacket);
-                ConsoleLogManager.Instance.Log($"[WaitingRoom Update] Player {p.Id} Pos({p.Position.X}, {p.Position.Y}, {p.Position.Z})");
+                ConsoleLogManager.Instance.Log($"[GameRoom Update] Player {p.Id} Pos({p.Position.X}, {p.Position.Y}, {p.Position.Z})");
             }
         }
 

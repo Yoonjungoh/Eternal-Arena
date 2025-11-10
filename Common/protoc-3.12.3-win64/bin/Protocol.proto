@@ -22,7 +22,9 @@ enum MsgId {
   C_START_GAME = 14;
   S_START_GAME = 15;
   C_ENTER_GAME = 16;
-  S_ENTER_GAME = 90;
+  S_ENTER_GAME = 17;
+  C_ATTACK = 18;
+  S_ATTACK = 19;
   S_LEAVE_GAME = 100;
   S_SPAWN = 101;
   S_DESPAWN = 102;
@@ -42,9 +44,14 @@ enum CreatureState {
 }
 
 enum GameObjectType{
-  NONE = 0;
+  GAME_OBJECT_TYPE_NONE = 0;
   PLAYER = 1;
   MONSTER = 2;
+}
+
+enum AttackType{
+  ATTACK_TYPE_NONE = 0;
+  COMMON = 1;
 }
 
 message S_AssignUserId {
@@ -125,11 +132,11 @@ message S_LeaveGame {
 }
 
 message S_Spawn {
-  repeated ObjectState objectStates = 1;
+  repeated ObjectState objectStateList = 1;
 }
 
 message S_Despawn {
-  repeated int32 objectIds = 1;
+  repeated int32 objectIdList = 1;
   int32 playerCount = 2;
   bool canRespawn = 3;
 } 
@@ -140,6 +147,15 @@ message C_Move {
 
 message S_Move {
   ObjectState objectState = 1;
+}
+
+message C_Attack {
+  AttackType attackType = 1;
+}
+
+message S_Attack {
+  AttackType attackType = 1;
+  repeated HitInfo hitObjectList = 2;
 }
 
 message C_Timestamp {
@@ -181,7 +197,12 @@ message ObjectState {
   ProtoQuaternion rotation = 6;      // 회전 상태
   string name = 7;					 // 유저 이름 (todo)
   CreatureState creatureState = 8;	 // 캐릭터 상태
-  Stat stat = 9;                     // 캐릭터 스탯 (todo)
+  Stat stat = 9;                     // 캐릭터 스탯
+}
+
+message HitInfo {
+  int32 objectId = 1;
+  int32 damageAmount = 2; 
 }
 
 message Stat {
@@ -190,7 +211,9 @@ message Stat {
   float attack = 3;
   float defense = 4;
   float speed = 5;
-  float cameraSize = 6;
-  int32 cost = 7;
-  float coolTime = 8;
+  int32 cost = 6;
+  float coolTime = 7;
+  float attackRange = 8;          // 반지름 r
+  float attackHalfAngleDeg = 9;  // 부채꼴의 반각 d(도)
+  float attackHeight = 10;        // 높이
 }

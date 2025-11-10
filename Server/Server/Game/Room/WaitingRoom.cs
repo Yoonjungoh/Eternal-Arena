@@ -48,6 +48,7 @@ namespace Server.Game
             enterWaitingRoomPacket.ObjectState.Position = new ProtoVector3();
             enterWaitingRoomPacket.ObjectState.Velocity = new ProtoVector3();
             enterWaitingRoomPacket.ObjectState.Rotation = new ProtoQuaternion();
+            enterWaitingRoomPacket.ObjectState.Stat = new Stat();
 
             // objectId 초기화
             enterWaitingRoomPacket.ObjectState.ObjectId = player.Id;
@@ -65,16 +66,17 @@ namespace Server.Game
             enterWaitingRoomPacket.ObjectState.Position.Y = player.ObjectState.Position.Y;
             enterWaitingRoomPacket.ObjectState.Position.Z = player.ObjectState.Position.Z;
 
-            // TODO - stat
+            // stat 초기화
+            enterWaitingRoomPacket.ObjectState.Stat = player.ObjectState.Stat;
 
             // creatureState 초기화
             player.ObjectState.CreatureState = CreatureState.Idle;
             enterWaitingRoomPacket.ObjectState.CreatureState = CreatureState.Idle;
 
-            player.Session.Send(enterWaitingRoomPacket);
-
-            _players.Add(player.Id, player);
             player.Init();
+            _players.Add(player.Id, player);
+
+            player.Session.Send(enterWaitingRoomPacket);
 
             // 방 정보가 업데이트 된 것을 로비의 유저들에게 알려야 함
             HandleRoomInfoChanged();
@@ -89,13 +91,13 @@ namespace Server.Game
                     continue;
 
                 p.ObjectState.ServerReceivedTime = serverReceivedTime;
-                spawnToMePacket.ObjectStates.Add(p.ObjectState);
+                spawnToMePacket.ObjectStateList.Add(p.ObjectState);
             }
             player.Session.Send(spawnToMePacket);
 
             // 다른 플레이어에게도 내가 접속한 걸 알려주기
             S_Spawn spawnToOthersPacket = new S_Spawn();
-            spawnToOthersPacket.ObjectStates.Add(player.ObjectState);
+            spawnToOthersPacket.ObjectStateList.Add(player.ObjectState);
             foreach (Player p in _players.Values)
             {
                 if (p.Id == player.Id)
@@ -137,7 +139,7 @@ namespace Server.Game
             // 타인한테 정보 전송
             {
                 S_Despawn despawnPacket = new S_Despawn();
-                despawnPacket.ObjectIds.Add(playerId);
+                despawnPacket.ObjectIdList.Add(playerId);
                 despawnPacket.PlayerCount = _players.Count;
 
                 foreach (Player p in _players.Values)

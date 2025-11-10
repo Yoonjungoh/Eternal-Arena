@@ -50,6 +50,7 @@ namespace Server
 
             // TODO - MSSQL 사용시 DB에서 긁어올 부분, 유저 정보
             MyPlayer = ObjectManager.Instance.Add<Player>();
+			MyPlayer.Init();
             MyPlayer.Session = this;
 
             EnterLobby();
