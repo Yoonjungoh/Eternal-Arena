@@ -19,7 +19,7 @@ namespace Server
                 return false; 
             }
 
-            // 수평 성분만 비교
+            // 수평 성분만 비교 (해당 부분을 0으로 안 해주면 원뿔 모양으로 콜리젼 체크하게 됨)
             vec.Y = 0;
             forward.Y = 0;
             float sqrDist = vec.LengthSquared();
