@@ -46,7 +46,6 @@ namespace Server.Game
             ObjectState.Stat.AttackRange = 10.0f;
             ObjectState.Stat.AttackHalfAngleDeg = 30.0f;
             ObjectState.Stat.AttackHeight = 10.0f;
-            ObjectState.Stat.AttackAreaMode = AttackAreaMode.HorizontalSector;
         }
     }
 }

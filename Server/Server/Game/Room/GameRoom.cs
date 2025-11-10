@@ -54,56 +54,52 @@ namespace Server.Game
 
             // 2. 공격자 방향 구하기
             Vector3 attackForward = MovementHelper.ForwardFrom(attacker.ObjectState.Rotation);
-            if (attackForward.LengthSquared() < 1e-6f) attackForward = new Vector3(0, 0, 1);
             attackForward = Vector3.Normalize(attackForward);
 
-            // [2] 스탯에서 범위 파라미터 읽기 (기본값 안전장치)
-            Stat s = attacker.ObjectState.Stat ?? new Stat();
-            float radius = s.AttackRange > 0 ? s.AttackRange : 2f;
-            float halfDeg = s.AttackHalfAngleDeg > 0 ? s.AttackHalfAngleDeg : 60f;
-            float height = s.AttackHeight > 0 ? s.AttackHeight : 3f;
+            // 3. 공격 범위 알아내기
+            float radius = attacker.ObjectState.Stat.AttackRange;
+            float halfDeg = attacker.ObjectState.Stat.AttackHalfAngleDeg;
+            float height = attacker.ObjectState.Stat.AttackHeight;
 
+            // 3-1. 각도 안에 있는지 확인할 cos 구하기
             float cosLimit = (float)MathF.Cos(halfDeg * (MathF.PI / 180f));
-            float radiusSqr = radius * radius;
 
-            // [3] 후보 전부 검사 (규모 커지면 공간 분할/그리드 등으로 최적화)
+            // 4. 후보 전부 검사하기
             List<int> hits = new List<int>();
 
-            foreach (var kv in _players)
+            foreach (Player target in _players.Values)
             {
-                Player target = kv.Value;
                 if (target == null) continue;
                 if (target.Id == attacker.Id) continue;
 
-                // 대상 예측 위치
-                Vector3 tPos = MovementHelper.PredictPosition(
+                // 4-1. 대상 위치 예측하기
+                Vector3 targetPos = MovementHelper.PredictPosition(
                     MovementHelper.PVec3ToVec3(target.ObjectState.Position),
                     MovementHelper.PVec3ToVec3(target.ObjectState.Velocity),
                     target.ObjectState.ServerReceivedTime,
                     attackTimeMs
                 );
 
-                if (CollisionHelper.IsInHorizontalSector(attackPos, attackForward, tPos, radius, cosLimit, height, out _))
+                // 4-2. 충돌 판정
+                if (CollisionHelper.IsCollision(attackPos, attackForward, targetPos, radius, cosLimit, height))
                 {
                     hits.Add(target.Id);
                 }
             }
 
-            // [4] 결과 브로드캐스트
-            S_Attack res = new S_Attack
-            {
-                AttackType = attackType
-            };
+            // 4. 브로드캐스트
+            S_Attack attackPacket = new S_Attack();
+            attackPacket.AttackType = attackType;
 
             ConsoleLogManager.Instance.Log($"Attacker: {attacker.Id}");
             foreach (int objectId in hits)
             {
                 HitInfo hitInfo = new HitInfo();
                 hitInfo.ObjectId = objectId;
-                res.HitObjectList.Add(hitInfo);
+                attackPacket.HitObjectList.Add(hitInfo);
                 ConsoleLogManager.Instance.Log($"Hitted: {objectId}");
             }
-            Broadcast(res);
+            Broadcast(attackPacket);
         }
 
 

@@ -66,33 +66,31 @@ namespace Google.Protobuf.Protocol {
             "LlByb3RvUXVhdGVybmlvbhIMCgRuYW1lGAcgASgJEi4KDWNyZWF0dXJlU3Rh",
             "dGUYCCABKA4yFy5Qcm90b2NvbC5DcmVhdHVyZVN0YXRlEhwKBHN0YXQYCSAB",
             "KAsyDi5Qcm90b2NvbC5TdGF0IjEKB0hpdEluZm8SEAoIb2JqZWN0SWQYASAB",
-            "KAUSFAoMZGFtYWdlQW1vdW50GAIgASgFIuoBCgRTdGF0EgoKAmhwGAEgASgC",
+            "KAUSFAoMZGFtYWdlQW1vdW50GAIgASgFIrgBCgRTdGF0EgoKAmhwGAEgASgC",
             "Eg0KBW1heEhwGAIgASgCEg4KBmF0dGFjaxgDIAEoAhIPCgdkZWZlbnNlGAQg",
             "ASgCEg0KBXNwZWVkGAUgASgCEgwKBGNvc3QYBiABKAUSEAoIY29vbFRpbWUY",
             "ByABKAISEwoLYXR0YWNrUmFuZ2UYCCABKAISGgoSYXR0YWNrSGFsZkFuZ2xl",
-            "RGVnGAkgASgCEhQKDGF0dGFja0hlaWdodBgKIAEoAhIwCg5hdHRhY2tBcmVh",
-            "TW9kZRgLIAEoDjIYLlByb3RvY29sLkF0dGFja0FyZWFNb2RlKvQDCgVNc2dJ",
-            "ZBIUChBTX0FTU0lHTl9VU0VSX0lEEAASFAoQQ19BU1NJR05fVVNFUl9JRBAB",
-            "EhEKDVNfRU5URVJfTE9CQlkQAhIRCg1TX0xFQVZFX0xPQkJZEAMSEQoNQ19M",
-            "RUFWRV9MT0JCWRAEEhgKFENfRU5URVJfV0FJVElOR19ST09NEAUSGAoUU19F",
-            "TlRFUl9XQUlUSU5HX1JPT00QBhIOCgpDX0FERF9ST09NEAcSDgoKU19BRERf",
-            "Uk9PTRAIEhEKDVNfUkVNT1ZFX1JPT00QCRIPCgtTX0VYSVRfUk9PTRAKEg8K",
-            "C0NfRVhJVF9ST09NEAsSEQoNQ19FTlRFUl9MT0JCWRAMEh4KGlNfVVBEQVRF",
-            "X1dBSVRJTkdfUk9PTV9JTkZPEA0SEAoMQ19TVEFSVF9HQU1FEA4SEAoMU19T",
-            "VEFSVF9HQU1FEA8SEAoMQ19FTlRFUl9HQU1FEBASEAoMU19FTlRFUl9HQU1F",
-            "EBESDAoIQ19BVFRBQ0sQEhIMCghTX0FUVEFDSxATEhAKDFNfTEVBVkVfR0FN",
-            "RRBkEgsKB1NfU1BBV04QZRINCglTX0RFU1BBV04QZhIKCgZDX01PVkUQZxIK",
-            "CgZTX01PVkUQaBIPCgtDX1RJTUVTVEFNUBBpEg8KC1NfVElNRVNUQU1QEGoq",
-            "UwoNQ3JlYXR1cmVTdGF0ZRIICgRJRExFEAASCAoETU9WRRABEgoKBkFUVEFD",
-            "SxACEg4KCk9OX0RBTUFHRUQQAxIJCgVTS0lMTBAEEgcKA0RJRRAFKkQKDkdh",
-            "bWVPYmplY3RUeXBlEhkKFUdBTUVfT0JKRUNUX1RZUEVfTk9ORRAAEgoKBlBM",
-            "QVlFUhABEgsKB01PTlNURVIQAiouCgpBdHRhY2tUeXBlEhQKEEFUVEFDS19U",
-            "WVBFX05PTkUQABIKCgZDT01NT04QASpKCg5BdHRhY2tBcmVhTW9kZRIUChBB",
-            "VFRBQ0tfQVJFQV9OT05FEAASFQoRSE9SSVpPTlRBTF9TRUNUT1IQARILCgdD",
-            "T05FXzNEEAJCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
+            "RGVnGAkgASgCEhQKDGF0dGFja0hlaWdodBgKIAEoAir0AwoFTXNnSWQSFAoQ",
+            "U19BU1NJR05fVVNFUl9JRBAAEhQKEENfQVNTSUdOX1VTRVJfSUQQARIRCg1T",
+            "X0VOVEVSX0xPQkJZEAISEQoNU19MRUFWRV9MT0JCWRADEhEKDUNfTEVBVkVf",
+            "TE9CQlkQBBIYChRDX0VOVEVSX1dBSVRJTkdfUk9PTRAFEhgKFFNfRU5URVJf",
+            "V0FJVElOR19ST09NEAYSDgoKQ19BRERfUk9PTRAHEg4KClNfQUREX1JPT00Q",
+            "CBIRCg1TX1JFTU9WRV9ST09NEAkSDwoLU19FWElUX1JPT00QChIPCgtDX0VY",
+            "SVRfUk9PTRALEhEKDUNfRU5URVJfTE9CQlkQDBIeChpTX1VQREFURV9XQUlU",
+            "SU5HX1JPT01fSU5GTxANEhAKDENfU1RBUlRfR0FNRRAOEhAKDFNfU1RBUlRf",
+            "R0FNRRAPEhAKDENfRU5URVJfR0FNRRAQEhAKDFNfRU5URVJfR0FNRRAREgwK",
+            "CENfQVRUQUNLEBISDAoIU19BVFRBQ0sQExIQCgxTX0xFQVZFX0dBTUUQZBIL",
+            "CgdTX1NQQVdOEGUSDQoJU19ERVNQQVdOEGYSCgoGQ19NT1ZFEGcSCgoGU19N",
+            "T1ZFEGgSDwoLQ19USU1FU1RBTVAQaRIPCgtTX1RJTUVTVEFNUBBqKlMKDUNy",
+            "ZWF0dXJlU3RhdGUSCAoESURMRRAAEggKBE1PVkUQARIKCgZBVFRBQ0sQAhIO",
+            "CgpPTl9EQU1BR0VEEAMSCQoFU0tJTEwQBBIHCgNESUUQBSpECg5HYW1lT2Jq",
+            "ZWN0VHlwZRIZChVHQU1FX09CSkVDVF9UWVBFX05PTkUQABIKCgZQTEFZRVIQ",
+            "ARILCgdNT05TVEVSEAIqLgoKQXR0YWNrVHlwZRIUChBBVFRBQ0tfVFlQRV9O",
+            "T05FEAASCgoGQ09NTU9OEAFCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Qcm90b2Nv",
+            "bGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.AttackType), typeof(global::Google.Protobuf.Protocol.AttackAreaMode), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.AttackType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_AssignUserId), global::Google.Protobuf.Protocol.S_AssignUserId.Parser, new[]{ "UserId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_AssignUserId), global::Google.Protobuf.Protocol.C_AssignUserId.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_EnterLobby), global::Google.Protobuf.Protocol.S_EnterLobby.Parser, new[]{ "UserIdList", "RoomInfoList" }, null, null, null, null),
@@ -125,7 +123,7 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ProtoQuaternion), global::Google.Protobuf.Protocol.ProtoQuaternion.Parser, new[]{ "X", "Y", "Z", "W" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ObjectState), global::Google.Protobuf.Protocol.ObjectState.Parser, new[]{ "ObjectId", "ClientSendTime", "ServerReceivedTime", "Position", "Velocity", "Rotation", "Name", "CreatureState", "Stat" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.HitInfo), global::Google.Protobuf.Protocol.HitInfo.Parser, new[]{ "ObjectId", "DamageAmount" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.Stat), global::Google.Protobuf.Protocol.Stat.Parser, new[]{ "Hp", "MaxHp", "Attack", "Defense", "Speed", "Cost", "CoolTime", "AttackRange", "AttackHalfAngleDeg", "AttackHeight", "AttackAreaMode" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.Stat), global::Google.Protobuf.Protocol.Stat.Parser, new[]{ "Hp", "MaxHp", "Attack", "Defense", "Speed", "Cost", "CoolTime", "AttackRange", "AttackHalfAngleDeg", "AttackHeight" }, null, null, null, null)
           }));
     }
     #endregion
@@ -180,18 +178,6 @@ namespace Google.Protobuf.Protocol {
   public enum AttackType {
     [pbr::OriginalName("ATTACK_TYPE_NONE")] None = 0,
     [pbr::OriginalName("COMMON")] Common = 1,
-  }
-
-  public enum AttackAreaMode {
-    [pbr::OriginalName("ATTACK_AREA_NONE")] AttackAreaNone = 0,
-    /// <summary>
-    /// XZ 평면 기준(일반적인 근접/부채꼴)
-    /// </summary>
-    [pbr::OriginalName("HORIZONTAL_SECTOR")] HorizontalSector = 1,
-    /// <summary>
-    /// 완전한 3D 콘
-    /// </summary>
-    [pbr::OriginalName("CONE_3D")] Cone3D = 2,
   }
 
   #endregion
@@ -4580,7 +4566,7 @@ namespace Google.Protobuf.Protocol {
     public const int StatFieldNumber = 9;
     private global::Google.Protobuf.Protocol.Stat stat_;
     /// <summary>
-    /// 캐릭터 스탯 (todo)
+    /// 캐릭터 스탯
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Google.Protobuf.Protocol.Stat Stat {
@@ -5018,7 +5004,6 @@ namespace Google.Protobuf.Protocol {
       attackRange_ = other.attackRange_;
       attackHalfAngleDeg_ = other.attackHalfAngleDeg_;
       attackHeight_ = other.attackHeight_;
-      attackAreaMode_ = other.attackAreaMode_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -5122,7 +5107,7 @@ namespace Google.Protobuf.Protocol {
     public const int AttackHalfAngleDegFieldNumber = 9;
     private float attackHalfAngleDeg_;
     /// <summary>
-    /// 부채꼴/콘의 반각 d(도)
+    /// 부채꼴의 반각 d(도)
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float AttackHalfAngleDeg {
@@ -5136,27 +5121,13 @@ namespace Google.Protobuf.Protocol {
     public const int AttackHeightFieldNumber = 10;
     private float attackHeight_;
     /// <summary>
-    /// 선택: 수평 부채꼴에서 높이 허용(캡/실린더 높이); 콘3D면 생략 가능
+    /// 높이
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float AttackHeight {
       get { return attackHeight_; }
       set {
         attackHeight_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "attackAreaMode" field.</summary>
-    public const int AttackAreaModeFieldNumber = 11;
-    private global::Google.Protobuf.Protocol.AttackAreaMode attackAreaMode_ = global::Google.Protobuf.Protocol.AttackAreaMode.AttackAreaNone;
-    /// <summary>
-    /// HORIZONTAL_SECTOR 또는 CONE_3D
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Google.Protobuf.Protocol.AttackAreaMode AttackAreaMode {
-      get { return attackAreaMode_; }
-      set {
-        attackAreaMode_ = value;
       }
     }
 
@@ -5183,7 +5154,6 @@ namespace Google.Protobuf.Protocol {
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AttackRange, other.AttackRange)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AttackHalfAngleDeg, other.AttackHalfAngleDeg)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AttackHeight, other.AttackHeight)) return false;
-      if (AttackAreaMode != other.AttackAreaMode) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -5200,7 +5170,6 @@ namespace Google.Protobuf.Protocol {
       if (AttackRange != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AttackRange);
       if (AttackHalfAngleDeg != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AttackHalfAngleDeg);
       if (AttackHeight != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AttackHeight);
-      if (AttackAreaMode != global::Google.Protobuf.Protocol.AttackAreaMode.AttackAreaNone) hash ^= AttackAreaMode.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -5254,10 +5223,6 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(85);
         output.WriteFloat(AttackHeight);
       }
-      if (AttackAreaMode != global::Google.Protobuf.Protocol.AttackAreaMode.AttackAreaNone) {
-        output.WriteRawTag(88);
-        output.WriteEnum((int) AttackAreaMode);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -5295,9 +5260,6 @@ namespace Google.Protobuf.Protocol {
       }
       if (AttackHeight != 0F) {
         size += 1 + 4;
-      }
-      if (AttackAreaMode != global::Google.Protobuf.Protocol.AttackAreaMode.AttackAreaNone) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) AttackAreaMode);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -5339,9 +5301,6 @@ namespace Google.Protobuf.Protocol {
       }
       if (other.AttackHeight != 0F) {
         AttackHeight = other.AttackHeight;
-      }
-      if (other.AttackAreaMode != global::Google.Protobuf.Protocol.AttackAreaMode.AttackAreaNone) {
-        AttackAreaMode = other.AttackAreaMode;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -5392,10 +5351,6 @@ namespace Google.Protobuf.Protocol {
           }
           case 85: {
             AttackHeight = input.ReadFloat();
-            break;
-          }
-          case 88: {
-            AttackAreaMode = (global::Google.Protobuf.Protocol.AttackAreaMode) input.ReadEnum();
             break;
           }
         }
