@@ -74,4 +74,4 @@ crashlytics-build.properties
 
 # --- Custom: External asset folders ---
 # Terrain demo and large assets managed outside Git
-/[Aa]ssets/TerrainDemoScene_URP/
+Client/[Aa]ssets/TerrainDemoScene_URP/
