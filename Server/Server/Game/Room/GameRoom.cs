@@ -87,7 +87,7 @@ namespace Server.Game
                 }
             }
 
-            // 4. 브로드캐스트
+            // 5. 브로드캐스트
             S_Attack attackPacket = new S_Attack();
             attackPacket.AttackType = attackType;
 
