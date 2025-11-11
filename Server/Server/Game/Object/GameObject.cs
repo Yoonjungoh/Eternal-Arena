@@ -36,26 +36,35 @@ namespace Server.Game
 
 		}
 
-		public virtual void OnDamaged(GameObject hitter, float damage)
+		public virtual void OnDamaged(GameObject instigator, float damage)
 		{
 			if (GameRoom == null)
 				return;
 
-			if (ObjectState.Stat.Hp <= 0)
+			// 실제 데미지 계산
+            float damageDifference = damage - ObjectState.Stat.Defense;
+            float realDamage = Math.Clamp(damageDifference, 0.0f, DataManager.Instance.MaxDamage);
+
+			// 남은 체력 계산
+            ObjectState.Stat.Hp -= realDamage;
+            ObjectState.Stat.Hp = Math.Clamp(ObjectState.Stat.Hp, 0.0f, DataManager.Instance.MaxHp);
+			
+            if (ObjectState.Stat.Hp <= 0.0f)
 			{
                 // 죽음 처리 부분
-                OnDead(hitter);
+                OnDead(this);
 			}
 		}
 
-		public virtual void OnDead(GameObject hitter)
+		public virtual void OnDead(GameObject DamagedObject)
 		{
 			if (GameRoom == null)
 				return;
 
-			//S_Die diePacket = new S_Die();
-			//diePacket.ObjectId = Id;
-			//diePacket.HitterId = hitter.Id;
-		}
+			ConsoleLogManager.Instance.Log($"Id: {DamagedObject.Id}, Type: {DamagedObject.ObjectType} is dead");
+			
+			// 패킷처리도 LeaveGame에서 처리
+            GameRoom.Push(() => GameRoom.LeaveGame(DamagedObject.Id));
+        }
 	}
 }

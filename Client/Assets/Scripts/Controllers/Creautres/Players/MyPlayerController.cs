@@ -19,7 +19,8 @@ public class MyPlayerController : PlayerController
 
     private float _lastAttackTime = -999f;
 
-    private float _commonAttackanimLength = 0.8f;
+    private float _commonAttackAnimLength;
+    private float _commonAttackAnimSpeedTime = 2.0f;    // 에디터에선 동적으로 가져올 수 있으나 런타임에선 불가능해서 하드코딩
 
     public override void Init()
     {
@@ -27,15 +28,18 @@ public class MyPlayerController : PlayerController
         _cameraTransform = Camera.main.transform;
         _prevPosition = transform.position;
         _prevRotation = transform.rotation;
-        Managers.Input.RegisterMouseAction(Define.MouseEvent.LeftClick, () => Attack());
-        _commonAttackanimLength = GetAnimationClipLength($"{AttackType.Common}_{CreatureState.Attack}");
+        // 인게임에서만 공격 기능 활성화
+        if (Managers.Scene.CurrentScene == Define.Scene.GameRoom)
+        {
+            Managers.Input.RegisterMouseAction(Define.MouseEvent.LeftClick, () => Attack(AttackType.Common));
+            _commonAttackAnimLength = _anim.GetAnimationClipLength($"{AttackType.Common}_{CreatureState.Attack}")/ _commonAttackAnimSpeedTime;
+        }
     }
 
     private void Update()
     {
         base.OnUpdate();
         HandleInput();
-        Debug.Log(CreatureState);
     }
 
     private void FixedUpdate()
@@ -45,11 +49,14 @@ public class MyPlayerController : PlayerController
         CheckMovePacket();
     }
 
-    private void Attack()
+    private void Attack(AttackType attackType)
     {
+        if (Managers.Scene.CurrentScene != Define.Scene.GameRoom)
+            return;
+        
         // Idle일때만 공격 시전
         if (CreatureState != CreatureState.Idle)
-            return;
+        return;
 
         // 공격 시간 쿨타임 계산
         if (Time.time - _lastAttackTime < Stat.CommonAttackCoolTime)
@@ -59,25 +66,13 @@ public class MyPlayerController : PlayerController
         CreatureState = CreatureState.Attack;
 
         // 서버로 공격 패킷 전송
-        C_Attack attackPacket = new C_Attack { AttackType = AttackType.Common };
+        C_Attack attackPacket = new C_Attack();
+        attackPacket.AttackType = attackType;
         Managers.Network.Send(attackPacket);
 
-        StartCoroutine(CoReturnToIdleAfterAttack(_commonAttackanimLength));
+        StartCoroutine(CoReturnToIdleAfterAttack(_commonAttackAnimLength));
     }
     
-    private float GetAnimationClipLength(string clipName)
-    {
-        if (_anim == null || _anim.runtimeAnimatorController == null)
-            return 0f;
-
-        foreach (var clip in _anim.runtimeAnimatorController.animationClips)
-        {
-            if (clip.name == clipName)
-                return clip.length;
-        }
-        return 0f;
-    }
-
     private void HandleInput()
     {
         // 공격 중일 때는 인풋 받는 거 불가

@@ -40,5 +40,7 @@ namespace Server.Game
 
             return StartPositions[index];
         }
+        public float MaxHp { get; set; } = 10000.0f;
+        public float MaxDamage { get; set; } = 1000.0f;
     }
 }

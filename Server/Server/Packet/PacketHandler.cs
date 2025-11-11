@@ -171,4 +171,16 @@ class PacketHandler
 
         NetworkManager.Instance.SendTimestamp(clientTimestampPacket, clientSession);
     }
+
+    public static void C_ChangeCreatureStateHandler(PacketSession session, IMessage packet)
+    {
+        C_ChangeCreatureState changeCreatureStatePacket = packet as C_ChangeCreatureState;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null || player.Lobby == null || player.GameRoom == null)
+            return;
+
+        player.GameRoom.Push(player.GameRoom.HandleChangeCreatureState, player.Id, changeCreatureStatePacket.CreatureState);
+    }
 }

@@ -201,11 +201,11 @@ class PacketHandler
             Debug.Log("S_Attack 패킷이 null입니다");
             return;
         }
-        string s = $"Range: {Managers.GameRoomObject.MyPlayer.Stat.AttackRange}, Deg: {Managers.GameRoomObject.MyPlayer.Stat.AttackHalfAngleDeg}\n";
-        foreach (var hitInfo in attackPacket.HitObjectList)
+        string s = string.Empty;
+        foreach (var damagedInfo in attackPacket.DamagedObjectList)
         {
-            s += hitInfo.ToString();
-            s += ' ';
+            s += $"{damagedInfo.ObjectId}의 남은 체력: {damagedInfo.RemainHp}";
+            s += '\n';
         }
         Managers.UI.ShowToastPopup(s);
         //Managers.GameRoomObject.Add(enterGamePacket.ObjectState, isMyPlayer: true);
@@ -321,5 +321,11 @@ class PacketHandler
     {
         S_Timestamp sereverTimestamp = packet as S_Timestamp;
         Managers.Network.CalculateTimeOffset(sereverTimestamp.ClientSendTime, sereverTimestamp.ServerReceivedTime);
+    }
+
+    public static void S_ChangeCreatureStateHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeCreatureState changeCreatureStatePacket = packet as S_ChangeCreatureState;
+        Managers.GameRoomObject.HandleChangeCreatureState(changeCreatureStatePacket.ObjectId, changeCreatureStatePacket.CreatureState);
     }
 }

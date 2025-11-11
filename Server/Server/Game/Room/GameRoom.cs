@@ -17,6 +17,7 @@ namespace Server.Game
         public int RoomId { get; set; }
         public string RoomName { get; set; }
         public int RoomOwnerId { get; set; }
+        Dictionary<int, GameObject> _gameObjects = new Dictionary<int, GameObject>();
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
 
         public event Action<int> OnEmptyRoom; // 방이 비었을 때 알림 (roomId)
@@ -36,41 +37,42 @@ namespace Server.Game
             //    EnterGame(player);
             //}
         }
-        public void HandleAttack(Player attacker, AttackType attackType)
+
+        public void HandleAttack(Player instigator, AttackType attackType)
         {
-            if (attacker == null) return;
+            if (instigator == null) return;
 
             // 서버 기준 공격 시간 (플레이어 위치, 방향 예상하기 위함)
             long attackTimeMs = Util.GetTimestampMs();
 
             // 1. 공격자 위치 구하기
-            // attacker.ObjectState.ServerReceivedTime 자주 갱신하면 더 정확해지더라 (당연한 말 -> HandleMove에서 업뎃 중임)
+            // instigatorId.ObjectState.ServerReceivedTime 자주 갱신하면 더 정확해지더라 (당연한 말 -> HandleMove에서 업뎃 중임)
             Vector3 attackPos = MovementHelper.PredictPosition(
-                MovementHelper.PVec3ToVec3(attacker.ObjectState.Position),
-                MovementHelper.PVec3ToVec3(attacker.ObjectState.Velocity),
-                attacker.ObjectState.ServerReceivedTime,
+                MovementHelper.PVec3ToVec3(instigator.ObjectState.Position),
+                MovementHelper.PVec3ToVec3(instigator.ObjectState.Velocity),
+                instigator.ObjectState.ServerReceivedTime,
                 attackTimeMs
             );
 
             // 2. 공격자 방향 구하기
-            Vector3 attackForward = MovementHelper.ForwardFrom(attacker.ObjectState.Rotation);
+            Vector3 attackForward = MovementHelper.ForwardFrom(instigator.ObjectState.Rotation);
             attackForward = Vector3.Normalize(attackForward);
 
             // 3. 공격 범위 알아내기
-            float radius = attacker.ObjectState.Stat.AttackRange;
-            float halfDeg = attacker.ObjectState.Stat.AttackHalfAngleDeg;
-            float height = attacker.ObjectState.Stat.AttackHeight;
+            float radius = instigator.ObjectState.Stat.AttackRange;
+            float halfDeg = instigator.ObjectState.Stat.AttackHalfAngleDeg;
+            float height = instigator.ObjectState.Stat.AttackHeight;
 
             // 3-1. 각도 안에 있는지 확인할 cos 구하기
             float cosLimit = (float)MathF.Cos(halfDeg * (MathF.PI / 180f));
 
             // 4. 후보 전부 검사하기
-            List<int> hits = new List<int>();
+            List<int> damagedObjectList = new List<int>();
 
             foreach (Player target in _players.Values)
             {
                 if (target == null) continue;
-                if (target.Id == attacker.Id) continue;
+                if (target.Id == instigator.Id) continue;
 
                 // 4-1. 대상 위치 예측하기
                 Vector3 targetPos = MovementHelper.PredictPosition(
@@ -83,22 +85,27 @@ namespace Server.Game
                 // 4-2. 충돌 판정
                 if (CollisionHelper.IsCollision(attackPos, attackForward, targetPos, radius, cosLimit, height))
                 {
-                    hits.Add(target.Id);
+                    damagedObjectList.Add(target.Id);
                 }
             }
 
-            // 5. 브로드캐스트
+            // 5. 데미지 처리
             S_Attack attackPacket = new S_Attack();
-            attackPacket.AttackType = attackType;
-
-            ConsoleLogManager.Instance.Log($"Attacker: {attacker.Id}");
-            foreach (int objectId in hits)
+            foreach (int objectId in damagedObjectList) 
             {
-                HitInfo hitInfo = new HitInfo();
-                hitInfo.ObjectId = objectId;
-                attackPacket.HitObjectList.Add(hitInfo);
-                ConsoleLogManager.Instance.Log($"Hitted: {objectId}");
+                _gameObjects.TryGetValue(objectId, out GameObject damagedObject);
+                if (damagedObject == null)
+                    continue;
+
+                damagedObject.OnDamaged(instigator, instigator.ObjectState.Stat.CommonAttackDamage);
+
+                DamagedInfo damagedInfo = new DamagedInfo();
+                damagedInfo.ObjectId = objectId;
+                damagedInfo.RemainHp = damagedObject.ObjectState.Stat.Hp;
+                attackPacket.DamagedObjectList.Add(damagedInfo);
             }
+
+            // 6. 브로드캐스트
             Broadcast(attackPacket);
         }
 
@@ -146,8 +153,7 @@ namespace Server.Game
                 player.Session.Send(enteGamePacket);
             }
 
-            _players.Add(player.Id, player);
-            //player.Init();
+            AddObject(player);
 
             // 본인한테 맵안의 플레이어 정보 전송
             S_Spawn spawnToMePacket = new S_Spawn();
@@ -206,12 +212,21 @@ namespace Server.Game
             }
 
             // 다른 유저들에게 브로드캐스트
-            S_Move res = new S_Move { ObjectState = movePacket.ObjectState };
-            res.ObjectState.ServerReceivedTime = Util.GetTimestampMs();
+            S_Move resMovePacket = new S_Move();
+            resMovePacket.ObjectState = movePacket.ObjectState;
+            resMovePacket.ObjectState.ServerReceivedTime = Util.GetTimestampMs();
             //Console.WriteLine
             //    ($"Player {player.Id} -> Vel: ({player.Velocity.X}, {player.Velocity.Y}, {player.Velocity.Z})" +
             //    $"Rot: ({player.Rotation.X}, {player.Rotation.Y}, {player.Rotation.Z}, {player.Rotation.W})");
-            Broadcast(res, player.Id);
+            Broadcast(resMovePacket, player.Id);
+        }
+
+        public void HandleChangeCreatureState(int objectId, CreatureState creatureState)
+        {
+            S_ChangeCreatureState changeCreatureStatePacket = new S_ChangeCreatureState();
+            changeCreatureStatePacket.ObjectId = objectId;
+            changeCreatureStatePacket.CreatureState = creatureState;
+            Broadcast(changeCreatureStatePacket, objectId);
         }
 
         public Player FindPlayer(Func<GameObject, bool> condition)
@@ -236,6 +251,19 @@ namespace Server.Game
                     continue;
 
                 p.Session.Send(packet);
+            }
+        }
+
+        private void AddObject(GameObject gameObject)
+        {
+            // 모든 오브젝트 관리하는 딕셔너리에 추가
+            _gameObjects.Add(gameObject.Id, gameObject);
+            
+            // 분기별로 추가
+            if (gameObject.ObjectType == GameObjectType.Player)
+            {
+                Player player = (Player)gameObject;
+                _players.Add(player.Id, player);
             }
         }
     }

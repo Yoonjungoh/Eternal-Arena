@@ -83,6 +83,25 @@ public class GameRoomObjectManager
         return null;
     }
 
+    public void HandleChangeCreatureState(int objectId, CreatureState creatureState)
+    {
+        _objects.TryGetValue(objectId, out GameObject go);
+        if (go == null)
+        {
+            Debug.Log($"{objectId}가 null 입니다.");
+            return;
+        }
+
+        CreatureController creatureController = go.GetComponent<CreatureController>();
+        if (creatureController == null)
+        {
+            Debug.Log($"{objectId}가 CreatureController가 아닙니다.");
+            return;
+        }
+
+        creatureController.ObjectState.CreatureState = creatureState;
+    }
+
     public void Clear()
     {
         foreach (GameObject obj in _objects.Values)

@@ -45,7 +45,7 @@ namespace Server.Game
 
             ObjectState.Stat.MaxHp = 100.0f;
             ObjectState.Stat.Hp = ObjectState.Stat.MaxHp;
-            ObjectState.Stat.Attack = 30.0f;
+            ObjectState.Stat.CommonAttackDamage = 30.0f;
             ObjectState.Stat.Defense = 0.0f;
             ObjectState.Stat.MoveSpeed = 10.0f;
             ObjectState.Stat.CommonAttackCoolTime = 2.0f;

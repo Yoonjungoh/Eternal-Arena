@@ -154,10 +154,11 @@ public class CreatureController : MonoBehaviour
             yield break;
 
         CreatureState = CreatureState.Idle;
-        // 상태 변화 패킷 전송 (TODO - 최적화 하기)
-        C_Move movePacket = new C_Move();
-        movePacket.ObjectState = ObjectState;
-        Managers.Network.Send(movePacket);
+        
+        // 상태 변화 패킷 전송
+        C_ChangeCreatureState changeCreatureStatePacket = new C_ChangeCreatureState();
+        changeCreatureStatePacket.CreatureState = CreatureState;
+        Managers.Network.Send(changeCreatureStatePacket);
     }
 
     protected virtual void OnDestroy()
