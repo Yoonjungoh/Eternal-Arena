@@ -34,4 +34,18 @@ public class PlayerController : CreatureController
         }
     }
 
+    protected override void UpdateAttack()
+    {
+        base.UpdateAttack();
+        if (_lastAnimState != CreatureState.Attack)
+        {
+            _anim.CrossFade(_commonAttackanimName, _transitionTime);
+            _lastAnimState = CreatureState.Attack;
+        }
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+    }
 }

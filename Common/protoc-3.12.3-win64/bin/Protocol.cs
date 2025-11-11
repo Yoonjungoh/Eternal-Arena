@@ -66,28 +66,28 @@ namespace Google.Protobuf.Protocol {
             "LlByb3RvUXVhdGVybmlvbhIMCgRuYW1lGAcgASgJEi4KDWNyZWF0dXJlU3Rh",
             "dGUYCCABKA4yFy5Qcm90b2NvbC5DcmVhdHVyZVN0YXRlEhwKBHN0YXQYCSAB",
             "KAsyDi5Qcm90b2NvbC5TdGF0IjEKB0hpdEluZm8SEAoIb2JqZWN0SWQYASAB",
-            "KAUSFAoMZGFtYWdlQW1vdW50GAIgASgFIrgBCgRTdGF0EgoKAmhwGAEgASgC",
-            "Eg0KBW1heEhwGAIgASgCEg4KBmF0dGFjaxgDIAEoAhIPCgdkZWZlbnNlGAQg",
-            "ASgCEg0KBXNwZWVkGAUgASgCEgwKBGNvc3QYBiABKAUSEAoIY29vbFRpbWUY",
-            "ByABKAISEwoLYXR0YWNrUmFuZ2UYCCABKAISGgoSYXR0YWNrSGFsZkFuZ2xl",
-            "RGVnGAkgASgCEhQKDGF0dGFja0hlaWdodBgKIAEoAir0AwoFTXNnSWQSFAoQ",
-            "U19BU1NJR05fVVNFUl9JRBAAEhQKEENfQVNTSUdOX1VTRVJfSUQQARIRCg1T",
-            "X0VOVEVSX0xPQkJZEAISEQoNU19MRUFWRV9MT0JCWRADEhEKDUNfTEVBVkVf",
-            "TE9CQlkQBBIYChRDX0VOVEVSX1dBSVRJTkdfUk9PTRAFEhgKFFNfRU5URVJf",
-            "V0FJVElOR19ST09NEAYSDgoKQ19BRERfUk9PTRAHEg4KClNfQUREX1JPT00Q",
-            "CBIRCg1TX1JFTU9WRV9ST09NEAkSDwoLU19FWElUX1JPT00QChIPCgtDX0VY",
-            "SVRfUk9PTRALEhEKDUNfRU5URVJfTE9CQlkQDBIeChpTX1VQREFURV9XQUlU",
-            "SU5HX1JPT01fSU5GTxANEhAKDENfU1RBUlRfR0FNRRAOEhAKDFNfU1RBUlRf",
-            "R0FNRRAPEhAKDENfRU5URVJfR0FNRRAQEhAKDFNfRU5URVJfR0FNRRAREgwK",
-            "CENfQVRUQUNLEBISDAoIU19BVFRBQ0sQExIQCgxTX0xFQVZFX0dBTUUQZBIL",
-            "CgdTX1NQQVdOEGUSDQoJU19ERVNQQVdOEGYSCgoGQ19NT1ZFEGcSCgoGU19N",
-            "T1ZFEGgSDwoLQ19USU1FU1RBTVAQaRIPCgtTX1RJTUVTVEFNUBBqKlMKDUNy",
-            "ZWF0dXJlU3RhdGUSCAoESURMRRAAEggKBE1PVkUQARIKCgZBVFRBQ0sQAhIO",
-            "CgpPTl9EQU1BR0VEEAMSCQoFU0tJTEwQBBIHCgNESUUQBSpECg5HYW1lT2Jq",
-            "ZWN0VHlwZRIZChVHQU1FX09CSkVDVF9UWVBFX05PTkUQABIKCgZQTEFZRVIQ",
-            "ARILCgdNT05TVEVSEAIqLgoKQXR0YWNrVHlwZRIUChBBVFRBQ0tfVFlQRV9O",
-            "T05FEAASCgoGQ09NTU9OEAFCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Qcm90b2Nv",
-            "bGIGcHJvdG8z"));
+            "KAUSFAoMZGFtYWdlQW1vdW50GAIgASgFIroBCgRTdGF0Eg0KBW1heEhwGAEg",
+            "ASgCEgoKAmhwGAIgASgCEg4KBmF0dGFjaxgDIAEoAhIPCgdkZWZlbnNlGAQg",
+            "ASgCEhEKCW1vdmVTcGVlZBgFIAEoAhIcChRjb21tb25BdHRhY2tDb29sVGlt",
+            "ZRgGIAEoAhITCgthdHRhY2tSYW5nZRgHIAEoAhIaChJhdHRhY2tIYWxmQW5n",
+            "bGVEZWcYCCABKAISFAoMYXR0YWNrSGVpZ2h0GAkgASgCKvQDCgVNc2dJZBIU",
+            "ChBTX0FTU0lHTl9VU0VSX0lEEAASFAoQQ19BU1NJR05fVVNFUl9JRBABEhEK",
+            "DVNfRU5URVJfTE9CQlkQAhIRCg1TX0xFQVZFX0xPQkJZEAMSEQoNQ19MRUFW",
+            "RV9MT0JCWRAEEhgKFENfRU5URVJfV0FJVElOR19ST09NEAUSGAoUU19FTlRF",
+            "Ul9XQUlUSU5HX1JPT00QBhIOCgpDX0FERF9ST09NEAcSDgoKU19BRERfUk9P",
+            "TRAIEhEKDVNfUkVNT1ZFX1JPT00QCRIPCgtTX0VYSVRfUk9PTRAKEg8KC0Nf",
+            "RVhJVF9ST09NEAsSEQoNQ19FTlRFUl9MT0JCWRAMEh4KGlNfVVBEQVRFX1dB",
+            "SVRJTkdfUk9PTV9JTkZPEA0SEAoMQ19TVEFSVF9HQU1FEA4SEAoMU19TVEFS",
+            "VF9HQU1FEA8SEAoMQ19FTlRFUl9HQU1FEBASEAoMU19FTlRFUl9HQU1FEBES",
+            "DAoIQ19BVFRBQ0sQEhIMCghTX0FUVEFDSxATEhAKDFNfTEVBVkVfR0FNRRBk",
+            "EgsKB1NfU1BBV04QZRINCglTX0RFU1BBV04QZhIKCgZDX01PVkUQZxIKCgZT",
+            "X01PVkUQaBIPCgtDX1RJTUVTVEFNUBBpEg8KC1NfVElNRVNUQU1QEGoqUwoN",
+            "Q3JlYXR1cmVTdGF0ZRIICgRJRExFEAASCAoETU9WRRABEgoKBkFUVEFDSxAC",
+            "Eg4KCk9OX0RBTUFHRUQQAxIJCgVTS0lMTBAEEgcKA0RJRRAFKkQKDkdhbWVP",
+            "YmplY3RUeXBlEhkKFUdBTUVfT0JKRUNUX1RZUEVfTk9ORRAAEgoKBlBMQVlF",
+            "UhABEgsKB01PTlNURVIQAiouCgpBdHRhY2tUeXBlEhQKEEFUVEFDS19UWVBF",
+            "X05PTkUQABIKCgZDT01NT04QAUIbqgIYR29vZ2xlLlByb3RvYnVmLlByb3Rv",
+            "Y29sYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.AttackType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -123,7 +123,7 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ProtoQuaternion), global::Google.Protobuf.Protocol.ProtoQuaternion.Parser, new[]{ "X", "Y", "Z", "W" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ObjectState), global::Google.Protobuf.Protocol.ObjectState.Parser, new[]{ "ObjectId", "ClientSendTime", "ServerReceivedTime", "Position", "Velocity", "Rotation", "Name", "CreatureState", "Stat" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.HitInfo), global::Google.Protobuf.Protocol.HitInfo.Parser, new[]{ "ObjectId", "DamageAmount" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.Stat), global::Google.Protobuf.Protocol.Stat.Parser, new[]{ "Hp", "MaxHp", "Attack", "Defense", "Speed", "Cost", "CoolTime", "AttackRange", "AttackHalfAngleDeg", "AttackHeight" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.Stat), global::Google.Protobuf.Protocol.Stat.Parser, new[]{ "MaxHp", "Hp", "Attack", "Defense", "MoveSpeed", "CommonAttackCoolTime", "AttackRange", "AttackHalfAngleDeg", "AttackHeight" }, null, null, null, null)
           }));
     }
     #endregion
@@ -4994,13 +4994,12 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Stat(Stat other) : this() {
-      hp_ = other.hp_;
       maxHp_ = other.maxHp_;
+      hp_ = other.hp_;
       attack_ = other.attack_;
       defense_ = other.defense_;
-      speed_ = other.speed_;
-      cost_ = other.cost_;
-      coolTime_ = other.coolTime_;
+      moveSpeed_ = other.moveSpeed_;
+      commonAttackCoolTime_ = other.commonAttackCoolTime_;
       attackRange_ = other.attackRange_;
       attackHalfAngleDeg_ = other.attackHalfAngleDeg_;
       attackHeight_ = other.attackHeight_;
@@ -5012,25 +5011,25 @@ namespace Google.Protobuf.Protocol {
       return new Stat(this);
     }
 
-    /// <summary>Field number for the "hp" field.</summary>
-    public const int HpFieldNumber = 1;
-    private float hp_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public float Hp {
-      get { return hp_; }
-      set {
-        hp_ = value;
-      }
-    }
-
     /// <summary>Field number for the "maxHp" field.</summary>
-    public const int MaxHpFieldNumber = 2;
+    public const int MaxHpFieldNumber = 1;
     private float maxHp_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float MaxHp {
       get { return maxHp_; }
       set {
         maxHp_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "hp" field.</summary>
+    public const int HpFieldNumber = 2;
+    private float hp_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Hp {
+      get { return hp_; }
+      set {
+        hp_ = value;
       }
     }
 
@@ -5056,41 +5055,30 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
-    /// <summary>Field number for the "speed" field.</summary>
-    public const int SpeedFieldNumber = 5;
-    private float speed_;
+    /// <summary>Field number for the "moveSpeed" field.</summary>
+    public const int MoveSpeedFieldNumber = 5;
+    private float moveSpeed_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public float Speed {
-      get { return speed_; }
+    public float MoveSpeed {
+      get { return moveSpeed_; }
       set {
-        speed_ = value;
+        moveSpeed_ = value;
       }
     }
 
-    /// <summary>Field number for the "cost" field.</summary>
-    public const int CostFieldNumber = 6;
-    private int cost_;
+    /// <summary>Field number for the "commonAttackCoolTime" field.</summary>
+    public const int CommonAttackCoolTimeFieldNumber = 6;
+    private float commonAttackCoolTime_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Cost {
-      get { return cost_; }
+    public float CommonAttackCoolTime {
+      get { return commonAttackCoolTime_; }
       set {
-        cost_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "coolTime" field.</summary>
-    public const int CoolTimeFieldNumber = 7;
-    private float coolTime_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public float CoolTime {
-      get { return coolTime_; }
-      set {
-        coolTime_ = value;
+        commonAttackCoolTime_ = value;
       }
     }
 
     /// <summary>Field number for the "attackRange" field.</summary>
-    public const int AttackRangeFieldNumber = 8;
+    public const int AttackRangeFieldNumber = 7;
     private float attackRange_;
     /// <summary>
     /// 반지름 r
@@ -5104,7 +5092,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "attackHalfAngleDeg" field.</summary>
-    public const int AttackHalfAngleDegFieldNumber = 9;
+    public const int AttackHalfAngleDegFieldNumber = 8;
     private float attackHalfAngleDeg_;
     /// <summary>
     /// 부채꼴의 반각 d(도)
@@ -5118,7 +5106,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "attackHeight" field.</summary>
-    public const int AttackHeightFieldNumber = 10;
+    public const int AttackHeightFieldNumber = 9;
     private float attackHeight_;
     /// <summary>
     /// 높이
@@ -5144,13 +5132,12 @@ namespace Google.Protobuf.Protocol {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Hp, other.Hp)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MaxHp, other.MaxHp)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Hp, other.Hp)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Attack, other.Attack)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Defense, other.Defense)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Speed, other.Speed)) return false;
-      if (Cost != other.Cost) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(CoolTime, other.CoolTime)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MoveSpeed, other.MoveSpeed)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(CommonAttackCoolTime, other.CommonAttackCoolTime)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AttackRange, other.AttackRange)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AttackHalfAngleDeg, other.AttackHalfAngleDeg)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AttackHeight, other.AttackHeight)) return false;
@@ -5160,13 +5147,12 @@ namespace Google.Protobuf.Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Hp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Hp);
       if (MaxHp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MaxHp);
+      if (Hp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Hp);
       if (Attack != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Attack);
       if (Defense != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Defense);
-      if (Speed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Speed);
-      if (Cost != 0) hash ^= Cost.GetHashCode();
-      if (CoolTime != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(CoolTime);
+      if (MoveSpeed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MoveSpeed);
+      if (CommonAttackCoolTime != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(CommonAttackCoolTime);
       if (AttackRange != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AttackRange);
       if (AttackHalfAngleDeg != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AttackHalfAngleDeg);
       if (AttackHeight != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AttackHeight);
@@ -5183,13 +5169,13 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Hp != 0F) {
-        output.WriteRawTag(13);
-        output.WriteFloat(Hp);
-      }
       if (MaxHp != 0F) {
-        output.WriteRawTag(21);
+        output.WriteRawTag(13);
         output.WriteFloat(MaxHp);
+      }
+      if (Hp != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(Hp);
       }
       if (Attack != 0F) {
         output.WriteRawTag(29);
@@ -5199,28 +5185,24 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(37);
         output.WriteFloat(Defense);
       }
-      if (Speed != 0F) {
+      if (MoveSpeed != 0F) {
         output.WriteRawTag(45);
-        output.WriteFloat(Speed);
+        output.WriteFloat(MoveSpeed);
       }
-      if (Cost != 0) {
-        output.WriteRawTag(48);
-        output.WriteInt32(Cost);
-      }
-      if (CoolTime != 0F) {
-        output.WriteRawTag(61);
-        output.WriteFloat(CoolTime);
+      if (CommonAttackCoolTime != 0F) {
+        output.WriteRawTag(53);
+        output.WriteFloat(CommonAttackCoolTime);
       }
       if (AttackRange != 0F) {
-        output.WriteRawTag(69);
+        output.WriteRawTag(61);
         output.WriteFloat(AttackRange);
       }
       if (AttackHalfAngleDeg != 0F) {
-        output.WriteRawTag(77);
+        output.WriteRawTag(69);
         output.WriteFloat(AttackHalfAngleDeg);
       }
       if (AttackHeight != 0F) {
-        output.WriteRawTag(85);
+        output.WriteRawTag(77);
         output.WriteFloat(AttackHeight);
       }
       if (_unknownFields != null) {
@@ -5231,10 +5213,10 @@ namespace Google.Protobuf.Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Hp != 0F) {
+      if (MaxHp != 0F) {
         size += 1 + 4;
       }
-      if (MaxHp != 0F) {
+      if (Hp != 0F) {
         size += 1 + 4;
       }
       if (Attack != 0F) {
@@ -5243,13 +5225,10 @@ namespace Google.Protobuf.Protocol {
       if (Defense != 0F) {
         size += 1 + 4;
       }
-      if (Speed != 0F) {
+      if (MoveSpeed != 0F) {
         size += 1 + 4;
       }
-      if (Cost != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Cost);
-      }
-      if (CoolTime != 0F) {
+      if (CommonAttackCoolTime != 0F) {
         size += 1 + 4;
       }
       if (AttackRange != 0F) {
@@ -5272,11 +5251,11 @@ namespace Google.Protobuf.Protocol {
       if (other == null) {
         return;
       }
-      if (other.Hp != 0F) {
-        Hp = other.Hp;
-      }
       if (other.MaxHp != 0F) {
         MaxHp = other.MaxHp;
+      }
+      if (other.Hp != 0F) {
+        Hp = other.Hp;
       }
       if (other.Attack != 0F) {
         Attack = other.Attack;
@@ -5284,14 +5263,11 @@ namespace Google.Protobuf.Protocol {
       if (other.Defense != 0F) {
         Defense = other.Defense;
       }
-      if (other.Speed != 0F) {
-        Speed = other.Speed;
+      if (other.MoveSpeed != 0F) {
+        MoveSpeed = other.MoveSpeed;
       }
-      if (other.Cost != 0) {
-        Cost = other.Cost;
-      }
-      if (other.CoolTime != 0F) {
-        CoolTime = other.CoolTime;
+      if (other.CommonAttackCoolTime != 0F) {
+        CommonAttackCoolTime = other.CommonAttackCoolTime;
       }
       if (other.AttackRange != 0F) {
         AttackRange = other.AttackRange;
@@ -5314,11 +5290,11 @@ namespace Google.Protobuf.Protocol {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 13: {
-            Hp = input.ReadFloat();
+            MaxHp = input.ReadFloat();
             break;
           }
           case 21: {
-            MaxHp = input.ReadFloat();
+            Hp = input.ReadFloat();
             break;
           }
           case 29: {
@@ -5330,26 +5306,22 @@ namespace Google.Protobuf.Protocol {
             break;
           }
           case 45: {
-            Speed = input.ReadFloat();
+            MoveSpeed = input.ReadFloat();
             break;
           }
-          case 48: {
-            Cost = input.ReadInt32();
+          case 53: {
+            CommonAttackCoolTime = input.ReadFloat();
             break;
           }
           case 61: {
-            CoolTime = input.ReadFloat();
-            break;
-          }
-          case 69: {
             AttackRange = input.ReadFloat();
             break;
           }
-          case 77: {
+          case 69: {
             AttackHalfAngleDeg = input.ReadFloat();
             break;
           }
-          case 85: {
+          case 77: {
             AttackHeight = input.ReadFloat();
             break;
           }

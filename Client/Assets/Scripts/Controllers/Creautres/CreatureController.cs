@@ -10,10 +10,13 @@ public class CreatureController : MonoBehaviour
     protected Vector3 _serverPosition;
     protected Quaternion _serverRotation;
     protected Vector3 _serverVelocity;
-    public double _serverReceivedTimeMs = 0.0;  // 서버에서 패킷을 보낸 시간
+    protected double _serverReceivedTimeMs = 0.0;  // 서버에서 패킷을 보낸 시간
 
     protected Animator _anim;
     protected Rigidbody _rb;
+    protected string _commonAttackanimName;
+
+
     public ObjectState ObjectState { get; set; } = new ObjectState();
     public int Id { get { return ObjectState.ObjectId; } set { ObjectState.ObjectId = value; } }
     public CreatureState CreatureState 
@@ -27,7 +30,7 @@ public class CreatureController : MonoBehaviour
             ObjectState.CreatureState = value;
         }
     }
-    public GameObjectType GameObjectType { get; set; }
+    public GameObjectType GameObjectType { get; set; } = GameObjectType.None;
 
     protected ProtoVector3 _position = new ProtoVector3();
     public ProtoVector3 Position
@@ -83,6 +86,8 @@ public class CreatureController : MonoBehaviour
 
     public Stat Stat { get { return ObjectState.Stat; } set { ObjectState.Stat = value; } }
 
+    protected AttackType _attackType;   // 공격 타입
+
     protected virtual void OnUpdate()
     {
         switch (CreatureState)
@@ -109,6 +114,8 @@ public class CreatureController : MonoBehaviour
     {
         _anim = GetComponent<Animator>();
         _rb = GetComponent<Rigidbody>();
+        // 애니메이션 네임 초기화
+        _commonAttackanimName = $"{AttackType.Common}_{CreatureState.Attack}";
     }
 
     protected virtual void UpdateDie() { }
@@ -137,5 +144,24 @@ public class CreatureController : MonoBehaviour
         _serverRotation = new Quaternion(rot.X, rot.Y, rot.Z, rot.W);
         _serverVelocity = new Vector3(vel.X, vel.Y, vel.Z);
         _serverReceivedTimeMs = serverReceivedTime;
+    }
+
+    protected IEnumerator CoReturnToIdleAfterAttack(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (this == null || _anim == null)
+            yield break;
+
+        CreatureState = CreatureState.Idle;
+        // 상태 변화 패킷 전송 (TODO - 최적화 하기)
+        C_Move movePacket = new C_Move();
+        movePacket.ObjectState = ObjectState;
+        Managers.Network.Send(movePacket);
+    }
+
+    protected virtual void OnDestroy()
+    {
+        StopAllCoroutines();
     }
 }

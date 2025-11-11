@@ -206,14 +206,13 @@ message HitInfo {
 }
 
 message Stat {
-  float hp = 1;
-  float maxHp = 2;
+  float maxHp = 1;
+  float hp = 2;
   float attack = 3;
   float defense = 4;
-  float speed = 5;
-  int32 cost = 6;
-  float coolTime = 7;
-  float attackRange = 8;          // 반지름 r
-  float attackHalfAngleDeg = 9;  // 부채꼴의 반각 d(도)
-  float attackHeight = 10;        // 높이
+  float moveSpeed = 5;
+  float commonAttackCoolTime = 6;
+  float attackRange = 7;          // 반지름 r
+  float attackHalfAngleDeg = 8;  // 부채꼴의 반각 d(도)
+  float attackHeight = 9;        // 높이
 }

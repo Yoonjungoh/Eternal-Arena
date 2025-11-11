@@ -4,23 +4,22 @@ using UnityEngine;
 
 public class MyPlayerController : PlayerController
 {
-    [SerializeField] private float _moveSpeed = 5.0f;
     [SerializeField] private float _rotateSpeed = 10.0f;
-    public float RotateSpeed { get { return _rotateSpeed; } }
+    public float RotateSpeed => _rotateSpeed;
 
     private Vector3 _moveDir = Vector3.zero;
     private Vector3 _prevPosition;
-    
-    [SerializeField] private float _stopThreshold = 0.01f;
-
-    // 데드 레커닝 패킷 제한에 쓸 임계값
-    private float _velocityChangeThreshold = 1.0f;
-    private float _rotationChangeThreshold = 2.0f;
-
     private Vector3 _prevVelocity = Vector3.zero;
     private Quaternion _prevRotation = Quaternion.identity;
-
     private Transform _cameraTransform;
+
+    private float _velocityChangeThreshold = 1.0f;
+    private float _rotationChangeThreshold = 2.0f;
+    private float _stopThreshold = 0.01f;
+
+    private float _lastAttackTime = -999f;
+
+    private float _commonAttackanimLength = 0.8f;
 
     public override void Init()
     {
@@ -28,55 +27,95 @@ public class MyPlayerController : PlayerController
         _cameraTransform = Camera.main.transform;
         _prevPosition = transform.position;
         _prevRotation = transform.rotation;
-        Managers.Input.RegisterKeyAction(KeyCode.K, () => Attack());
+        Managers.Input.RegisterMouseAction(Define.MouseEvent.LeftClick, () => Attack());
+        _commonAttackanimLength = GetAnimationClipLength($"{AttackType.Common}_{CreatureState.Attack}");
     }
 
     private void Update()
     {
         base.OnUpdate();
         HandleInput();
+        Debug.Log(CreatureState);
     }
 
     private void FixedUpdate()
     {
-        HandlePhysicsMovement();    // 물리 기반 이동 처리
-        ApplyMovement();    // 실제 인풋에 따른 이동 처리
-        CheckMovePacket(); // 이동 감지 및 패킷 전송
+        HandlePhysicsMovement();
+        ApplyMovement();
+        CheckMovePacket();
     }
 
     private void Attack()
     {
-        C_Attack attackPacket = new C_Attack();
-        attackPacket.AttackType = AttackType.Common;
+        // Idle일때만 공격 시전
+        if (CreatureState != CreatureState.Idle)
+            return;
+
+        // 공격 시간 쿨타임 계산
+        if (Time.time - _lastAttackTime < Stat.CommonAttackCoolTime)
+            return;
+
+        _lastAttackTime = Time.time;
+        CreatureState = CreatureState.Attack;
+
+        // 서버로 공격 패킷 전송
+        C_Attack attackPacket = new C_Attack { AttackType = AttackType.Common };
         Managers.Network.Send(attackPacket);
+
+        StartCoroutine(CoReturnToIdleAfterAttack(_commonAttackanimLength));
+    }
+    
+    private float GetAnimationClipLength(string clipName)
+    {
+        if (_anim == null || _anim.runtimeAnimatorController == null)
+            return 0f;
+
+        foreach (var clip in _anim.runtimeAnimatorController.animationClips)
+        {
+            if (clip.name == clipName)
+                return clip.length;
+        }
+        return 0f;
     }
 
     private void HandleInput()
     {
+        // 공격 중일 때는 인풋 받는 거 불가
+        if (CreatureState == CreatureState.Attack)
+            return;
+
         _moveDir = Vector3.zero;
 
-        // 카메라 방향 기준
         Vector3 camForward = _cameraTransform.forward;
         Vector3 camRight = _cameraTransform.right;
         camForward.y = 0; camRight.y = 0;
         camForward.Normalize(); camRight.Normalize();
 
-        if (Input.GetKey(KeyCode.W)) _moveDir += camForward;
-        if (Input.GetKey(KeyCode.S)) _moveDir -= camForward;
-        if (Input.GetKey(KeyCode.A)) _moveDir -= camRight;
-        if (Input.GetKey(KeyCode.D)) _moveDir += camRight;
+        if (Input.GetKey(KeyCode.W))
+        {
+            _moveDir += camForward;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            _moveDir -= camForward;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            _moveDir -= camRight;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            _moveDir += camRight;
+        }
 
         _moveDir.Normalize();
 
-        // Idle 상태 (멈춤 전송 보장)
         if (_moveDir.sqrMagnitude < _stopThreshold)
         {
             if (CreatureState != CreatureState.Idle)
             {
                 CreatureState = CreatureState.Idle;
-                // 보낼 때는 명시적으로 0 벡터 전송
                 SendMovePacket(Vector3.zero);
-                // 업데이트 이전 상태
                 _prevVelocity = Vector3.zero;
                 _prevRotation = transform.rotation;
                 _prevPosition = transform.position;
@@ -84,7 +123,6 @@ public class MyPlayerController : PlayerController
             return;
         }
 
-        // 회전 및 상태 처리
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(_moveDir), Time.deltaTime * _rotateSpeed);
         CreatureState = CreatureState.Move;
     }
@@ -94,38 +132,32 @@ public class MyPlayerController : PlayerController
         if (_rb == null)
             return;
 
-        // 이동 방향이 없는 경우 무시
         if (_moveDir.sqrMagnitude < _stopThreshold)
             return;
 
-        // 현재 위치 + 이동량 (FixedDeltaTime 사용!)
-        Vector3 newPosition = _rb.position + _moveDir * _moveSpeed * Time.fixedDeltaTime;
+        Vector3 newPosition = _rb.position + _moveDir * Stat.MoveSpeed * Time.fixedDeltaTime;
         _rb.MovePosition(newPosition);
 
-        // 회전도 MoveRotation으로
         Quaternion targetRot = Quaternion.LookRotation(_moveDir);
         _rb.MoveRotation(Quaternion.Lerp(_rb.rotation, targetRot, _rotateSpeed * Time.fixedDeltaTime));
 
         CreatureState = CreatureState.Move;
     }
 
-    // 속도가 의미 있을 때만 패킷 전송 (무언가에 의해서 밀리거나 낙하 중일 때)
     private void HandlePhysicsMovement()
     {
         Vector3 velocity = _rb.velocity;
 
-        bool wasFalling = _prevVelocity.y < -0.01f; // 이전 프레임에서 낙하 중이었는지
-        bool isNearlyStopped = velocity.sqrMagnitude <= 0.0001f; // 지금 거의 멈췄는지
+        bool wasFalling = _prevVelocity.y < -0.01f;
+        bool isNearlyStopped = velocity.sqrMagnitude <= 0.0001f;
 
-        // 낙하 중인 경우 (속도 유의미)
         if (velocity.sqrMagnitude > 0.0001f)
         {
             SendMovePacket(velocity);
         }
-        // 착지한 경우 (처음으로 멈춘 순간)
         else if (wasFalling && isNearlyStopped)
         {
-            _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);  // Y축 속도 제거
+            _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
             SendMovePacket(Vector3.zero);
         }
     }
@@ -154,7 +186,7 @@ public class MyPlayerController : PlayerController
 
     private void SendMovePacket(Vector3 velocity)
     {
-        Vector3 pos = _rb.position;  // 실제 물리 위치 사용 (transform.position은 렌더링 프레임에서 보간된 값이므로 미세한 차이 존재)
+        Vector3 pos = _rb.position;
         Quaternion rot = _rb.rotation;
 
         C_Move movePacket = new C_Move();
@@ -177,7 +209,7 @@ public class MyPlayerController : PlayerController
         Init();
     }
 
-
+    #region Gizmos 코드
     private void OnDrawGizmos()
     {
         if (Stat == null)
@@ -217,18 +249,10 @@ public class MyPlayerController : PlayerController
 
         Gizmos.DrawLine(origin + Vector3.up * (height * 0.5f), origin - Vector3.up * (height * 0.5f));
     }
+    #endregion
 
-    private void OnMouseClicked(Define.MouseEvent evt)
+    protected override void OnDestroy()
     {
-        if (evt != Define.MouseEvent.Click)
-            return;
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Debug.DrawRay(Camera.main.transform.position, ray.direction * 100.0f, Color.red, 1.0f);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100.0f))
-        {
-            Debug.Log($"Raycast Camera @ {hit.collider.gameObject.name}");
-        }
+        base.OnDestroy();
     }
 }
