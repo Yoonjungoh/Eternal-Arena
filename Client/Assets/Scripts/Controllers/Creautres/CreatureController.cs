@@ -87,6 +87,7 @@ public class CreatureController : MonoBehaviour
     public Stat Stat { get { return ObjectState.Stat; } set { ObjectState.Stat = value; } }
 
     protected AttackType _attackType;   // 공격 타입
+    protected WaitForSeconds _waitCommonAttackReturn;
 
     protected virtual void OnUpdate()
     {
@@ -146,9 +147,9 @@ public class CreatureController : MonoBehaviour
         _serverReceivedTimeMs = serverReceivedTime;
     }
 
-    protected IEnumerator CoReturnToIdleAfterAttack(float delay)
+    protected IEnumerator CoReturnToIdleAfterAttack(WaitForSeconds waitAttackReturn)
     {
-        yield return new WaitForSeconds(delay);
+        yield return waitAttackReturn;
 
         if (this == null || _anim == null)
             yield break;

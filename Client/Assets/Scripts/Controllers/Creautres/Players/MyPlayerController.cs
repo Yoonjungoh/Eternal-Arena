@@ -21,6 +21,7 @@ public class MyPlayerController : PlayerController
 
     private float _commonAttackAnimLength;
     private float _commonAttackAnimSpeedTime = 2.0f;    // 에디터에선 동적으로 가져올 수 있으나 런타임에선 불가능해서 하드코딩
+    private void OnAttackInput() => Attack(AttackType.Common);
 
     public override void Init()
     {
@@ -31,8 +32,9 @@ public class MyPlayerController : PlayerController
         // 인게임에서만 공격 기능 활성화
         if (Managers.Scene.CurrentScene == Define.Scene.GameRoom)
         {
-            Managers.Input.RegisterMouseAction(Define.MouseEvent.LeftClick, () => Attack(AttackType.Common));
+            Managers.Input.RegisterMouseAction(Define.MouseEvent.LeftClick, OnAttackInput);
             _commonAttackAnimLength = _anim.GetAnimationClipLength($"{AttackType.Common}_{CreatureState.Attack}")/ _commonAttackAnimSpeedTime;
+            _waitCommonAttackReturn ??= new WaitForSeconds(_commonAttackAnimLength);
         }
     }
 
@@ -69,8 +71,7 @@ public class MyPlayerController : PlayerController
         C_Attack attackPacket = new C_Attack();
         attackPacket.AttackType = attackType;
         Managers.Network.Send(attackPacket);
-
-        StartCoroutine(CoReturnToIdleAfterAttack(_commonAttackAnimLength));
+        StartCoroutine(CoReturnToIdleAfterAttack(_waitCommonAttackReturn));
     }
     
     private void HandleInput()
