@@ -6,16 +6,16 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class UI_LoadingScene : UI_Scene
+public class UI_Loading : UI_Scene
 {
-    private static UI_LoadingScene instance;
-    public static UI_LoadingScene Instance
+    private static UI_Loading instance;
+    public static UI_Loading Instance
     {
         get
         {
             if (instance == null)
             {
-                var obj = FindObjectOfType<UI_LoadingScene>();
+                var obj = FindObjectOfType<UI_Loading>();
                 if (obj != null)
                 {
                     instance = obj;
@@ -28,11 +28,13 @@ public class UI_LoadingScene : UI_Scene
             return instance;
         }
     }
-    private static UI_LoadingScene CreateLoadingScene()
+
+    private static UI_Loading CreateLoadingScene()
     {
-        return Managers.Resource.Instantiate("LoadingScene").GetComponent<UI_LoadingScene>();
+        return Managers.Resource.Instantiate("UI/Scene/UI_Loading").GetComponent<UI_Loading>();
     }
-    void Awake()
+
+    private void Awake()
     {
         if (Instance != this)
         {
@@ -52,6 +54,7 @@ public class UI_LoadingScene : UI_Scene
     private TextMeshProUGUI loadingText;
 
     private string loadSceneName;
+
     public void LoadScene(string sceneName)
     {
         gameObject.SetActive(true);
@@ -61,6 +64,7 @@ public class UI_LoadingScene : UI_Scene
         loadSceneName = sceneName;
         StartCoroutine(CoLoadSceneProcess());
     }
+
     IEnumerator CoLoadSceneProcess()
     {
         sceneLoadSlider.value = 0f;
@@ -106,7 +110,6 @@ public class UI_LoadingScene : UI_Scene
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
-
         // 모두 불러와졌음
         if (scene.name == loadSceneName)
         {

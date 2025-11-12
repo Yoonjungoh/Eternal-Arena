@@ -1,4 +1,5 @@
 using Google.Protobuf.Protocol;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,8 +15,9 @@ public class CreatureController : MonoBehaviour
 
     protected Animator _anim;
     protected Rigidbody _rb;
+    protected Collider _collider;
     protected string _commonAttackanimName;
-
+    protected UI_HpBar _hpBar;
 
     public ObjectState ObjectState { get; set; } = new ObjectState();
     public int Id { get { return ObjectState.ObjectId; } set { ObjectState.ObjectId = value; } }
@@ -115,8 +117,15 @@ public class CreatureController : MonoBehaviour
     {
         _anim = GetComponent<Animator>();
         _rb = GetComponent<Rigidbody>();
+        _collider = GetComponent<Collider>();
+
         // 애니메이션 네임 초기화
         _commonAttackanimName = $"{AttackType.Common}_{CreatureState.Attack}";
+
+        // 체력바 소환 (투사체는 이후에 조절)
+        _hpBar = Managers.UI.MakeWorldSpaceUI<UI_HpBar>(transform, worldPositionStays: false);
+        _hpBar.SetData(Vector3.up * _collider.bounds.size.y);
+        _hpBar.UpdateHpBar(Stat.Hp, Stat.MaxHp);
     }
 
     protected virtual void UpdateDie() { }
@@ -165,5 +174,32 @@ public class CreatureController : MonoBehaviour
     protected virtual void OnDestroy()
     {
         StopAllCoroutines();
+    }
+
+    public virtual float OnDamaged(float remainHp)
+    {
+        // 데미지 계산
+        float damage = Stat.Hp - remainHp;
+        Stat.Hp -= damage;
+        
+        // 체력바 갱신
+        _hpBar.UpdateHpBar(Stat.Hp, Stat.MaxHp);
+        
+        if (IsDead())
+        {
+            OnDead();
+        }
+        
+        return damage;
+    }
+
+    protected virtual bool IsDead()
+    {
+        return Stat.Hp <= 0.0f;
+    }
+
+    protected virtual void OnDead()
+    {
+
     }
 }

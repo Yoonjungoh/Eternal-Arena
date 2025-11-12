@@ -201,14 +201,19 @@ class PacketHandler
             Debug.Log("S_Attack 패킷이 null입니다");
             return;
         }
-        string s = string.Empty;
-        foreach (var damagedInfo in attackPacket.DamagedObjectList)
+
+        foreach (DamagedInfo damagedInfo in attackPacket.DamagedObjectList)
         {
-            s += $"{damagedInfo.ObjectId}의 남은 체력: {damagedInfo.RemainHp}";
-            s += '\n';
+            GameObject go = Managers.GameRoomObject.FindById(damagedInfo.ObjectId);
+            if (go == null)
+                continue;
+            
+            CreatureController cc = go.GetComponent<CreatureController>();
+            if (cc == null)
+                continue;
+
+            cc.OnDamaged(damagedInfo.RemainHp);
         }
-        Managers.UI.ShowToastPopup(s);
-        //Managers.GameRoomObject.Add(enterGamePacket.ObjectState, isMyPlayer: true);
     }
 
     // 게임에서 죽었을 때
