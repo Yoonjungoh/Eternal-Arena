@@ -1,6 +1,8 @@
 ﻿using Google.Protobuf.Protocol;
 using System.Collections;
 using UnityEngine;
+using Unity.Profiling;
+
 
 public class MyPlayerController : PlayerController
 {
@@ -21,6 +23,16 @@ public class MyPlayerController : PlayerController
 
     private float _commonAttackAnimLength;
     private float _commonAttackAnimSpeedTime = 2.0f;    // 에디터에선 동적으로 가져올 수 있으나 런타임에선 불가능해서 하드코딩
+
+
+    #region 패킷 캐싱용 필드
+    private readonly C_Move _movePacket = new C_Move();
+    private readonly ObjectState _moveState = new ObjectState();
+    private readonly ProtoVector3 _movePos = new ProtoVector3();
+    private readonly ProtoVector3 _moveVel = new ProtoVector3();
+    private readonly ProtoQuaternion _moveRot = new ProtoQuaternion();
+    #endregion
+
     private void OnAttackInput() => Attack(AttackType.Common);
 
     public override void Init()
@@ -185,19 +197,21 @@ public class MyPlayerController : PlayerController
         Vector3 pos = _rb.position;
         Quaternion rot = _rb.rotation;
 
-        C_Move movePacket = new C_Move();
-        movePacket.ObjectState = new ObjectState()
-        {
-            ObjectId = Id,
-            ClientSendTime = Util.GetTimestampMs(),
-            Position = new ProtoVector3 { X = pos.x, Y = pos.y, Z = pos.z },
-            Velocity = new ProtoVector3 { X = velocity.x, Y = velocity.y, Z = velocity.z },
-            Rotation = new ProtoQuaternion { X = rot.x, Y = rot.y, Z = rot.z, W = rot.w },
-            CreatureState = CreatureState,
-            Stat = Stat,
-        };
+        _movePos.X = pos.x; _movePos.Y = pos.y; _movePos.Z = pos.z;
+        _moveVel.X = velocity.x; _moveVel.Y = velocity.y; _moveVel.Z = velocity.z;
+        _moveRot.X = rot.x; _moveRot.Y = rot.y; _moveRot.Z = rot.z; _moveRot.W = rot.w;
 
-        Managers.Network.Send(movePacket);
+        _moveState.ObjectId = Id;
+        _moveState.ClientSendTime = Util.GetTimestampMs();
+        _moveState.Position = _movePos;
+        _moveState.Velocity = _moveVel;
+        _moveState.Rotation = _moveRot;
+        _moveState.CreatureState = CreatureState;
+        _moveState.Stat = Stat;
+
+        _movePacket.ObjectState = _moveState;
+
+        Managers.Network.Send(_movePacket);
     }
 
     private void Start()
