@@ -12,7 +12,6 @@ namespace Server.Game
 
 		private object _lock = new object();
         private Dictionary<int, Player> _players = new Dictionary<int, Player>();
-		public Dictionary<int, Player> Players { get { return _players; } }
 
         // [UNUSED(1)][TYPE(7)][ID(24)]
         private int _counter = 0;

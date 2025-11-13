@@ -1,61 +1,173 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Tilemaps;
+﻿using System;
 using System.IO;
-
-#if UNITY_EDITOR
+using UnityEngine;
 using UnityEditor;
-#endif
 
-public class MapEditor
+public class MapEditor : EditorWindow
 {
+    float cellSize = 2.0f; // 추천값: 0.5 했는데 너무 많았어서 2로 변경...
+    const float MapMinX = -2000f;
+    const float MapMaxX = 2000f;
+    const float MapMinZ = -2000f;
+    const float MapMaxZ = 2000f;
 
-#if UNITY_EDITOR
+    Vector3 origin;
+    int sizeX;
+    int sizeZ;
 
-    // % (Ctrl), # (Shift), & (Alt)
+    int groundLayerIndex = 0;
+    int blockLayerIndex = 0;
+
+    LayerMask groundMask;
+    LayerMask blockMask;
 
     [MenuItem("Tools/GenerateMap %#q")]
-    private static void GenerateMap()
+    public static void ShowWindow()
     {
-        GenerateMapByPath("Assets/Resources/Prefabs/Data/Map");
-        GenerateMapByPath("../Common/MapData");
+        GetWindow<MapEditor>("Map Generator");
     }
-    private static void GenerateMapByPath(string pathPrefix)
+
+    private void OnGUI()
     {
-        //// 임시로 1번만 넣기 - 추후 여유되면 추가 개발
-        //GameObject go = Resources.Load<GameObject>("Prefabs/Map/Map_1");
-        
-        //Tilemap tmBase = Util.FindChild<Tilemap>(go, "Tilemap_Base", true);
-        //Tilemap tm = Util.FindChild<Tilemap>(go, "Tilemap_RealCollision", true);
-        ////Tilemap tm = Util.FindChild<Tilemap>(go, "Tilemap_Collision", true);
-        //int count = 0;
-        //var writer = File.CreateText($"{pathPrefix}/{go.name}.txt");
-        //writer.WriteLine(tmBase.cellBounds.xMin);
-        //writer.WriteLine(tmBase.cellBounds.xMax);
-        //writer.WriteLine(tmBase.cellBounds.yMin);
-        //writer.WriteLine(tmBase.cellBounds.yMax);
-        
-        //for (int y = tmBase.cellBounds.yMax; y >= tmBase.cellBounds.yMin; y--)
-        //{
-        //    string line = "";
-        //    for (int x = tmBase.cellBounds.xMin; x <= tmBase.cellBounds.xMax; x++)
-        //    {
-        //        TileBase tile = tm.GetTile(new Vector3Int(x, y, 0));
-        //        if (tile != null)
-        //        {
-        //            line += "1";
-        //            count++;
-        //        }
-        //        else
-        //            line += "0";
-        //    }
-        //    writer.WriteLine(line);
-        //}
-        //writer.Close();
+        EditorGUILayout.Space();
+        cellSize = EditorGUILayout.FloatField("Cell Size", cellSize);
 
-        //Debug.Log("Generate Maps");
+        groundLayerIndex = EditorGUILayout.LayerField("Ground Layer", groundLayerIndex);
+        blockLayerIndex = EditorGUILayout.LayerField("Block Layer", blockLayerIndex);
+
+        groundMask = 1 << groundLayerIndex;
+        blockMask = 1 << blockLayerIndex;
+
+        EditorGUILayout.Space();
+
+        if (GUILayout.Button("Generate Binary Map"))
+            Generate();
     }
-#endif
 
+    void Generate()
+    {
+
+        origin = new Vector3(MapMinX, 0, MapMinZ);
+        sizeX = Mathf.CeilToInt((MapMaxX - MapMinX) / cellSize);
+        sizeZ = Mathf.CeilToInt((MapMaxZ - MapMinZ) / cellSize);
+
+        float[,] height = new float[sizeX, sizeZ];
+        bool[,] walkable = new bool[sizeX, sizeZ];
+
+        float rayStartY = 10000f;
+        float rayLength = 20000f;
+
+        for (int x = 0; x < sizeX; x++)
+        {
+            for (int z = 0; z < sizeZ; z++)
+            {
+                float worldX = origin.x + x * cellSize;
+                float worldZ = origin.z + z * cellSize;
+
+                Vector3 rayOrigin = new Vector3(worldX, rayStartY, worldZ);
+                Ray ray = new Ray(rayOrigin, Vector3.down);
+
+                if (Physics.Raycast(ray, out RaycastHit hit, rayLength, groundMask))
+                {
+                    height[x, z] = hit.point.y;
+
+                    bool blocked = Physics.CheckCapsule(
+                        hit.point + Vector3.up * 0.5f,
+                        hit.point + Vector3.up * 1.5f,
+                        0.3f,
+                        blockMask
+                    );
+
+                    walkable[x, z] = !blocked;
+                }
+                else
+                {
+                    height[x, z] = -9999f;
+                    walkable[x, z] = false;
+                }
+            }
+
+            if (x % 200 == 0)
+                Debug.Log($"Progress {x}/{sizeX}");
+        }
+
+        SaveBinary(height, walkable);
+
+        Debug.Log("=== Binary Export Completed! ===");
+    }
+
+    void SaveBinary(float[,] height, bool[,] walkable)
+    {
+        string fileName = "MapData_001.map";
+
+        // save to Unity project folder
+        string localPath = Path.Combine(Application.dataPath, "Resources/Prefabs/Data/Map");
+        EnsureDirectory(localPath);
+        WriteBinary(Path.Combine(localPath, fileName), height, walkable);
+
+        // save to common folder
+        string externalPath = Path.GetFullPath(Path.Combine(Application.dataPath, "../Common/MapData"));
+        EnsureDirectory(externalPath);
+        WriteBinary(Path.Combine(externalPath, fileName), height, walkable);
+
+        Debug.Log($"Saved Binary Map:\n→ {localPath}/{fileName}\n→ {externalPath}/{fileName}");
+    }
+
+    void WriteBinary(string path, float[,] height, bool[,] walkable)
+    {
+        int sx = height.GetLength(0);
+        int sz = height.GetLength(1);
+
+        using (BinaryWriter bw = new BinaryWriter(File.Open(path, FileMode.Create)))
+        {
+            // ---------- Header ----------
+            bw.Write(cellSize);
+            bw.Write(origin.x);
+            bw.Write(origin.y);
+            bw.Write(origin.z);
+            bw.Write(sx);
+            bw.Write(sz);
+
+            // ---------- Height (ushort) ----------
+            for (int x = 0; x < sx; x++)
+            {
+                for (int z = 0; z < sz; z++)
+                {
+                    float h = height[x, z];
+
+                    ushort encoded =
+                        (h < -9990) ? (ushort)0
+                        : (ushort)((h + 100f) * 100f);
+
+                    bw.Write(encoded);
+                }
+            }
+
+            // ---------- Walkable (bit packing) ----------
+            int totalCells = sx * sz;
+            int byteCount = (totalCells + 7) / 8;
+
+            byte[] packed = new byte[byteCount];
+
+            int idx = 0;
+            for (int x = 0; x < sx; x++)
+            {
+                for (int z = 0; z < sz; z++)
+                {
+                    if (walkable[x, z])
+                        packed[idx >> 3] |= (byte)(1 << (idx & 7));
+
+                    idx++;
+                }
+            }
+
+            bw.Write(packed);
+        }
+    }
+
+    void EnsureDirectory(string path)
+    {
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+    }
 }
