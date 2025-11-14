@@ -26,6 +26,10 @@ namespace Server.Game
             //new Vector3(-678, 8, -471),
             //new Vector3(-679, 8, -471),
             // 충돌 물체
+            //new Vector3(63, -26, 527),
+            //new Vector3(64, -26, 527),
+            //new Vector3(65, -26, 527),
+            //new Vector3(66, -26, 527),
             { RoomType.WaitingRoom, new List<Vector3>()
             {
                 new Vector3(-676, 8, -471),

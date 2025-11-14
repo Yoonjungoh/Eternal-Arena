@@ -25,11 +25,12 @@ enum MsgId {
   S_ENTER_GAME = 17;
   C_ATTACK = 18;
   S_ATTACK = 19;
-  S_LEAVE_GAME = 100;
-  S_SPAWN = 101;
-  S_DESPAWN = 102;
-  C_MOVE = 103;
-  S_MOVE = 104;
+  S_LEAVE_GAME = 20;
+  S_SPAWN = 21;
+  S_DESPAWN = 22;
+  C_MOVE = 23;
+  S_MOVE = 24;
+  S_FIND_TARGET = 25;
   C_TIMESTAMP = 105;
   S_TIMESTAMP = 106;
   C_CHANGE_CREATURE_STATE = 107;
@@ -166,6 +167,11 @@ message S_Attack {
   repeated DamagedInfo damagedObjectList = 3;
 }
 
+message S_FindTarget {
+  int32 monsterId = 1;
+  int32 targetId = 2;
+}
+
 message C_Timestamp {
   int64 clientSendTime = 1;
 }
@@ -215,6 +221,8 @@ message ObjectState {
   string name = 7;					 // 유저 이름 (todo)
   CreatureState creatureState = 8;	 // 캐릭터 상태
   Stat stat = 9;                     // 캐릭터 스탯
+  GameObjectType objectType = 10;	 // 플레이어인지 몬스터인지
+  MonsterType monsterType = 11;		 // 몬스터면 무슨 타입인지
 }
 
 message DamagedInfo {

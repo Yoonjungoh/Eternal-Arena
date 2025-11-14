@@ -51,7 +51,23 @@ public class GameRoomObjectManager
                 objectState.ServerReceivedTime
             );
             _objects.Add(objectState.ObjectId, otherPlayer.gameObject);
-            Debug.Log($"소환: {otherPlayer.ObjectState.ObjectId}, isMyPlayer: {otherPlayer.transform.position.x}, {otherPlayer.transform.position.y}, {otherPlayer.transform.position.z}");
+        }
+        else if (objectType == GameObjectType.Monster)
+        {
+            GameObject go = Managers.Resource.Instantiate($"Creatures/Monsters/{objectState.MonsterType}", position, rotation);
+            MonsterController monster = go.GetComponent<MonsterController>();
+
+            monster.ObjectState = objectState;
+            monster.GameObjectType = objectType;
+
+            monster.SetServerState(
+                objectState.Position,
+                objectState.Rotation,
+                objectState.Velocity,
+                objectState.ServerReceivedTime
+            );
+            _objects.Add(objectState.ObjectId, monster.gameObject);
+            Managers.UI.ShowToastPopup($"소환: {monster.ObjectState.ObjectId}, ({monster.transform.position.x}, {monster.transform.position.y}, {monster.transform.position.z})");
         }
     }
 

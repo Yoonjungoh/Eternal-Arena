@@ -25,8 +25,8 @@ namespace Server.Game
 			get
 			{
 				return MovementHelper.PredictPosition(
-                MovementHelper.PVec3ToVec3(Position),
-                MovementHelper.PVec3ToVec3(Velocity),
+                MovementHelper.ProtoVec3ToVec3(Position),
+                MovementHelper.ProtoVec3ToVec3(Velocity),
                 ObjectState.ServerReceivedTime,
                 Util.GetTimestampMs()
                 );
@@ -34,7 +34,7 @@ namespace Server.Game
 		}
         public CreatureState CreatureState { get { return ObjectState.CreatureState; } set { ObjectState.CreatureState = value; } }
 		public Stat Stat { get { return ObjectState.Stat; } set { ObjectState.Stat = value; } }
-		public float Hp { get { return ObjectState.Stat.Hp; } set { ObjectState.Stat.Hp = Math.Clamp(value, 0, ObjectState.Stat.MaxHp); } }
+        public MonsterType MonsterType { get { return ObjectState.MonsterType; } set { ObjectState.MonsterType = value; } }
         public GameObject()
         {
             ObjectState = new ObjectState();

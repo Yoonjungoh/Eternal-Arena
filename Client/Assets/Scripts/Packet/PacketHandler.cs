@@ -322,6 +322,12 @@ class PacketHandler
         }
     }
 
+    public static void S_FindTargetHandler(PacketSession session, IMessage packet)
+    {
+        S_FindTarget findTargetPacket = packet as S_FindTarget;
+        Managers.UI.ShowToastPopup($"TargetId: {findTargetPacket.TargetId}\n MonsterId: {findTargetPacket.MonsterId}");
+    }
+
     public static void S_TimestampHandler(PacketSession session, IMessage packet)
     {
         S_Timestamp sereverTimestamp = packet as S_Timestamp;

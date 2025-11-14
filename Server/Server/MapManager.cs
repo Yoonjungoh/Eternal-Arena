@@ -19,7 +19,10 @@ namespace Server
     public class MapManager
     {
         private MapData _mapData { get; set; }
-
+        public int MinX { get { return -_mapData.SizeX; } }
+        public int MaxX { get { return _mapData.SizeX; } }
+        public int MinZ { get { return -_mapData.SizeZ; } }
+        public int MaxZ { get { return _mapData.SizeZ; } }
         public static MapManager Instance { get; } = new MapManager();
         public const float NO_HEIGHT_VALUE = -9999f;
 

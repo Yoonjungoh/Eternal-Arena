@@ -18,6 +18,7 @@ namespace Server.Game
         public int RoomId { get; set; }
         public string RoomName { get; set; }
         public int RoomOwnerId { get; set; }
+        //Map Map;
         Dictionary<int, GameObject> _gameObjects = new Dictionary<int, GameObject>();
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
 
@@ -26,22 +27,25 @@ namespace Server.Game
         public void Init()
         {
             //TestTimer();
+            // TODO
+            SpawnMonster(MonsterType.Bear, new Vector3(66, -26, 527));
         }
 
         // 어디선가 주기적으로 호출해줘야 함
         public void Update()
         {
             Flush();
-            if (_players.Count > 0)
-            {
-                Player p = null;
-                foreach (var player in _players.Values)
-                {
-                    p = player;
-                    break;
-                }
-                ConsoleLogManager.Instance.Log($"Id: {p.Id}, CanGo: {MapManager.Instance.CanGo(p.Position.X, p.Position.Z)}");
-            }
+        }
+
+
+        public void SpawnMonster(MonsterType monsterType, Vector3 spawnPos)
+        {
+            Monster monster = ObjectManager.Instance.Add<Monster>();
+            monster.MonsterType = monsterType;
+            monster.ObjectState.Name = $"Monster_{monster.ObjectState.ObjectId}";
+            monster.Position = MovementHelper.Vec3ToProtoVec3(spawnPos);
+
+            Push(EnterGame, monster);
         }
 
         public void HandleAttack(Player instigator, AttackType attackType)
@@ -70,7 +74,7 @@ namespace Server.Game
             // 4. 후보 전부 검사하기
             List<int> damagedObjectList = new List<int>();
 
-            foreach (Player target in _players.Values)
+            foreach (GameObject target in _gameObjects.Values)
             {
                 if (target == null) continue;
                 if (target.Id == instigator.Id) continue;
@@ -105,14 +109,15 @@ namespace Server.Game
             Broadcast(attackPacket);
         }
 
-
-        public void EnterGame(Player player)
+        public void EnterGame(GameObject gameObject)
         {
-            if (player == null)
+            if (gameObject == null)
                 return;
 
-            player.GameRoom = this;
-            player.ObjectState.Name = $"Player_{player.ObjectState.ObjectId}";
+            GameObjectType objectType = gameObject.ObjectType;
+
+            gameObject.GameRoom = this;
+            gameObject.ObjectState.Name = $"{gameObject.ObjectType}_{gameObject.ObjectState.ObjectId}";
 
             S_EnterGame enteGamePacket = new S_EnterGame();
             enteGamePacket.ObjectState = new ObjectState();
@@ -122,58 +127,85 @@ namespace Server.Game
             enteGamePacket.ObjectState.Stat = new Stat();
 
             // objectId 초기화
-            enteGamePacket.ObjectState.ObjectId = player.Id;
+            enteGamePacket.ObjectState.ObjectId = gameObject.Id;
+
+            // objectType 초기화
+            enteGamePacket.ObjectState.ObjectType = objectType;
+
+            // monsterType 초기화
+            if (objectType == GameObjectType.Monster)
+            {
+                enteGamePacket.ObjectState.MonsterType = gameObject.MonsterType;
+            }
 
             // name 초기화
-            enteGamePacket.ObjectState.Name = player.ObjectState.Name;
+            enteGamePacket.ObjectState.Name = gameObject.ObjectState.Name;
 
             // position 초기화
-            int spawnIndex = _players.Count % DataManager.Instance.MaxRoomPlayerCount;
-            Vector3 startPos = DataManager.Instance.GetStartPosition(RoomType.GameRoom, spawnIndex);
-            player.ObjectState.Position.X = startPos.X;
-            player.ObjectState.Position.Y = startPos.Y;
-            player.ObjectState.Position.Z = startPos.Z;
-            enteGamePacket.ObjectState.Position.X = player.ObjectState.Position.X;
-            enteGamePacket.ObjectState.Position.Y = player.ObjectState.Position.Y;
-            enteGamePacket.ObjectState.Position.Z = player.ObjectState.Position.Z;
+            Vector3 startPos = Vector3.Zero;
+            // 플레이어 이외는 다른 곳에서 위치 미리 받고 옴
+            if (objectType == GameObjectType.Player)
+            {
+                int spawnIndex = _players.Count % DataManager.Instance.MaxRoomPlayerCount;
+                startPos = DataManager.Instance.GetStartPosition(RoomType.GameRoom, spawnIndex);
+            }
+            else
+            {
+                startPos = MovementHelper.ProtoVec3ToVec3(gameObject.Position);
+            }
+            gameObject.Position.X = startPos.X;
+            gameObject.Position.Y = startPos.Y;
+            gameObject.Position.Z = startPos.Z;
+            enteGamePacket.ObjectState.Position.X = gameObject.ObjectState.Position.X;
+            enteGamePacket.ObjectState.Position.Y = gameObject.ObjectState.Position.Y;
+            enteGamePacket.ObjectState.Position.Z = gameObject.ObjectState.Position.Z;
 
             // stat 초기화
-            enteGamePacket.ObjectState.Stat = player.ObjectState.Stat;
+            enteGamePacket.ObjectState.Stat = gameObject.Stat;
 
             // creatureState 초기화
-            player.ObjectState.CreatureState = CreatureState.Idle;
+            gameObject.CreatureState = CreatureState.Idle;
             enteGamePacket.ObjectState.CreatureState = CreatureState.Idle;
 
-            if (player.Session != null)
+            // 플레이어면 본인 입장 패킷 전송
+            if (objectType == GameObjectType.Player)
             {
-                player.Session.Send(enteGamePacket);
+                Player player = gameObject as Player;
+                if (player.Session != null)
+                {
+                    player.Session.Send(enteGamePacket);
+                }
             }
 
-            AddObject(player);
+            AddObject(gameObject);
 
-            // 본인한테 맵안의 플레이어 정보 전송
-            S_Spawn spawnToMePacket = new S_Spawn();
-            // 나를 제외하고 접속한 플레이어를 spawnPacket에 저장
             long serverReceivedTime = Util.GetTimestampMs();
-            foreach (Player p in _players.Values)
+            if (objectType == GameObjectType.Player)
             {
-                if (p == null || player == p)
-                    continue;
+                Player player = gameObject as Player;
+                // 본인한테 맵안의 플레이어 정보 전송
+                S_Spawn spawnToMePacket = new S_Spawn();
+                // 나를 제외하고 접속한 플레이어를 spawnPacket에 저장
+                foreach (GameObject go in _gameObjects.Values)
+                {
+                    if (go == null || player == go)
+                        continue;
 
-                p.ObjectState.ServerReceivedTime = serverReceivedTime;
-                spawnToMePacket.ObjectStateList.Add(p.ObjectState);
-            }
-            if (player.Session != null)
-            {
-                player.Session.Send(spawnToMePacket);
+                    go.ObjectState.ServerReceivedTime = serverReceivedTime;
+                    spawnToMePacket.ObjectStateList.Add(go.ObjectState);
+                }
+                if (player.Session != null)
+                {
+                    player.Session.Send(spawnToMePacket);
+                }
             }
 
-            // 다른 플레이어에게도 내가 접속한 걸 알려주기
+            // 다른 플레이어에게 게임 오브젝트가 접속한 걸 알려주기
             S_Spawn spawnToOthersPacket = new S_Spawn();
-            spawnToOthersPacket.ObjectStateList.Add(player.ObjectState);
+            spawnToOthersPacket.ObjectStateList.Add(gameObject.ObjectState);
             foreach (Player p in _players.Values)
             {
-                if (p == null || p.Session == null || player.Id == p.Id )
+                if (p == null || p.Session == null || gameObject.Id == p.Id )
                     continue;
                 
                 p.ObjectState.ServerReceivedTime = serverReceivedTime;
