@@ -1,103 +1,121 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Google.Protobuf.Protocol;
-using System.Collections;
-using UnityEngine;
 using System.IO;
+using UnityEngine;
+
+public class MapData
+{
+    public float CellSize;
+    public Vector3 Origin;
+    public int SizeX;
+    public int SizeZ;
+
+    public float[,] Height;
+    public bool[,] CanGo;
+}
 
 public class MapManager
 {
-    public Grid CurrentGrid { get; private set; }
-    public int MinX { get; set; }
-    public int MaxX { get; set; }
-    public int MinY { get; set; }
-    public int MaxY { get; set; }
-    bool[,] _collision;
-    // 맨 왼쪽의 좌표를 현재 내 좌표에서 빼줘야 collision 에서의 x, y 인덱스가 나옴 - TODO
-    public bool CanGo(Vector3 pos)
+    private MapData _mapData { get; set; }
+    public static MapManager Instance { get; } = new MapManager();
+    public const float NO_HEIGHT_VALUE = -9999f;
+
+    public bool CanGo(float worldX, float worldZ)
     {
-        // 맵 범위 밖
-        if (pos.x < MinX || pos.x > MaxX || pos.y < MinY || pos.y > MaxY)
+        if (_mapData == null) return false;
+
+        int x = (int)((worldX - _mapData.Origin.x) / _mapData.CellSize);
+        int z = (int)((worldZ - _mapData.Origin.z) / _mapData.CellSize);
+
+        if (x < 0 || z < 0 || x >= _mapData.SizeX || z >= _mapData.SizeZ)
             return false;
 
-        // 범위 안쪽 계산
-        int x = (int)Math.Round(pos.x) - MinX;
-        int y = MaxY - (int)Math.Round(pos.y);
-        return !_collision[y, x];
+        return _mapData.CanGo[x, z];
     }
-    // 처음엔 1개지만 추가 개발 가능하면 2개로 늘려보기
-    public void LoadMap(int mapId = 1)
+
+    public float GetHeight(float worldX, float worldZ)
     {
-        try
+        if (_mapData == null) return NO_HEIGHT_VALUE;
+
+        int x = (int)((worldX - _mapData.Origin.x) / _mapData.CellSize);
+        int z = (int)((worldZ - _mapData.Origin.z) / _mapData.CellSize);
+
+        if (x < 0 || z < 0 || x >= _mapData.SizeX || z >= _mapData.SizeZ)
+            return NO_HEIGHT_VALUE;
+
+        return _mapData.Height[x, z];
+    }
+
+    public void Init()
+    {
+        _mapData = new MapData();
+        _mapData = Load();
+    }
+
+    private MapData Load()
+    {
+        // Resources 폴더에서 map 파일 로드
+        TextAsset mapFile = Resources.Load<TextAsset>("Prefabs/Data/Map/MapData_001");
+        if (mapFile == null)
         {
-            string mapName = "Map_" + mapId;
-            GameObject map = GameObject.Find(mapName);
+            Managers.UI.ShowToastPopup("맵 로딩 실패");
+            return null;
+        }
 
-            //GameObject collision = Util.FindChild(map, "Tilemap_Collision", true);
+        MapData map = new MapData();
 
-            CurrentGrid = map.GetComponent<Grid>();
-            // Collision 정보 추출
-            TextAsset txt = Managers.Resource.Load<TextAsset>($"Data/Map/{mapName}");
-            // 문장 단위 추출 용이
-            StringReader reader = new StringReader(txt.text);
+        using (BinaryReader br = new BinaryReader(new MemoryStream(mapFile.bytes)))
+        {
+            // Header
+            map.CellSize = br.ReadSingle();
+            float ox = br.ReadSingle();
+            float oy = br.ReadSingle();
+            float oz = br.ReadSingle();
+            map.Origin = new Vector3(ox, oy, oz);
 
-            MinX = int.Parse(reader.ReadLine());
-            MaxX = int.Parse(reader.ReadLine());
-            MinY = int.Parse(reader.ReadLine());
-            MaxY = int.Parse(reader.ReadLine());
+            map.SizeX = br.ReadInt32();
+            map.SizeZ = br.ReadInt32();
 
-            int xCount = MaxX - MinX + 1;
-            int yCount = MaxY - MinY + 1;
-            _collision = new bool[yCount, xCount];
-            //GameObject folder = new GameObject();
-            //folder.name = "folder";
-            //GameObject g = Managers.Resource.Load<GameObject>("Circle");
+            int sx = map.SizeX;
+            int sz = map.SizeZ;
+            int totalCells = sx * sz;
 
+            map.Height = new float[sx, sz];
+            map.CanGo = new bool[sx, sz];
 
-            for (int y = 0; y < yCount; y++)
+            // Height (ushort)
+            for (int x = 0; x < sx; x++)
             {
-                string line = reader.ReadLine();
-                //if (line == null)
-                //Debug.Log($"Line ({y}에서 에러)");
-                int lineCount = line.Length;
-                //Debug.Log($"Line ({y} 출력중)");
-
-                for (int x = 0; x < xCount; x++)
+                for (int z = 0; z < sz; z++)
                 {
-                    try
-                    {
-                        char c = line[x];
-                        bool isCollision = (c == '1' ? true : false);
-                        _collision[y, x] = isCollision;
-                        if (_collision[y, x] == true)
-                        {
-                            int posX = x + MinX;
-                            int posY = MaxY - y;
-                            //GameObject circle = GameObject.Instantiate(g, new Vector3(posX, posY, 100f), Quaternion.identity);
-                            //circle.transform.SetParent(folder.transform);
-                            //circle.GetComponent<SpriteRenderer>().sortingOrder = 500;
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.Log($"Error ({y}, {x})");
-                    }
+                    ushort encoded = br.ReadUInt16();
+
+                    map.Height[x, z] = (encoded == 0)
+                        ? -9999f
+                        : (encoded / 100f) - 100f;
+                }
+            }
+
+            // Walkable (bit unpack)
+            int byteCount = (totalCells + 7) / 8;
+            byte[] packed = br.ReadBytes(byteCount);
+
+            int idx = 0;
+            for (int x = 0; x < sx; x++)
+            {
+                for (int z = 0; z < sz; z++)
+                {
+                    int byteIndex = idx >> 3;
+                    int bitIndex = idx & 7;
+
+                    bool walkable = ((packed[byteIndex] >> bitIndex) & 1) == 1;
+                    map.CanGo[x, z] = walkable;
+
+                    idx++;
                 }
             }
         }
-        catch (Exception e)
-        {
-            Debug.LogException(e);
-        }
-    }
-    public void DestroyMap(int mapId)
-    {
-        GameObject map = GameObject.Find($"Map_{mapId}");
-        if (map != null)
-        {
-            Managers.Resource.Destroy(map);
-        }
+        Managers.UI.ShowToastPopup("맵 로딩 성공");
+
+        return map;
     }
 }

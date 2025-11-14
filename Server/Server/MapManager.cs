@@ -142,7 +142,7 @@ namespace Server
 
             string root = Path.GetFullPath(Path.Combine(exeDir, @"..\..\..\..\.."));
 
-            string mapPath = Path.Combine(root, "Common", "MapData", "MapData_001.map");
+            string mapPath = Path.Combine(root, "Common", "MapData", "MapData_001.bytes");
 
             return mapPath;
         }

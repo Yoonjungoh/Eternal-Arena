@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 
 public class WaitingRoomObjectManager
 {
-    public int UserId;  // 현재 UserId랑 Player의 Id랑 같이 쓰는 중
+    public int UserId { get; set; }  // 현재 UserId랑 Player의 Id랑 같이 쓰는 중
     public MyPlayerController MyPlayer { get; set; }
     private Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
     public Dictionary<int, GameObject> Objects { get { return _objects; } set { _objects = value; } }

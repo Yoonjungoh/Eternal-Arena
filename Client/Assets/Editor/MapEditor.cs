@@ -99,7 +99,7 @@ public class MapEditor : EditorWindow
 
     void SaveBinary(float[,] height, bool[,] canGo)
     {
-        string fileName = "MapData_001.map";
+        string fileName = "MapData_001.bytes";
 
         string localPath = Path.Combine(Application.dataPath, "Resources/Prefabs/Data/Map");
         EnsureDirectory(localPath);

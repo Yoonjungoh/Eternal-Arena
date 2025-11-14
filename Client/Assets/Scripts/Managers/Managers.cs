@@ -73,6 +73,7 @@ public class Managers : MonoBehaviour
             s_instance._sound.Init();
             s_instance._resource.Init();
             s_instance._waitingRoom.Init();
+            s_instance._map.Init();
         }
     }
 

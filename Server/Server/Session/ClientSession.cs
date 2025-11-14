@@ -53,6 +53,7 @@ namespace Server
 			MyPlayer.Init();
             MyPlayer.Session = this;
 
+			// TODO - 이후에 메인 메뉴 생기면 분리
             EnterLobby();
         }
 
