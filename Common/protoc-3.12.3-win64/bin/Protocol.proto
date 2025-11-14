@@ -45,15 +45,20 @@ enum CreatureState {
   DIE = 5;
 }
 
-enum GameObjectType{
+enum GameObjectType {
   GAME_OBJECT_TYPE_NONE = 0;
   PLAYER = 1;
   MONSTER = 2;
 }
 
-enum AttackType{
+enum AttackType {
   ATTACK_TYPE_NONE = 0;
   COMMON = 1;
+}
+
+enum MonsterType{
+  MONSTER_TYPE_NONE = 0;
+  BEAR = 1;
 }
 
 message S_AssignUserId {

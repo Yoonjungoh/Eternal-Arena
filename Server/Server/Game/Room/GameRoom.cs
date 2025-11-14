@@ -53,12 +53,7 @@ namespace Server.Game
 
             // 1. 공격자 위치 구하기
             // instigatorId.ObjectState.ServerReceivedTime 자주 갱신하면 더 정확해지더라 (당연한 말 -> HandleMove에서 업뎃 중임)
-            Vector3 attackPos = MovementHelper.PredictPosition(
-                MovementHelper.PVec3ToVec3(instigator.ObjectState.Position),
-                MovementHelper.PVec3ToVec3(instigator.ObjectState.Velocity),
-                instigator.ObjectState.ServerReceivedTime,
-                attackTimeMs
-            );
+            Vector3 attackPos = instigator.CurrentPosition;
 
             // 2. 공격자 방향 구하기
             Vector3 attackForward = MovementHelper.ForwardFrom(instigator.ObjectState.Rotation);
@@ -81,12 +76,7 @@ namespace Server.Game
                 if (target.Id == instigator.Id) continue;
 
                 // 4-1. 대상 위치 예측하기
-                Vector3 targetPos = MovementHelper.PredictPosition(
-                    MovementHelper.PVec3ToVec3(target.ObjectState.Position),
-                    MovementHelper.PVec3ToVec3(target.ObjectState.Velocity),
-                    target.ObjectState.ServerReceivedTime,
-                    attackTimeMs
-                );
+                Vector3 targetPos = target.CurrentPosition;
 
                 // 4-2. 충돌 판정
                 if (CollisionHelper.IsCollision(attackPos, attackForward, targetPos, radius, cosLimit, height))

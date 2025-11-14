@@ -19,7 +19,21 @@ namespace Server.Game
 
 		public ObjectState ObjectState { get; set; }
         public ProtoVector3 Position { get { return ObjectState.Position; } set { ObjectState.Position = value; } }
-		public CreatureState CreatureState { get { return ObjectState.CreatureState; } set { ObjectState.CreatureState = value; } }
+        public ProtoVector3 Velocity { get { return ObjectState.Velocity; } set { ObjectState.Velocity = value; } }
+		public Vector3 CurrentPosition
+		{
+			get
+			{
+				return MovementHelper.PredictPosition(
+                MovementHelper.PVec3ToVec3(Position),
+                MovementHelper.PVec3ToVec3(Velocity),
+                ObjectState.ServerReceivedTime,
+                Util.GetTimestampMs()
+                );
+            }
+		}
+        public CreatureState CreatureState { get { return ObjectState.CreatureState; } set { ObjectState.CreatureState = value; } }
+		public Stat Stat { get { return ObjectState.Stat; } set { ObjectState.Stat = value; } }
 		public float Hp { get { return ObjectState.Stat.Hp; } set { ObjectState.Stat.Hp = Math.Clamp(value, 0, ObjectState.Stat.MaxHp); } }
         public GameObject()
         {

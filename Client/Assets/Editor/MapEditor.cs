@@ -6,7 +6,7 @@ using UnityEditor;
 public class MapEditor : EditorWindow
 {
     public const float NO_HEIGHT_VALUE = -9999f;
-    float cellSize = 2.0f; // 추천값: 0.5 했는데 너무 많았어서 2로 변경...
+    float cellSize = 2.0f; // 추천값: 0.5 했는데 너무 많았어서 1로 변경...
     const float MapMinX = -2000f;
     const float MapMaxX = 2000f;
     const float MapMinZ = -2000f;

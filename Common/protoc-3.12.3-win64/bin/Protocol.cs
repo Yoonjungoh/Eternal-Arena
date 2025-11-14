@@ -92,11 +92,12 @@ namespace Google.Protobuf.Protocol {
             "X0RBTUFHRUQQAxIJCgVTS0lMTBAEEgcKA0RJRRAFKkQKDkdhbWVPYmplY3RU",
             "eXBlEhkKFUdBTUVfT0JKRUNUX1RZUEVfTk9ORRAAEgoKBlBMQVlFUhABEgsK",
             "B01PTlNURVIQAiouCgpBdHRhY2tUeXBlEhQKEEFUVEFDS19UWVBFX05PTkUQ",
-            "ABIKCgZDT01NT04QAUIbqgIYR29vZ2xlLlByb3RvYnVmLlByb3RvY29sYgZw",
-            "cm90bzM="));
+            "ABIKCgZDT01NT04QASouCgtNb25zdGVyVHlwZRIVChFNT05TVEVSX1RZUEVf",
+            "Tk9ORRAAEggKBEJFQVIQAUIbqgIYR29vZ2xlLlByb3RvYnVmLlByb3RvY29s",
+            "YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.AttackType), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.AttackType), typeof(global::Google.Protobuf.Protocol.MonsterType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_AssignUserId), global::Google.Protobuf.Protocol.S_AssignUserId.Parser, new[]{ "UserId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_AssignUserId), global::Google.Protobuf.Protocol.C_AssignUserId.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_EnterLobby), global::Google.Protobuf.Protocol.S_EnterLobby.Parser, new[]{ "UserIdList", "RoomInfoList" }, null, null, null, null),
@@ -188,6 +189,11 @@ namespace Google.Protobuf.Protocol {
   public enum AttackType {
     [pbr::OriginalName("ATTACK_TYPE_NONE")] None = 0,
     [pbr::OriginalName("COMMON")] Common = 1,
+  }
+
+  public enum MonsterType {
+    [pbr::OriginalName("MONSTER_TYPE_NONE")] None = 0,
+    [pbr::OriginalName("BEAR")] Bear = 1,
   }
 
   #endregion
