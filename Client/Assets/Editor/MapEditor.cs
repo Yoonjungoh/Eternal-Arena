@@ -78,7 +78,7 @@ public class MapEditor : EditorWindow
                         blockMask
                     );
 
-                    walkable[x, z] = !blocked;
+                    walkable[x, z] = (blocked == false);
                 }
                 else
                 {
@@ -100,12 +100,10 @@ public class MapEditor : EditorWindow
     {
         string fileName = "MapData_001.map";
 
-        // save to Unity project folder
         string localPath = Path.Combine(Application.dataPath, "Resources/Prefabs/Data/Map");
         EnsureDirectory(localPath);
         WriteBinary(Path.Combine(localPath, fileName), height, walkable);
 
-        // save to common folder
         string externalPath = Path.GetFullPath(Path.Combine(Application.dataPath, "../Common/MapData"));
         EnsureDirectory(externalPath);
         WriteBinary(Path.Combine(externalPath, fileName), height, walkable);
@@ -120,7 +118,7 @@ public class MapEditor : EditorWindow
 
         using (BinaryWriter bw = new BinaryWriter(File.Open(path, FileMode.Create)))
         {
-            // ---------- Header ----------
+            // Header
             bw.Write(cellSize);
             bw.Write(origin.x);
             bw.Write(origin.y);
@@ -128,22 +126,20 @@ public class MapEditor : EditorWindow
             bw.Write(sx);
             bw.Write(sz);
 
-            // ---------- Height (ushort) ----------
+            // Height (ushort)
             for (int x = 0; x < sx; x++)
             {
                 for (int z = 0; z < sz; z++)
                 {
                     float h = height[x, z];
 
-                    ushort encoded =
-                        (h < -9990) ? (ushort)0
-                        : (ushort)((h + 100f) * 100f);
+                    ushort encoded = (h < -9990) ? (ushort)0 : (ushort)((h + 100f) * 100f);
 
                     bw.Write(encoded);
                 }
             }
 
-            // ---------- Walkable (bit packing) ----------
+            // Walkable (bit packing)
             int totalCells = sx * sz;
             int byteCount = (totalCells + 7) / 8;
 
