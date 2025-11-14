@@ -45,6 +45,15 @@ public class MonsterController : CreatureController
         }
     }
 
+    public override void OnDead()
+    {
+        base.OnDead();
+
+        float dieLength = _anim.GetAnimationClipLength("Die");
+        _anim.CrossFade("Die", _transitionTime);
+        Managers.Resource.Destroy(gameObject, dieLength);
+    }
+
     protected override void OnDestroy()
     {
         base.OnDestroy();

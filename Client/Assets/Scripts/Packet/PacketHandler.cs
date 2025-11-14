@@ -219,10 +219,10 @@ class PacketHandler
     // 게임에서 죽었을 때
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
     {
-        //S_LeaveGame leaveGamePacket = packet as S_LeaveGame;
+        S_LeaveGame leaveGamePacket = packet as S_LeaveGame;
         //if (leaveGamePacket.IsAttacked && Managers.Object.MyPlayer.IsWinner == false)
         //    Managers.Resource.InstantiateResources("UI_Dead");
-        //Managers.Object.RemoveAll();
+        Managers.GameRoom.ExitGame();
     }
 
     public static void S_SpawnHandler(PacketSession session, IMessage packet)
@@ -322,10 +322,17 @@ class PacketHandler
         }
     }
 
+    public static void S_DieHandler(PacketSession session, IMessage packet)
+    {
+        S_Die diePacket = packet as S_Die;
+        Managers.UI.ShowToastPopup($"TargetId: {diePacket.DamagedObjectId}\n InstigatorId: {diePacket.InstigatorId}");
+        Managers.GameRoomObject.Remove(diePacket.DamagedObjectId);
+    }
+
     public static void S_FindTargetHandler(PacketSession session, IMessage packet)
     {
         S_FindTarget findTargetPacket = packet as S_FindTarget;
-        Managers.UI.ShowToastPopup($"TargetId: {findTargetPacket.TargetId}\n MonsterId: {findTargetPacket.MonsterId}");
+        Managers.UI.ShowToastPopup($"TargetId: {findTargetPacket.TargetId}\n InstigatorId: {findTargetPacket.MonsterId}");
     }
 
     public static void S_TimestampHandler(PacketSession session, IMessage packet)

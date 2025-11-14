@@ -44,6 +44,13 @@ public class PlayerController : CreatureController
         }
     }
 
+    public override void OnDead()
+    {
+        base.OnDead();
+        // TODO - 플레이어 죽는 애니메이션 없음
+        Managers.Resource.Destroy(gameObject);
+    }
+
     protected override void OnDestroy()
     {
         base.OnDestroy();

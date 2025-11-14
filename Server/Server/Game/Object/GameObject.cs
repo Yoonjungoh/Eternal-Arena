@@ -66,19 +66,27 @@ namespace Server.Game
             if (ObjectState.Stat.Hp <= 0.0f)
 			{
                 // 죽음 처리 부분
-                OnDead(this);
+                OnDead(instigator);
 			}
 		}
 
-		public virtual void OnDead(GameObject DamagedObject)
+		public virtual void OnDead(GameObject instigator)
 		{
 			if (GameRoom == null)
 				return;
 
-			ConsoleLogManager.Instance.Log($"Id: {DamagedObject.Id}, Type: {DamagedObject.ObjectType} is dead");
-			
-			// 패킷처리도 LeaveGame에서 처리
-            GameRoom.Push(() => GameRoom.LeaveGame(DamagedObject.Id));
+			ConsoleLogManager.Instance.Log($"Id: {Id}, Type: {ObjectType} is dead");
+
+            S_Die diePacket = new S_Die();
+            diePacket.DamagedObjectId = Id;
+            diePacket.InstigatorId = instigator.Id;
+
+            if (GameRoom != null)
+            {
+                GameRoom.Push(GameRoom.Broadcast, diePacket);
+                GameRoom.Push(GameRoom.LeaveGame, Id);
+            }
+            
         }
 	}
 }

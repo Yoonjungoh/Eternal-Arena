@@ -78,7 +78,13 @@ public class GameRoomObjectManager
             return;
 
         _objects.Remove(id);
-        Managers.Resource.Destroy(go);
+        CreatureController cc = go.GetComponent<CreatureController>();
+        if (cc == null)
+        {
+            Managers.Resource.Destroy(go);
+            return;
+        }
+        cc.OnDead();
     }
 
     public GameObject FindById(int id)

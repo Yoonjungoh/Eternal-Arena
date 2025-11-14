@@ -34,6 +34,9 @@ namespace Server.Game
 
             WaitingRoomManager.OnStartGame -= HandleStartGame;
             WaitingRoomManager.OnStartGame += HandleStartGame;
+
+            GameRoomManager.OnEmptyRoom -= HandleRemoveRoom;
+            GameRoomManager.OnEmptyRoom += HandleRemoveRoom;
         }
 
         public void HandleAddRoom(Player user, string roomName)

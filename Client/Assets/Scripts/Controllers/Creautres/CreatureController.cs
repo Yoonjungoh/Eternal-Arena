@@ -18,6 +18,7 @@ public class CreatureController : MonoBehaviour
     protected Collider _collider;
     protected string _commonAttackanimName;
     protected UI_HpBar _hpBar;
+    protected Vector3 _hpBarPosOffset;
 
     public ObjectState ObjectState { get; set; } = new ObjectState();
     public int Id { get { return ObjectState.ObjectId; } set { ObjectState.ObjectId = value; } }
@@ -95,9 +96,6 @@ public class CreatureController : MonoBehaviour
     {
         switch (CreatureState)
         {
-            case CreatureState.Die:
-                UpdateDie();
-                break;
             case CreatureState.Move:
                 UpdateMove();
                 break;
@@ -124,11 +122,11 @@ public class CreatureController : MonoBehaviour
 
         // 체력바 소환 (투사체는 이후에 조절)
         _hpBar = Managers.UI.MakeWorldSpaceUI<UI_HpBar>(transform, worldPositionStays: false);
-        _hpBar.SetData(Vector3.up * _collider.bounds.size.y);
+        _hpBarPosOffset = Vector3.up * _collider.bounds.size.y;
+        _hpBar.SetData(_hpBarPosOffset);
         _hpBar.UpdateHpBar(Stat.Hp, Stat.MaxHp);
     }
 
-    protected virtual void UpdateDie() { }
     protected virtual void UpdateMove() { }
     protected virtual void UpdateIdle() { }
     protected virtual void UpdateAttack() { }
@@ -185,11 +183,6 @@ public class CreatureController : MonoBehaviour
         // 체력바 갱신
         _hpBar.UpdateHpBar(Stat.Hp, Stat.MaxHp);
         
-        if (IsDead())
-        {
-            OnDead();
-        }
-        
         return damage;
     }
 
@@ -198,8 +191,10 @@ public class CreatureController : MonoBehaviour
         return Stat.Hp <= 0.0f;
     }
 
-    protected virtual void OnDead()
+    public virtual void OnDead()
     {
-
+        // 죽은 오브젝트가 방해 안하게 하기
+        _collider.isTrigger = true;
+        _rb.isKinematic = true;
     }
 }

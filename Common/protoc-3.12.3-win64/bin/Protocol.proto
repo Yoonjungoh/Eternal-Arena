@@ -31,6 +31,7 @@ enum MsgId {
   C_MOVE = 23;
   S_MOVE = 24;
   S_FIND_TARGET = 25;
+  S_DIE = 26;
   C_TIMESTAMP = 105;
   S_TIMESTAMP = 106;
   C_CHANGE_CREATURE_STATE = 107;
@@ -170,6 +171,11 @@ message S_Attack {
 message S_FindTarget {
   int32 monsterId = 1;
   int32 targetId = 2;
+}
+
+message S_Die {
+  int32 damagedObjectId = 1;
+  int32 instigatorId = 2;
 }
 
 message C_Timestamp {

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Timers;
@@ -214,9 +215,78 @@ namespace Server.Game
             }
         }
 
-        public void LeaveGame(int playerId)
+        public void LeaveGame(int objectId)
         {
+            GameObjectType type = ObjectManager.Instance.GetObjectTypeById(objectId);
 
+            if (type == GameObjectType.Player)
+            {
+                Player player = null;
+                if (_players.Remove(objectId, out player) == false)
+                    return;
+
+                player.GameRoom = null;
+
+                // 본인한테 정보 전송
+                {
+                    S_LeaveGame leavePacket = new S_LeaveGame();
+                    player.Session.Send(leavePacket);
+                }
+
+                // 플레이어가 있었던 방인데 혼자 남거나 동시에 다 나가서 터진방일 때
+                if (_players.Count <= 1)
+                {
+                    foreach (Player p in _players.Values)
+                    {
+                        S_LeaveGame leavePacket = new S_LeaveGame();
+                        p.Session.Send(leavePacket);
+                    }
+                    Console.WriteLine($"Dont enough player so Room {RoomId} Delete!");
+                    OnEmptyRoom?.Invoke(RoomId);
+                }
+
+                //if (_players.Count == 1 && IsGameStart)
+                //{
+                //    IsGameOver = true;
+                //    // 최후의 플레이어를 승자로 판정
+                //    foreach (Player p in _players.Values)
+                //    {
+                //        p.IsWinner = true;
+                //        Winner = p;
+                //        // 이제 P에게 패킷 전송
+                //        S_EndGame endPacket = new S_EndGame();
+                //        endPacket.IsGameEnd = true;
+                //        p.Session.Send(endPacket);
+                //    }
+                //    if (IsGameOver == true)
+                //    {
+                //        Console.WriteLine($"Game is end so Room {RoomId} Delete!");
+                //        // 터진 방의 플레이어 정보 밀어주기
+                //        foreach (Player p in _players.Values)
+                //            p.Init();
+                //        RoomManager.Instance.Remove(RoomId);
+                //    }
+                //    Console.WriteLine($"Remain User Count in Room {RoomId}: " + _players.Count);
+                //}
+            }
+            else if (type == GameObjectType.Monster)
+            {
+                _gameObjects.Remove(objectId);
+            }
+            // 타인한테 정보 전송
+            {
+                S_Despawn despawnPacket = new S_Despawn();
+                despawnPacket.ObjectIdList.Add(objectId);
+                despawnPacket.PlayerCount = _players.Count;
+
+                foreach (Player p in _players.Values)
+                {
+                    if (p.Id != objectId)
+                    {
+                        p.Session.Send(despawnPacket);
+                    }
+                }
+            }
         }
 
         public void HandleMove(Player player, C_Move movePacket)
@@ -279,11 +349,22 @@ namespace Server.Game
             return null;
         }
 
-        public void Broadcast(IMessage packet, int? exceptId = null)
+        public void Broadcast(IMessage packet)
         {
             foreach (Player p in _players.Values)
             {
-                if (exceptId.HasValue && p.Id == exceptId.Value)
+                if (p.Session == null)
+                    continue;
+
+                p.Session.Send(packet);
+            }
+        }
+
+        public void Broadcast(IMessage packet, int exceptId)
+        {
+            foreach (Player p in _players.Values)
+            {
+                if (p.Id == exceptId)
                     continue;
 
                 if (p.Session == null)

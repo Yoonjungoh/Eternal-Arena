@@ -10,9 +10,9 @@ namespace Server.Game
     {
         object _lock = new object();
         Dictionary<int, GameRoom> _rooms = new Dictionary<int, GameRoom>();
-        
         public Dictionary<int, GameRoom> Rooms { get { return _rooms; } }
         List<System.Timers.Timer> _timers = new List<System.Timers.Timer>();
+        public event Action<int> OnEmptyRoom; // 방이 비었을 때 알림 (roomId)
         public GameRoomManager(int lobbyId)
         {
             ConsoleLogManager.Instance.Log($"GameRoomManager created for Lobby {lobbyId}");
@@ -46,16 +46,23 @@ namespace Server.Game
                 newRoom.RoomName = roomName;
                 newRoom.RoomOwnerId = roomOwnerId;
 
-                //newRoom.OnEmptyRoom -= HandleEmptyRoom;
-                //newRoom.OnEmptyRoom += HandleEmptyRoom;
-
-                //newRoom.OnRoomInfoChanged -= HandleRoomInfoChanged;
-                //newRoom.OnRoomInfoChanged += HandleRoomInfoChanged;
+                newRoom.OnEmptyRoom -= HandleEmptyRoom;
+                newRoom.OnEmptyRoom += HandleEmptyRoom;
 
                 _rooms.Add(roomId, newRoom);
 
                 return newRoom;
             }
+        }
+
+        private void HandleEmptyRoom(int roomId)
+        {
+            if (_rooms.ContainsKey(roomId) == false)
+            {
+                ConsoleLogManager.Instance.Log($"Cant Find Room {roomId}");
+                return;
+            }
+            OnEmptyRoom?.Invoke(roomId);
         }
 
         public bool Remove(int roomId)
