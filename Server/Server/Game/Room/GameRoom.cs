@@ -9,6 +9,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Timers;
+using static Server.Define;
 
 namespace Server.Game
 {
@@ -31,11 +32,16 @@ namespace Server.Game
         public void Update()
         {
             Flush();
-            //if (ObjectManager.Instance.Players.Count <= 100)
-            //{
-            //    Player player = ObjectManager.Instance.Add<Player>();
-            //    EnterGame(player);
-            //}
+            if (_players.Count > 0)
+            {
+                Player p = null;
+                foreach (var player in _players.Values)
+                {
+                    p = player;
+                    break;
+                }
+                ConsoleLogManager.Instance.Log($"Id: {p.Id}, CanGo: {MapManager.Instance.CanGo(p.Position.X, p.Position.Z)}");
+            }
         }
 
         public void HandleAttack(Player instigator, AttackType attackType)
@@ -133,7 +139,7 @@ namespace Server.Game
 
             // position 초기화
             int spawnIndex = _players.Count % DataManager.Instance.MaxRoomPlayerCount;
-            Vector3 startPos = DataManager.Instance.GetStartPosition(spawnIndex);
+            Vector3 startPos = DataManager.Instance.GetStartPosition(RoomType.GameRoom, spawnIndex);
             player.ObjectState.Position.X = startPos.X;
             player.ObjectState.Position.Y = startPos.Y;
             player.ObjectState.Position.Z = startPos.Z;
@@ -199,7 +205,7 @@ namespace Server.Game
             // 서버에서 상태 업데이트
             player.ObjectState = movePacket.ObjectState;
 
-            //TODO - 일정 거리 이상 순간이동 방지
+            // 하드스냅 (일정 거리 이상 순간이동 방지)
             Vector3 serverPos = new Vector3(player.ObjectState.Position.X, player.ObjectState.Position.Y, player.ObjectState.Position.Z);
             Vector3 clientPos = new Vector3(movePacket.ObjectState.Position.X, movePacket.ObjectState.Position.Y, movePacket.ObjectState.Position.Z);
 
@@ -210,14 +216,25 @@ namespace Server.Game
                 movePacket.ObjectState.Position = player.ObjectState.Position;
                 movePacket.ObjectState.Velocity = new ProtoVector3 { X = 0, Y = 0, Z = 0 };
             }
+            else
+            {
+                if (MapManager.Instance.CanGo(clientPos.X, clientPos.Z))
+                {
+                    // 이동 가능 
+                    player.ObjectState.Position = movePacket.ObjectState.Position;
+                }
+                else
+                {
+                    // 이동 불가 (원래 서버 위치로 되돌림)
+                    movePacket.ObjectState.Position = player.ObjectState.Position;
+                    movePacket.ObjectState.Velocity = new ProtoVector3 { X = 0, Y = 0, Z = 0 };
+                }
+            }
 
             // 다른 유저들에게 브로드캐스트
             S_Move resMovePacket = new S_Move();
             resMovePacket.ObjectState = movePacket.ObjectState;
             resMovePacket.ObjectState.ServerReceivedTime = Util.GetTimestampMs();
-            //Console.WriteLine
-            //    ($"Player {player.Id} -> Vel: ({player.Velocity.X}, {player.Velocity.Y}, {player.Velocity.Z})" +
-            //    $"Rot: ({player.Rotation.X}, {player.Rotation.Y}, {player.Rotation.Z}, {player.Rotation.W})");
             Broadcast(resMovePacket, player.Id);
         }
 

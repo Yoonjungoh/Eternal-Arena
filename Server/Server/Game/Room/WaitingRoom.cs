@@ -9,6 +9,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Timers;
+using static Server.Define;
 
 namespace Server.Game
 {
@@ -58,7 +59,7 @@ namespace Server.Game
 
             // position 초기화
             int spawnIndex = _players.Count % DataManager.Instance.MaxRoomPlayerCount;
-            Vector3 startPos = DataManager.Instance.GetStartPosition(spawnIndex);
+            Vector3 startPos = DataManager.Instance.GetStartPosition(RoomType.WaitingRoom, spawnIndex);
             player.ObjectState.Position.X = startPos.X;
             player.ObjectState.Position.Y = startPos.Y;
             player.ObjectState.Position.Z = startPos.Z;

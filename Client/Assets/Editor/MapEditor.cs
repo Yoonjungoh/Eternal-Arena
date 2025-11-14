@@ -5,6 +5,7 @@ using UnityEditor;
 
 public class MapEditor : EditorWindow
 {
+    public const float NO_HEIGHT_VALUE = -9999f;
     float cellSize = 2.0f; // 추천값: 0.5 했는데 너무 많았어서 2로 변경...
     const float MapMinX = -2000f;
     const float MapMaxX = 2000f;
@@ -52,7 +53,7 @@ public class MapEditor : EditorWindow
         sizeZ = Mathf.CeilToInt((MapMaxZ - MapMinZ) / cellSize);
 
         float[,] height = new float[sizeX, sizeZ];
-        bool[,] walkable = new bool[sizeX, sizeZ];
+        bool[,] canGo = new bool[sizeX, sizeZ];
 
         float rayStartY = 10000f;
         float rayLength = 20000f;
@@ -78,12 +79,12 @@ public class MapEditor : EditorWindow
                         blockMask
                     );
 
-                    walkable[x, z] = (blocked == false);
+                    canGo[x, z] = (blocked == false);
                 }
                 else
                 {
-                    height[x, z] = -9999f;
-                    walkable[x, z] = false;
+                    height[x, z] = NO_HEIGHT_VALUE;
+                    canGo[x, z] = false;
                 }
             }
 
@@ -91,27 +92,27 @@ public class MapEditor : EditorWindow
                 Debug.Log($"Progress {x}/{sizeX}");
         }
 
-        SaveBinary(height, walkable);
+        SaveBinary(height, canGo);
 
         Debug.Log("=== Binary Export Completed! ===");
     }
 
-    void SaveBinary(float[,] height, bool[,] walkable)
+    void SaveBinary(float[,] height, bool[,] canGo)
     {
         string fileName = "MapData_001.map";
 
         string localPath = Path.Combine(Application.dataPath, "Resources/Prefabs/Data/Map");
         EnsureDirectory(localPath);
-        WriteBinary(Path.Combine(localPath, fileName), height, walkable);
+        WriteBinary(Path.Combine(localPath, fileName), height, canGo);
 
-        string externalPath = Path.GetFullPath(Path.Combine(Application.dataPath, "../Common/MapData"));
+        string externalPath = Path.GetFullPath(Path.Combine(Application.dataPath, "../../Common/MapData"));
         EnsureDirectory(externalPath);
-        WriteBinary(Path.Combine(externalPath, fileName), height, walkable);
+        WriteBinary(Path.Combine(externalPath, fileName), height, canGo);
 
         Debug.Log($"Saved Binary Map:\n→ {localPath}/{fileName}\n→ {externalPath}/{fileName}");
     }
 
-    void WriteBinary(string path, float[,] height, bool[,] walkable)
+    void WriteBinary(string path, float[,] height, bool[,] canGo)
     {
         int sx = height.GetLength(0);
         int sz = height.GetLength(1);
@@ -139,7 +140,7 @@ public class MapEditor : EditorWindow
                 }
             }
 
-            // Walkable (bit packing)
+            // CanGo (bit packing)
             int totalCells = sx * sz;
             int byteCount = (totalCells + 7) / 8;
 
@@ -150,7 +151,7 @@ public class MapEditor : EditorWindow
             {
                 for (int z = 0; z < sz; z++)
                 {
-                    if (walkable[x, z])
+                    if (canGo[x, z])
                         packed[idx >> 3] |= (byte)(1 << (idx & 7));
 
                     idx++;

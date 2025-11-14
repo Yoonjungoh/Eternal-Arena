@@ -10,35 +10,52 @@ using System.Net.Http;
 using System.Numerics;
 using System.Text;
 using System.Text.Json;
+using static Server.Define;
 
 namespace Server.Game
 {
     // TODO - JSON 파싱
     public class DataManager
     {
-        public List<Vector3> StartPositions = new List<Vector3>()
+        public Dictionary<RoomType, List<Vector3>> StartPositions = new Dictionary<RoomType, List<Vector3>>()
         {
             //new Vector3(-150, -18, 112),  // 숲풀
-            new Vector3(-676, 8, -471),
-            new Vector3(-677, 8, -471),
-            new Vector3(-678, 8, -471),
-            new Vector3(-679, 8, -471),
+            // 평지
+            //new Vector3(-676, 8, -471),
+            //new Vector3(-677, 8, -471),
+            //new Vector3(-678, 8, -471),
+            //new Vector3(-679, 8, -471),
+            // 충돌 물체
+            { RoomType.WaitingRoom, new List<Vector3>()
+            {
+                new Vector3(-676, 8, -471),
+                new Vector3(-677, 8, -471),
+                new Vector3(-678, 8, -471),
+                new Vector3(-679, 8, -471),
+            } },
+            { RoomType.GameRoom, new List<Vector3>()
+            {
+                new Vector3(63, -26, 527),
+                new Vector3(64, -26, 527),
+                new Vector3(65, -26, 527),
+                new Vector3(66, -26, 527),
+            } }
         };
 
         public static DataManager Instance { get; } = new DataManager();
         public int MaxLobbyCount = 3;  // 최대 로비 개수
         public int MaxRoomPlayerCount = 2; // 방당 최대 플레이어 수
         
-        public Vector3 GetStartPosition(int index)
+        public Vector3 GetStartPosition(RoomType roomType, int index)
         {
-            if (index < 0 || index >= StartPositions.Count)
+            if (index < 0 || index >= StartPositions[roomType].Count)
                 return new Vector3(
-                    StartPositions[StartPositions.Count - 1].X + index,
-                    StartPositions[StartPositions.Count - 1].Y,
-                    StartPositions[StartPositions.Count - 1].Z
+                    StartPositions[roomType][StartPositions[roomType].Count - 1].X + index,
+                    StartPositions[roomType][StartPositions[roomType].Count - 1].Y,
+                    StartPositions[roomType][StartPositions[roomType].Count - 1].Z
                 ); // 기본값
 
-            return StartPositions[index];
+            return StartPositions[roomType][index];
         }
         public float MaxHp { get; set; } = 10000.0f;
         public float MaxDamage { get; set; } = 1000.0f;
