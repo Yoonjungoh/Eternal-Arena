@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Game;
+using Server.Game.Room;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,16 +20,17 @@ namespace Server.Game
         public int RoomId { get; set; }
         public string RoomName { get; set; }
         public int RoomOwnerId { get; set; }
-        //Map Map;
-        Dictionary<int, GameObject> _gameObjects = new Dictionary<int, GameObject>();
-        Dictionary<int, Player> _players = new Dictionary<int, Player>();
-        Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
+        public Map Map { get; set; } = new Map();
+        private Dictionary<int, GameObject> _gameObjects = new Dictionary<int, GameObject>();
+        private Dictionary<int, Player> _players = new Dictionary<int, Player>();
+        private Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
 
         public event Action<int> OnEmptyRoom; // 방이 비었을 때 알림 (roomId)
         public event Action<int> OnRoomInfoChanged;  // 방 정보 바뀌었을 때 알림 (roomId)
         public void Init()
         {
             //TestTimer();
+            Map.MapData = MapManager.Instance.CreateCopy();
             // TODO
             SpawnMonster(MonsterType.Bear, new Vector3(66, -26, 527));
         }
@@ -315,7 +317,7 @@ namespace Server.Game
             }
             else
             {
-                if (MapManager.Instance.CanGo(clientPos.X, clientPos.Z))
+                if (Map.CanGo(clientPos.X, clientPos.Z))
                 {
                     // 이동 가능 
                     player.ObjectState.Position = movePacket.ObjectState.Position;

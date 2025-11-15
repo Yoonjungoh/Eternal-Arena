@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class BearController : MonsterController
 {
-
     public override void Init()
     {
         base.Init();
@@ -18,8 +17,9 @@ public class BearController : MonsterController
         Init();
     }
 
-    void Update()
+    private void FixedUpdate()
     {
-        
+        base.OnUpdate();
+        base.UpdateDeadReckoning();
     }
 }

@@ -1,151 +1,241 @@
-﻿//using ServerCore;
-//using System;
-//using System.Collections.Generic;
-//using System.IO;
-//using System.Numerics;
-//using System.Text;
-//using System.Xml.Linq;
+﻿using ServerCore;
+using System;
+using System.Collections.Generic;
+using System.Numerics;
 
-//namespace Server.Game.Room
-//{
-//    public struct Pos
-//    {
-//        public Pos(int y, int x) { Y = y; X = x; }
-//        public int Y;
-//        public int X;
-//    }
+namespace Server.Game.Room
+{
+    /* Cell = 맵 데이터 좌표 */
+    public struct Cell
+    {
+        public int X;
+        public int Y;
+        public Cell(int x, int y) { X = x; Y = y; }
+    }
 
-//    public struct PQNode : IComparable<PQNode>
-//    {
-//        public int F;
-//        public int G;
-//        public int Y;
-//        public int X;
+    /* A* 내부 좌표 변환용 */
+    public struct Pos
+    {
+        public int Y;
+        public int X;
+        public Pos(int y, int x) { Y = y; X = x; }
+    }
 
-//        public int CompareTo(PQNode other)
-//        {
-//            if (F == other.F)
-//                return 0;
-//            return F < other.F ? 1 : -1;
-//        }
-//    }
+    /* 우선순위 큐 노드 */
+    public struct PQNode : IComparable<PQNode>
+    {
+        public int F;
+        public int G;
+        public int Y;
+        public int X;
 
-//    public class Map
-//    {
-//        public int MinX { get; set; } = MapManager.Instance.MinX;
-//        public int MaxX { get; set; } = MapManager.Instance.MaxX;
-//        public int MinZ { get; set; } = MapManager.Instance.MinZ;
-//        public int MaxZ { get; set; } = MapManager.Instance.MaxZ;
+        public int CompareTo(PQNode other)
+        {
+            if (F == other.F) return 0;
+            return F < other.F ? 1 : -1;
+        }
+    }
 
-//        public int SizeX { get { return MaxX - MinX + 1; } }
-//        public int SizeY { get { return MaxZ - MinZ + 1; } }
+    public class Map
+    {
+        public MapData MapData { get; set; }
+        public const float NO_HEIGHT_VALUE = -9999f;
 
-//        // 스폰 포인트
-//        List<Pos> spawnPos = new List<Pos>();
-//        GameObject[,] _objects;
+        // U D L R
+        int[] _deltaY = new int[] { 1, -1, 0, 0 };
+        int[] _deltaX = new int[] { 0, 0, -1, 1 };
+        int[] _cost = new int[] { 10, 10, 10, 10 };
 
-//        #region A* PathFinding
+        public int SizeX => MapData.SizeX;
+        public int SizeZ => MapData.SizeZ;
 
-//        // U D L R
-//        int[] _deltaY = new int[] { 1, -1, 0, 0 };
-//        int[] _deltaX = new int[] { 0, 0, -1, 1 };
-//        int[] _cost = new int[] { 10, 10, 10, 10 };
+        /* --------------------------
+         * 좌표 변환 (World → Cell)
+         * -------------------------- */
+        public Cell WorldToCell(Vector3 w)
+        {
+            int x = (int)((w.X - MapData.Origin.X) / MapData.CellSize);
+            int y = (int)((w.Z - MapData.Origin.Z) / MapData.CellSize);
+            return new Cell(x, y);
+        }
 
-//        public List<Vector2> FindPath(Vector2 startCellPos, Vector2 destCellPos, bool checkObjects = true)
-//        {
-//            List<Pos> path = new List<Pos>();
+        /* --------------------------
+         * 좌표 변환 (Cell → World)
+         * -------------------------- */
+        public Vector3 CellToWorld(Cell c)
+        {
+            float wx = MapData.Origin.X + c.X * MapData.CellSize + MapData.CellSize * 0.5f;
+            float wz = MapData.Origin.Z + c.Y * MapData.CellSize + MapData.CellSize * 0.5f;
+            float wy = GetCellHeight(c);
+            return new Vector3(wx, wy, wz);
+        }
 
-//            // 점수 매기기
-//            // F = G + H
-//            // F = 최종 점수 (작을 수록 좋음, 경로에 따라 달라짐)
-//            // G = 시작점에서 해당 좌표까지 이동하는데 드는 비용 (작을 수록 좋음, 경로에 따라 달라짐)
-//            // H = 목적지에서 얼마나 가까운지 (작을 수록 좋음, 고정)
+        public bool IsValidCell(Cell c)
+        {
+            return (c.X >= 0 && c.Y >= 0 && c.X < MapData.SizeX && c.Y < MapData.SizeZ);
+        }
 
-//            // (y, x) 이미 방문했는지 여부 (방문 = closed 상태)
-//            bool[,] closed = new bool[SizeY, SizeX]; // CloseList
+        /* --------------------------
+         * 높이 / 이동 가능
+         * -------------------------- */
+        public float GetCellHeight(Cell c)
+        {
+            if (!IsValidCell(c))
+                return NO_HEIGHT_VALUE;
+            return MapData.Height[c.X, c.Y];
+        }
 
-//            // (y, x) 가는 길을 한 번이라도 발견했는지
-//            // 발견X => MaxValue
-//            // 발견O => F = G + H
-//            int[,] open = new int[SizeY, SizeX]; // OpenList
-//            for (int y = 0; y < SizeY; y++)
-//                for (int x = 0; x < SizeX; x++)
-//                    open[y, x] = Int32.MaxValue;
+        public bool CanGo(Cell c)
+        {
+            if (!IsValidCell(c))
+                return false;
+            return MapData.CanGo[c.X, c.Y];
+        }
 
-//            Pos[,] parent = new Pos[SizeY, SizeX];
+        public bool CanGo(float worldX, float worldZ)
+        {
+            Cell c = WorldToCell(new Vector3(worldX, 0, worldZ));
+            return CanGo(c);
+        }
 
-//            // 오픈리스트에 있는 정보들 중에서, 가장 좋은 후보를 빠르게 뽑아오기 위한 도구
-//            PriorityQueue<PQNode> pq = new PriorityQueue<PQNode>();
+        /* =============================================================
+         * 외부 API(몬스터/AI가 호출)
+         * ============================================================= */
+        public List<Vector3> FindPath(Vector3 startWorld, Vector3 destWorld)
+        {
+            Cell start = WorldToCell(startWorld);
+            Cell dest = WorldToCell(destWorld);
 
-//            // CellPos -> ArrayPos
-//            Pos pos = Cell2Pos(startCellPos);
-//            Pos dest = Cell2Pos(destCellPos);
+            List<Pos> raw = InternalFindPath(start, dest);
+            return ConvertToWorldPath(raw);
+        }
 
-//            // 시작점 발견 (예약 진행)
-//            open[pos.Y, pos.X] = 10 * (Math.Abs(dest.Y - pos.Y) + Math.Abs(dest.X - pos.X));
-//            pq.Push(new PQNode() { F = 10 * (Math.Abs(dest.Y - pos.Y) + Math.Abs(dest.X - pos.X)), G = 0, Y = pos.Y, X = pos.X });
-//            parent[pos.Y, pos.X] = new Pos(pos.Y, pos.X);
+        /* =============================================================
+         * 내부 A* (자료구조 최적화 버전)
+         * ============================================================= */
+        private List<Pos> InternalFindPath(Cell start, Cell dest)
+        {
+            // (y, x) 이미 방문했는지 여부 (방문 = closed 상태)
+            HashSet<Pos> closeList = new HashSet<Pos>();  // == CloseList
 
-//            while (pq.Count > 0)
-//            {
-//                // 제일 좋은 후보를 찾는다
-//                PQNode node = pq.Pop();
-//                // 동일한 좌표를 여러 경로로 찾아서, 더 빠른 경로로 인해서 이미 방문(closed)된 경우 스킵
-//                if (closed[node.Y, node.X])
-//                    continue;
+            // (y, x) 가는 길을 발견한 적 있는지
+            Dictionary<Pos, int> openList = new Dictionary<Pos, int>(); // == OpenList
 
-//                // 방문한다
-//                closed[node.Y, node.X] = true;
-//                // 목적지 도착했으면 바로 종료
-//                if (node.Y == dest.Y && node.X == dest.X)
-//                    break;
+            // 부모 정보 저장
+            Dictionary<Pos, Pos> parent = new Dictionary<Pos, Pos>();
 
-//                // 상하좌우 등 이동할 수 있는 좌표인지 확인해서 예약(open)한다
-//                for (int i = 0; i < _deltaY.Length; i++)
-//                {
-//                    Pos next = new Pos(node.Y + _deltaY[i], node.X + _deltaX[i]);
+            PriorityQueue<PQNode> pq = new PriorityQueue<PQNode>();
 
-//                    // 유효 범위를 벗어났으면 스킵
-//                    // 벽으로 막혀서 갈 수 없으면 스킵
-//                    if (next.Y != dest.Y || next.X != dest.X)
-//                    {
-//                        if (CanGo(Pos2Cell(next), checkObjects) == false) // CellPos
-//                            continue;
-//                    }
+            Pos pos = new Pos(start.Y, start.X);
+            Pos des = new Pos(dest.Y, dest.X);
 
-//                    // 이미 방문한 곳이면 스킵
-//                    if (closed[next.Y, next.X])
-//                        continue;
+            int hStart = 10 * (Math.Abs(des.Y - pos.Y) + Math.Abs(des.X - pos.X));
+            openList[pos] = hStart;
 
-//                    // 비용 계산
-//                    int g = 0;// node.G + _cost[i];
-//                    int h = 10 * ((dest.Y - next.Y) * (dest.Y - next.Y) + (dest.X - next.X) * (dest.X - next.X));
-//                    // 다른 경로에서 더 빠른 길 이미 찾았으면 스킵
-//                    if (open[next.Y, next.X] < g + h)
-//                        continue;
+            pq.Push(new PQNode()
+            {
+                F = hStart,
+                G = 0,
+                Y = pos.Y,
+                X = pos.X
+            });
 
-//                    // 예약 진행
-//                    open[dest.Y, dest.X] = g + h;
-//                    pq.Push(new PQNode() { F = g + h, G = g, Y = next.Y, X = next.X });
-//                    parent[next.Y, next.X] = new Pos(node.Y, node.X);
-//                }
-//            }
+            parent[pos] = pos;
 
-//            return CalcCellPathFromParent(parent, dest);
-//        }
+            while (pq.Count > 0)
+            {
+                PQNode node = pq.Pop();
+                Pos cur = new Pos(node.Y, node.X);
 
-//        Pos Cell2Pos(Vector2Int cell)
-//        {
-//            CellPos->ArrayPos
-//                return new Pos(MaxY - cell.y, cell.x - MinX);
-//        }
+                if (closeList.Contains(cur))
+                    continue;
 
-//        Vector2Int Pos2Cell(Pos pos)
-//        {
-//            ArrayPos->CellPos
-//                return new Vector2Int(pos.X + MinX, MaxY - pos.Y);
-//        }
+                closeList.Add(cur);
 
-//        #endregion
-//    }
-//}
+                if (cur.Y == des.Y && cur.X == des.X)
+                    break;
+
+                for (int i = 0; i < 4; i++)
+                {
+                    int ny = cur.Y + _deltaY[i];
+                    int nx = cur.X + _deltaX[i];
+
+                    Pos next = new Pos(ny, nx);
+                    Cell nextCell = new Cell(nx, ny);
+
+                    // 유효?
+                    if (!IsValidCell(nextCell))
+                        continue;
+
+                    // 갈 수 있나?
+                    if (!CanGo(nextCell))
+                        continue;
+
+                    // 이미 방문?
+                    if (closeList.Contains(next))
+                        continue;
+
+                    int g = node.G + _cost[i];
+                    int h = 10 * (Math.Abs(des.Y - ny) + Math.Abs(des.X - nx));
+                    int f = g + h;
+
+                    if (openList.TryGetValue(next, out int oldF) && oldF <= f)
+                        continue;
+
+                    openList[next] = f;
+                    parent[next] = cur;
+
+                    pq.Push(new PQNode()
+                    {
+                        F = f,
+                        G = g,
+                        Y = ny,
+                        X = nx
+                    });
+                }
+            }
+
+            return BuildPath(parent, pos, des);
+        }
+
+        /* --------------------------
+         * 경로 역추적
+         * -------------------------- */
+        private List<Pos> BuildPath(Dictionary<Pos, Pos> parent, Pos start, Pos dest)
+        {
+            List<Pos> path = new List<Pos>();
+
+            Pos cur = dest;
+            while (!(cur.X == start.X && cur.Y == start.Y))
+            {
+                path.Add(cur);
+
+                if (!parent.TryGetValue(cur, out Pos p))
+                    break;
+
+                if (p.X == cur.X && p.Y == cur.Y)
+                    break;
+
+                cur = p;
+            }
+
+            path.Add(start);
+            path.Reverse();
+            return path;
+        }
+
+        /* --------------------------
+         * World 변환
+         * -------------------------- */
+        private List<Vector3> ConvertToWorldPath(List<Pos> raw)
+        {
+            List<Vector3> result = new List<Vector3>();
+            foreach (Pos p in raw)
+            {
+                Cell c = new Cell(p.X, p.Y);
+                result.Add(CellToWorld(c));
+            }
+            return result;
+        }
+    }
+}

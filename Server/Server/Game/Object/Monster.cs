@@ -76,18 +76,17 @@ namespace Server.Game
             GameRoom.Broadcast(findPacket);
         }
 
-        long _nextMoveTick = 0;
+        long _nextMoveTick = 0; 
+        
         protected virtual void UpdateMove()
         {
             if (_nextMoveTick > Environment.TickCount64)
                 return;
 
-            // 실제 스피드 - 이게 업데이트 틱이라고 봐도 됨
             long _moveTick = (long)(400 / 2f);
-            //long _moveTick = (long)(1000 / Stat.Speed);
             _nextMoveTick = Environment.TickCount64 + _moveTick;
 
-            // 타겟이나 타겟의 방이 없을 때
+            // 타겟이 없거나 방을 나감
             if (_target == null || _target.GameRoom == null)
             {
                 _target = null;
@@ -96,9 +95,9 @@ namespace Server.Game
                 return;
             }
 
-            // 도달했거나 쫓는 범위 밖일 때
-            Vector3 dir = (_target.CurrentPosition - CurrentPosition);
-            float dist = Math.Abs(dir.X) + Math.Abs(dir.Y);
+            // 범위 벗어남
+            Vector3 dirCheck = _target.CurrentPosition - CurrentPosition;
+            float dist = Math.Abs(dirCheck.X) + Math.Abs(dirCheck.Y);
             if (dist == 0 || dist > _chaseRange)
             {
                 _target = null;
@@ -107,96 +106,59 @@ namespace Server.Game
                 return;
             }
 
-            Vector3 startCellPos = CurrentPosition;
-            Vector3 destCellPos = _target.CurrentPosition;
-            //List<vec> path = Room.Map.FindPath(startCellPos, destCellPos, true);
-            //// 쫓는 본인 좌표도 포함이라 0번쨰는 본인 1번째는 타겟이라면 2 보다는 커야 한칸이라도 움직이겠단 거임
-            //// 길이 없거나 너무 멀리 있다			
+            // 1. A*로 경로 찾기
+            List<Vector3> path = GameRoom.Map.FindPath(CurrentPosition, _target.CurrentPosition);
 
-            //// 스킬 사정 거리 안쪽이지만 path.count가 3보다 작을 때 공격 안함을 방지하기 위함
-            //if (path.Count < 3 || path.Count > (int)_chaseRange)
-            //{
-            //    if (dist > _skillRange)
-            //    {
-            //        _target = null;
-            //        State = CreatureState.Idle;
-            //        BroadcastMove();
-            //        return;
-            //    }
-            //}
-
-            //// 몬스터 이동 패킷 조립 부분
-            //S_Move movePacket = new S_Move();
-
-            //// 서버에서 이동 가능한지 체크
-            //if (path.Count >= 3 && Room.Map.CanGo(path[1], true) == true)
-            //{
-            //    {
-            //        //// 몬스터 각도 갱신(길 방향)
-            //        //PosInfo.RotZ = -(float)
-            //        //	(Math.Atan2(PosInfo.PosX - path[1].x,
-            //        //	PosInfo.PosY - path[1].y) * (180.0f / Math.PI));  
-            //        // 몬스터 각도 갱신 (플레이어 방향)
-            //        PosInfo.RotZ = -(float)(Math.Atan2(PosInfo.PosX - _target.PosInfo.PosX, PosInfo.PosY - _target.PosInfo.PosY) * (180.0f / Math.PI));
-            //        S_ChangeRotz rotZ = new S_ChangeRotz();
-            //        rotZ.RotZ = PosInfo.RotZ;
-            //        rotZ.ObjectId = Id;
-            //        Room.Broadcast(rotZ);
-
-            //        // 실제 좌표 이동
-            //        PosInfo.PosX = path[1].x;
-            //        PosInfo.PosY = path[1].y;
-            //    }
-            //}
-
-            //// 패킷 조립
-            //if (path.Count >= 3)
-            //{
-            //    movePacket.PosInfo = new PositionInfo();
-            //    movePacket.ObjectId = Id;
-            //    movePacket.PosInfo.PosX = path[1].x;
-            //    movePacket.PosInfo.PosY = path[1].y;
-            //    movePacket.PosInfo.RotZ = PosInfo.RotZ;
-            //    movePacket.PosInfo.State = State;
-            //    Room.Broadcast(movePacket);
-            //}
-
-            //// 몬스터 이동 패킷 조립 부분
-            //S_Move movePacket = new S_Move();
-            //Vector2 playerPos = new Vector2(_target.PosInfo.PosX, _target.PosInfo.PosY);
-            //Vector2 monsterPos = new Vector2(PosInfo.PosX, PosInfo.PosY);
-            //Vector2 dirVector = Vector2.Normalize(monsterPos - playerPos);
-            //DirVector.x = -dirVector.X;
-            //DirVector.y = -dirVector.Y;
-            //State = CreatureState.Moving;
-
-            ////Console.WriteLine($"Monster_{Id}: DirVector ({DirVector.x}, {DirVector.y})");
-            //Vector2Float destPos = new Vector2Float
-            //	(PosInfo.PosX + (DirVector.x * deltaTime * Stat.Speed), PosInfo.PosY + (DirVector.y * deltaTime * Stat.Speed));
-            //// 서버에서 목표 좌표로 이동
-            //PosInfo.PosX = destPos.x;
-            //PosInfo.PosY = destPos.y;
-            //// 방향 전환
-            //PosInfo.RotZ = -(float)(Math.Atan2(PosInfo.PosX - _target.PosInfo.PosX, PosInfo.PosY - _target.PosInfo.PosY) * (180.0f / Math.PI));
-            //// 패킷 조립
-            //movePacket.PosInfo = new PositionInfo();
-            //movePacket.ObjectId = Id;
-            //movePacket.PosInfo.PosX = destPos.x;
-            //movePacket.PosInfo.PosY = destPos.y;
-            //movePacket.PosInfo.RotZ = PosInfo.RotZ;
-            //movePacket.PosInfo.State = State;
-            //Room.Broadcast(movePacket);
-
-            // 스킬로 넘어갈지 체크 하는 부분
-            if (dist <= _skillRange)
+            // path가 너무 짧으면 이동 불가
+            if (path == null || path.Count < 2)
             {
-                //_nextSkillTick = 0;
-                CreatureState = CreatureState.Attack;
-                BroadcastMove();
+                // 혹시 스킬 사거리 안이면 공격
+                if (dist <= _skillRange)
+                {
+                    //CreatureState = CreatureState.Attack;
+                    BroadcastMove();
+                }
                 return;
             }
 
+            // 2) 다음 목적지는 path[1]
+            Vector3 nextPos = path[1];
+
+            // 방향
+            Vector3 dir = Vector3.Normalize(nextPos - CurrentPosition);
+
+            // 이동량 = 속도 * 시간
+            float delta = _moveTick / 1000f;
+            float moveDist = Stat.MoveSpeed * delta;
+
+            Vector3 newPos;
+
+            if (Vector3.Distance(CurrentPosition, nextPos) <= moveDist)
+                newPos = nextPos;
+            else
+                newPos = CurrentPosition + dir * moveDist;
+
+            // 3. 서버 좌표 갱신
+            ObjectState.Position.X = newPos.X;
+            ObjectState.Position.Y = newPos.Y;
+            ObjectState.Position.Z = newPos.Z;
+
+            // 4. 회전도 갱신
+            ObjectState.Rotation = MovementHelper.LookAt(dir);
+
+            // 5. 브로드캐스트
+            S_Move movePacket = new S_Move();
+            movePacket.ObjectState = ObjectState;
+            movePacket.ObjectState.ServerReceivedTime = Util.GetTimestampMs();
+            GameRoom.Broadcast(movePacket);
+            ConsoleLogManager.Instance.Log($"({Position.X}, {Position.Y}, {Position.Z})");
+            // 6. 공격 사거리 체크
+            if (dist <= _skillRange)
+            {
+                //CreatureState = CreatureState.Attack;
+            }
         }
+
 
         long _nextSkillTick = 0;
         protected virtual void UpdateAttack()

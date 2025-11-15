@@ -320,6 +320,19 @@ class PacketHandler
                 );
             }
         }
+        else if (type == GameObjectType.Monster)
+        {
+            MonsterController monster = go.GetComponent<MonsterController>();
+            if (monster != null)
+            {
+                monster.SetServerState(
+                    movePacket.ObjectState.Position,
+                    movePacket.ObjectState.Rotation,
+                    movePacket.ObjectState.Velocity,
+                    movePacket.ObjectState.ServerReceivedTime
+                );
+            }
+        }
     }
 
     public static void S_DieHandler(PacketSession session, IMessage packet)
