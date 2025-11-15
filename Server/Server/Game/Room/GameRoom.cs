@@ -22,6 +22,7 @@ namespace Server.Game
         //Map Map;
         Dictionary<int, GameObject> _gameObjects = new Dictionary<int, GameObject>();
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
+        Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
 
         public event Action<int> OnEmptyRoom; // 방이 비었을 때 알림 (roomId)
         public event Action<int> OnRoomInfoChanged;  // 방 정보 바뀌었을 때 알림 (roomId)
@@ -36,6 +37,10 @@ namespace Server.Game
         public void Update()
         {
             Flush();
+            foreach (Monster monster in _monsters.Values)
+            {
+                monster.Update();
+            }
         }
 
 
@@ -384,6 +389,11 @@ namespace Server.Game
             {
                 Player player = (Player)gameObject;
                 _players.Add(player.Id, player);
+            }
+            else if (gameObject.ObjectType == GameObjectType.Monster)
+            {
+                Monster monster = (Monster)gameObject;
+                _monsters.Add(monster.Id, monster);
             }
         }
     }
