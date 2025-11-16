@@ -3,7 +3,6 @@ using Server.Game;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
 
 namespace Server.Game
 {
@@ -11,20 +10,19 @@ namespace Server.Game
     {
         float _searchRange = 7.0f;
         float _chaseRange = 20.0f;
-        float _skillRange = 2.0f;
+        float _commonAttackRange = 2.0f;
         Player _target;
 
         public Monster()
         {
             ObjectType = GameObjectType.Monster;
-            // TODO- JSON으로 빼오기
+
             Stat.Hp = 50f;
             Stat.MaxHp = 50;
             Stat.CommonAttackDamage = 5;
             Stat.Defense = 0;
             Stat.MoveSpeed = 5;
-            //Exp = 50;
-            //Gold = 10;
+
             CreatureState = CreatureState.Idle;
         }
 
@@ -32,18 +30,10 @@ namespace Server.Game
         {
             switch (CreatureState)
             {
-                case CreatureState.Idle:
-                    UpdateIdle();
-                    break;
-                case CreatureState.Move:
-                    UpdateMove();
-                    break;
-                case CreatureState.Attack:
-                    UpdateAttack();
-                    break;
-                case CreatureState.Die:
-                    UpdateDie();
-                    break;
+                case CreatureState.Idle: UpdateIdle(); break;
+                case CreatureState.Move: UpdateMove(); break;
+                case CreatureState.Attack: UpdateAttack(); break;
+                case CreatureState.Die: UpdateDie(); break;
             }
         }
 
@@ -54,14 +44,15 @@ namespace Server.Game
         {
             if (_nextSearchTick > Environment.TickCount64)
                 return;
-            // 패트롤 로직
+
             _nextSearchTick = Environment.TickCount64 + _searchTick;
+
             Player target = GameRoom.FindPlayer(p =>
             {
                 Vector3 playerPos = p.CurrentPosition;
                 Vector3 dir = playerPos - CurrentPosition;
-                float cellDistFromZero = Math.Abs(dir.X) + Math.Abs(dir.Y);
-                return cellDistFromZero <= _searchRange;
+                float cellDist = Math.Abs(dir.X) + Math.Abs(dir.Y);
+                return cellDist <= _searchRange;
             });
 
             if (target == null)
@@ -70,197 +61,149 @@ namespace Server.Game
             _target = target;
             CreatureState = CreatureState.Move;
 
-            S_FindTarget findPacket = new S_FindTarget();
-            findPacket.MonsterId = Id;
-            findPacket.TargetId = _target.Id;
-            GameRoom.Broadcast(findPacket);
+            S_FindTarget find = new S_FindTarget();
+            find.MonsterId = Id;
+            find.TargetId = _target.Id;
+            GameRoom.Broadcast(find);
         }
 
-        long _nextMoveTick = 0; 
-        
+        long _nextMoveTick = 0;
+        long _nextPathTick = 0;
+        int _pathInterval = 500;
+        List<Vector3> _cachedPath = null;
+
+        Vector3 _lastDir = Vector3.Zero;
+
         protected virtual void UpdateMove()
         {
             if (_nextMoveTick > Environment.TickCount64)
                 return;
 
-            long _moveTick = (long)(400 / 2f);
-            _nextMoveTick = Environment.TickCount64 + _moveTick;
+            long moveTick = (long)(400 / 2f);
+            _nextMoveTick = Environment.TickCount64 + moveTick;
 
-            // 타겟이 없거나 방을 나감
             if (_target == null || _target.GameRoom == null)
             {
-                _target = null;
+                _cachedPath = null;
                 CreatureState = CreatureState.Idle;
-                BroadcastMove();
                 return;
             }
 
-            // 범위 벗어남
-            Vector3 dirCheck = _target.CurrentPosition - CurrentPosition;
-            float dist = Math.Abs(dirCheck.X) + Math.Abs(dirCheck.Y);
-            if (dist == 0 || dist > _chaseRange)
+            Vector3 diff = _target.CurrentPosition - CurrentPosition;
+            float dist = diff.Length();
+
+            // 범위 내에 오면 공격
+            if (dist <= _commonAttackRange)
             {
-                _target = null;
-                CreatureState = CreatureState.Idle;
-                BroadcastMove();
+                //CreatureState = CreatureState.Attack;
                 return;
             }
 
-            // 1. A*로 경로 찾기
-            List<Vector3> path = GameRoom.Map.FindPath(CurrentPosition, _target.CurrentPosition);
-
-            // path가 너무 짧으면 이동 불가
-            if (path == null || path.Count < 2)
+            // 범위 내에 오면 유저 바라보게 방향만 전환
+            if (dist <= 4f)
             {
-                // 혹시 스킬 사거리 안이면 공격
-                if (dist <= _skillRange)
-                {
-                    // todo - attack 개발하고 풀기
-                    //CreatureState = CreatureState.Attack;
-                    BroadcastMove();
-                }
+                Vector3 dir = Vector3.Normalize(diff);
+                Vector3 smooth = SmoothDirection(dir);
+                MoveByDirection(smooth, moveTick);
                 return;
             }
 
-            // 2. 다음 목적지는 path[1]
-            Vector3 nextPos = path[1];
+            if (_cachedPath == null || Environment.TickCount64 >= _nextPathTick)
+            {
+                _cachedPath = GameRoom.Map.FindPath(CurrentPosition, _target.CurrentPosition);
+                _nextPathTick = Environment.TickCount64 + _pathInterval;
+            }
 
-            // 방향
-            Vector3 dir = Vector3.Normalize(nextPos - CurrentPosition);
+            if (_cachedPath == null || _cachedPath.Count < 2)
+                return;
 
-            // 이동량 = 속도 * 시간
-            float delta = _moveTick / 1000f;
-            float moveDist = Stat.MoveSpeed * delta;
+            Vector3 nextPos = _cachedPath[1];
+            Vector3 moveDir = Vector3.Normalize(nextPos - CurrentPosition);
 
-            Vector3 newPos;
+            Vector3 finalDir = SmoothDirection(moveDir);
+            MoveByDirection(finalDir, moveTick);
+        }
 
-            if (Vector3.Distance(CurrentPosition, nextPos) <= moveDist)
-                newPos = nextPos;
-            else
-                newPos = CurrentPosition + dir * moveDist;
+        private Vector3 SmoothDirection(Vector3 newDir)
+        {
+            if (_lastDir == Vector3.Zero)
+                _lastDir = newDir;
 
-            // 3. 서버 좌표 갱신
+            _lastDir = Vector3.Normalize(_lastDir * 0.8f + newDir * 0.2f);
+            return _lastDir;
+        }
+
+        private void MoveByDirection(Vector3 dir, long moveTick)
+        {
+            float deltaSec = moveTick / 1000f;
+            float moveDist = Stat.MoveSpeed * deltaSec;
+
+            Vector3 newPos = CurrentPosition + dir * moveDist;
+
+            float groundY = GameRoom.Map.GetHeight(newPos);
+            if (groundY == -9999)
+                return;
+
+            newPos.Y = groundY;
+
+            if (newPos.Y < CurrentPosition.Y - 1f)
+                newPos.Y = CurrentPosition.Y;
+
             ObjectState.Position.X = newPos.X;
             ObjectState.Position.Y = newPos.Y;
             ObjectState.Position.Z = newPos.Z;
 
-            // 4. 회전도 갱신
             ObjectState.Rotation = MovementHelper.LookAt(dir);
 
-            // 5. 브로드캐스트
-            S_Move movePacket = new S_Move();
-            movePacket.ObjectState = ObjectState;
-            movePacket.ObjectState.ServerReceivedTime = Util.GetTimestampMs();
-            GameRoom.Broadcast(movePacket);
-            ConsoleLogManager.Instance.Log($"({Position.X}, {Position.Y}, {Position.Z})");
-            // 6. 공격 사거리 체크
-            if (dist <= _skillRange)
-            {
-                // todo - attack 개발하고 풀기
-                //CreatureState = CreatureState.Attack;
-            }
+            S_Move move = new S_Move();
+            move.ObjectState = ObjectState;
+            move.ObjectState.ServerReceivedTime = Util.GetTimestampMs();
+            GameRoom.Broadcast(move);
         }
 
-
         long _nextSkillTick = 0;
+
         protected virtual void UpdateAttack()
         {
-            //// 스킬 사용 가능 체크
-            //if (_nextSkillTick == 0)
+            //if (_target == null || _target.GameRoom == null)
             //{
-            //    // 유효 타겟인가?
-            //    if (_target == null || _target.Room != Room || _target.Hp == 0)
-            //    {
-            //        _target = null;
-            //        State = CreatureState.Moving;
-            //        BroadcastMove();
-            //        return;
-            //    }
-
-            //    // 스킬이 아직 사용 가능한가?
-            //    Vector2Float dir = CurrentPos - _target.CurrentPos;
-            //    float dist = dir.cellDistFromZero;
-            //    bool canUseSkill = (dist <= _skillRange);
-            //    if (canUseSkill == false)
-            //    {
-            //        State = CreatureState.Moving;
-            //        BroadcastMove();
-            //        return;
-            //    }
-            //    //            // 때릴때만 타겟팅 방향 보기
-            //    //            // 방향 전환
-            //    //            PosInfo.RotZ = -(float)(Math.Atan2(PosInfo.PosX - _target.PosInfo.PosX, PosInfo.PosY - _target.PosInfo.PosY) * (180.0f / Math.PI));
-            //    //S_ChangeRotz rotZ = new S_ChangeRotz();
-            //    //rotZ.RotZ = PosInfo.RotZ;
-            //    //rotZ.ObjectId = Id;
-            //    //Room.Broadcast(rotZ);
-            //    // 데미지 판정
-            //    _target.OnDamaged(this, Stat.Attack - _target.Stat.Defense);
-            //    if (_target.Hp == 0)
-            //        Gold += _target.Gold;
-            //    //Console.WriteLine($"{_target.Id}에게 {Id}가 {Stat.Attack}의 대미지를 줌");
-            //    //Console.WriteLine($"플레이어의 남은 체력: {_target.Hp}");
-
-            //    // 스킬 사용 Broadcast
-            //    S_Skill skill = new S_Skill() { Info = new SkillInfo() };
-            //    skill.ObjectId = Id;
-            //    // TODO - 몬스터의 기본 공격은 1로 하기
-            //    skill.Info.SkillId = 1;
-            //    skill.State = CreatureState.Skill;
-            //    Room.Broadcast(skill);
-
-            //    // 스킬 쿨타임 적용
-            //    float skillCool = 1f;
-            //    int coolTick = (int)skillCool * 1000;
-            //    _nextSkillTick = Environment.TickCount64 + coolTick;
-            //}
-
-            //// 준비 안 됨
-            //if (_nextSkillTick > Environment.TickCount64)
-            //{
+            //    CreatureState = CreatureState.Idle;
             //    return;
             //}
 
-            //// 스킬 쓴 후에 초기화
+            //Vector3 diff = _target.CurrentPosition - CurrentPosition;
+            //float dist = diff.Length();
+
+            //if (dist > _skillRange)
+            //{
+            //    CreatureState = CreatureState.Move;
+            //    return;
+            //}
+
+            //if (_nextSkillTick == 0)
+            //{
+            //    float damage = Stat.CommonAttackDamage - _target.Stat.Defense;
+            //    if (damage < 0) damage = 0;
+
+            //    _target.OnDamaged(this, damage);
+
+            //    S_Skill skill = new S_Skill();
+            //    skill.ObjectId = Id;
+            //    skill.Info = new SkillInfo() { SkillId = 1 };
+            //    skill.State = CreatureState.Skill;
+            //    GameRoom.Broadcast(skill);
+
+            //    float skillCool = 1f;
+            //    _nextSkillTick = Environment.TickCount64 + (long)(skillCool * 1000);
+            //    return;
+            //}
+
+            //if (_nextSkillTick > Environment.TickCount64)
+            //    return;
+
             //_nextSkillTick = 0;
         }
 
-        protected virtual void UpdateDie()
-        {
-
-        }
-        public override void OnDamaged(GameObject hitter, float damage)
-        {
-            base.OnDamaged(hitter, damage);
-            // 맞으면 거리 멀어도 따라가게 함
-            if (ObjectManager.Instance.GetObjectTypeById(hitter.Id) == GameObjectType.Player)
-            {
-                _target = hitter as Player;
-                CreatureState = CreatureState.Move;
-                Console.WriteLine($"new target Id: {hitter.Id}");
-            }
-        }
-        public override void OnDead(GameObject hitter)
-        {
-            base.OnDead(hitter);
-            //if (_canRespawn)
-            //{
-            //	// 리스폰 해주기
-            //	Room.SpawnMonster(this.MonsterType, RespawnPos.x, RespawnPos.y);
-            //}
-        }
-
-        // 타겟을 더이상 쫓지 않을 때의 몬스터 상태를 서버에 반영후 Broadcast
-        void BroadcastMove()
-        {
-            //S_Move movePacket = new S_Move();
-            //movePacket.ObjectId = Id;
-            //movePacket.PosInfo = new PositionInfo();
-            //movePacket.PosInfo.PosX = PosInfo.PosX;
-            //movePacket.PosInfo.PosY = PosInfo.PosY;
-            //movePacket.PosInfo.RotZ = PosInfo.RotZ;
-            //movePacket.PosInfo.State = State;
-            //Room.Broadcast(movePacket);
-        }
+        protected virtual void UpdateDie() { }
     }
 }

@@ -4,7 +4,6 @@ using System.Numerics;
 
 namespace Server
 {
-
     public class MapData
     {
         public float CellSize;
@@ -12,13 +11,13 @@ namespace Server
         public int SizeX;
         public int SizeZ;
 
-        public float[,] Height;
+        public float[,] Height;  // float 로 유지
         public bool[,] CanGo;
     }
 
     public class MapManager
     {
-        private MapData _globalMap; // 원본
+        private MapData _globalMap;
         public static MapManager Instance { get; } = new MapManager();
 
         public void Init()
@@ -80,13 +79,19 @@ namespace Server
                 map.Height = new float[sx, sz];
                 map.CanGo = new bool[sx, sz];
 
+                // Height 디코딩 (ushort -> float)
                 for (int x = 0; x < sx; x++)
                     for (int z = 0; z < sz; z++)
                     {
                         ushort encoded = br.ReadUInt16();
-                        map.Height[x, z] = (encoded == 0) ? -9999f : (encoded / 100f) - 100f;
+
+                        if (encoded == 0)
+                            map.Height[x, z] = -9999;
+                        else
+                            map.Height[x, z] = encoded / 100f - 100f;
                     }
 
+                // CanGo 비트 언패킹
                 int byteCount = (total + 7) / 8;
                 byte[] packed = br.ReadBytes(byteCount);
 
@@ -99,6 +104,7 @@ namespace Server
 
                         bool canGo = ((packed[byteIndex] >> bitIndex) & 1) == 1;
                         map.CanGo[x, z] = canGo;
+
                         idx++;
                     }
             }
@@ -106,5 +112,4 @@ namespace Server
             return map;
         }
     }
-
 }
