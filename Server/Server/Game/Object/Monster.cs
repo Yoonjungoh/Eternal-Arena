@@ -115,13 +115,14 @@ namespace Server.Game
                 // 혹시 스킬 사거리 안이면 공격
                 if (dist <= _skillRange)
                 {
+                    // todo - attack 개발하고 풀기
                     //CreatureState = CreatureState.Attack;
                     BroadcastMove();
                 }
                 return;
             }
 
-            // 2) 다음 목적지는 path[1]
+            // 2. 다음 목적지는 path[1]
             Vector3 nextPos = path[1];
 
             // 방향
@@ -155,6 +156,7 @@ namespace Server.Game
             // 6. 공격 사거리 체크
             if (dist <= _skillRange)
             {
+                // todo - attack 개발하고 풀기
                 //CreatureState = CreatureState.Attack;
             }
         }

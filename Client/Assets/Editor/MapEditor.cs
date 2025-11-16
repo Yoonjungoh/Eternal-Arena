@@ -6,7 +6,7 @@ using UnityEditor;
 public class MapEditor : EditorWindow
 {
     public const float NO_HEIGHT_VALUE = -9999f;
-    float cellSize = 2.0f; // 추천값: 0.5 했는데 너무 많았어서 1로 변경...
+    float cellSize = 2.0f;
     const float MapMinX = -2000f;
     const float MapMaxX = 2000f;
     const float MapMinZ = -2000f;
@@ -47,7 +47,6 @@ public class MapEditor : EditorWindow
 
     void Generate()
     {
-
         origin = new Vector3(MapMinX, 0, MapMinZ);
         sizeX = Mathf.CeilToInt((MapMaxX - MapMinX) / cellSize);
         sizeZ = Mathf.CeilToInt((MapMaxZ - MapMinZ) / cellSize);
@@ -72,12 +71,27 @@ public class MapEditor : EditorWindow
                 {
                     height[x, z] = hit.point.y;
 
-                    bool blocked = Physics.CheckCapsule(
-                        hit.point + Vector3.up * 0.5f,
-                        hit.point + Vector3.up * 1.5f,
-                        0.3f,
-                        blockMask
-                    );
+                    // ---- 원본과 동일한 Capsule 영역 ----
+                    Vector3 capStart = hit.point + Vector3.up * 0.5f;
+                    Vector3 capEnd = hit.point + Vector3.up * 1.5f;
+                    float radius = 0.3f;
+
+                    bool blocked = false;
+
+                    // 🔥 2번 방법: 아래 묻힌 collider 제거
+                    Collider[] cols = Physics.OverlapCapsule(capStart, capEnd, radius, blockMask);
+
+                    foreach (var col in cols)
+                    {
+                        float colliderBottom = col.bounds.min.y;
+
+                        // ⛔ 지면 아래 묻힌 collider는 무시
+                        if (colliderBottom < hit.point.y - 0.1f)
+                            continue;
+
+                        blocked = true;
+                        break;
+                    }
 
                     canGo[x, z] = (blocked == false);
                 }
@@ -93,7 +107,6 @@ public class MapEditor : EditorWindow
         }
 
         SaveBinary(height, canGo);
-
         Debug.Log("=== Binary Export Completed! ===");
     }
 
@@ -119,7 +132,6 @@ public class MapEditor : EditorWindow
 
         using (BinaryWriter bw = new BinaryWriter(File.Open(path, FileMode.Create)))
         {
-            // Header
             bw.Write(cellSize);
             bw.Write(origin.x);
             bw.Write(origin.y);
@@ -127,23 +139,18 @@ public class MapEditor : EditorWindow
             bw.Write(sx);
             bw.Write(sz);
 
-            // Height (ushort)
             for (int x = 0; x < sx; x++)
             {
                 for (int z = 0; z < sz; z++)
                 {
                     float h = height[x, z];
-
                     ushort encoded = (h < -9990) ? (ushort)0 : (ushort)((h + 100f) * 100f);
-
                     bw.Write(encoded);
                 }
             }
 
-            // CanGo (bit packing)
             int totalCells = sx * sz;
             int byteCount = (totalCells + 7) / 8;
-
             byte[] packed = new byte[byteCount];
 
             int idx = 0;
