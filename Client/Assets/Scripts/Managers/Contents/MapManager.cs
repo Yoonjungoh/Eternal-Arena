@@ -57,7 +57,7 @@ public class MapManager
         TextAsset mapFile = Resources.Load<TextAsset>("Prefabs/Data/Map/MapData_001");
         if (mapFile == null)
         {
-            Managers.UI.ShowToastPopup("맵 로딩 실패");
+            Managers.UI.ShowToastPopup("맵 로딩 실패\n게임을 다시 시작해주세요");
             return null;
         }
 
@@ -114,7 +114,6 @@ public class MapManager
                 }
             }
         }
-        Managers.UI.ShowToastPopup("맵 로딩 성공");
 
         return map;
     }
