@@ -32,7 +32,7 @@ namespace Server.Game
             //TestTimer();
             Map.MapData = MapManager.Instance.CreateCopy();
             // TODO
-            SpawnMonster(MonsterType.Bear, new Vector3(66, -26, 527));
+            SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 527));
         }
 
         // 어디선가 주기적으로 호출해줘야 함

@@ -13,11 +13,11 @@ namespace Server.Game.Object
 
             Stat.MaxHp = 50;
             Stat.Hp = Stat.MaxHp;
-            Stat.CommonAttackDamage = 5;
-            Stat.CommonAttackCoolTime = 5;
+            Stat.CommonAttackDamage = 20;
+            Stat.CommonAttackCoolTime = 3;
             Stat.AttackRange = 4;
             Stat.Defense = 0;
-            Stat.MoveSpeed = 5;
+            Stat.MoveSpeed = 7;
         }
     }
 }
