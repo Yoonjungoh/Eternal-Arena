@@ -30,7 +30,6 @@ enum MsgId {
   S_DESPAWN = 22;
   C_MOVE = 23;
   S_MOVE = 24;
-  S_FIND_TARGET = 25;
   S_DIE = 26;
   C_TIMESTAMP = 105;
   S_TIMESTAMP = 106;
@@ -174,11 +173,6 @@ message S_Attack {
   AttackType attackType = 1;	// 애니메이션 재생용
   int32 instigatorId = 2;	// 피해 입힌자 알리기용
   repeated DamagedInfo damagedObjectList = 3;
-}
-
-message S_FindTarget {
-  int32 monsterId = 1;
-  int32 targetId = 2;
 }
 
 message S_Die {

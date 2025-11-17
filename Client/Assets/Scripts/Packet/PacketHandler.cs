@@ -345,14 +345,7 @@ class PacketHandler
     public static void S_DieHandler(PacketSession session, IMessage packet)
     {
         S_Die diePacket = packet as S_Die;
-        Managers.UI.ShowToastPopup($"TargetId: {diePacket.DamagedObjectId}\n InstigatorId: {diePacket.InstigatorId}");
         Managers.GameRoomObject.Remove(diePacket.DamagedObjectId);
-    }
-
-    public static void S_FindTargetHandler(PacketSession session, IMessage packet)
-    {
-        S_FindTarget findTargetPacket = packet as S_FindTarget;
-        Managers.UI.ShowToastPopup($"TargetId: {findTargetPacket.TargetId}\n InstigatorId: {findTargetPacket.MonsterId}");
     }
 
     public static void S_TimestampHandler(PacketSession session, IMessage packet)

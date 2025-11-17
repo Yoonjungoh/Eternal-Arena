@@ -31,8 +31,6 @@ public class NetworkManager
         RTTMs = clientReceiveTimeMs - clientSendTimeMs;
         LatencyMs = RTTMs / 2.0;
         ServerOffsetMs = (serverReceiveTimeMs + LatencyMs) - clientReceiveTimeMs;
-        // TODO - 삭제
-        Managers.UI.ShowToastPopup($"RTT: {RTTMs}ms, Latency: {LatencyMs}ms, ServerOffset: {ServerOffsetMs}ms");
     }
 
     // 서버 기준 현재 시각 반환
@@ -58,7 +56,8 @@ public class NetworkManager
     {
         public string url;
     }
-    public IEnumerator CoDownloadServerURL()
+
+    public IEnumerator CoDownloadServerURL(Action callBack = null)
     {
         UnityWebRequest www = UnityWebRequest.Get(Managers.URL.Ec2Url);
         yield return www.SendWebRequest();
@@ -66,16 +65,17 @@ public class NetworkManager
         if (www.result != UnityWebRequest.Result.Success)
         {
             Debug.Log("Error: " + www.error);
-            Init(); // 실패해도 로컬 접속
+            Init(callBack); // 실패해도 로컬 접속
         }
         else
         {
             URLData urlData = JsonConvert.DeserializeObject<URLData>(www.downloadHandler.text);
             urlValue = urlData.url;
-            Init();
+            Init(callBack);
         }
     }
-    public void Init()
+
+    public void Init(Action callBack = null)
     {
         // DNS (Domain Name System)
         string host = Dns.GetHostName();
@@ -90,6 +90,8 @@ public class NetworkManager
         connector.Connect(endPoint,
            () => { return _session; },
            1);
+
+        callBack?.Invoke();
     }
 
     public void OnUpdate()

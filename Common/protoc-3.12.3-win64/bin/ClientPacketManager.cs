@@ -53,8 +53,6 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SDespawn, PacketHandler.S_DespawnHandler);		
 		_onRecv.Add((ushort)MsgId.SMove, MakePacket<S_Move>);
 		_handler.Add((ushort)MsgId.SMove, PacketHandler.S_MoveHandler);		
-		_onRecv.Add((ushort)MsgId.SFindTarget, MakePacket<S_FindTarget>);
-		_handler.Add((ushort)MsgId.SFindTarget, PacketHandler.S_FindTargetHandler);		
 		_onRecv.Add((ushort)MsgId.SDie, MakePacket<S_Die>);
 		_handler.Add((ushort)MsgId.SDie, PacketHandler.S_DieHandler);		
 		_onRecv.Add((ushort)MsgId.STimestamp, MakePacket<S_Timestamp>);

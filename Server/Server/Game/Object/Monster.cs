@@ -58,11 +58,6 @@ namespace Server.Game
             _target = target;
             CreatureState = CreatureState.Move;
             BroadCastCurrentState();
-
-            S_FindTarget find = new S_FindTarget();
-            find.MonsterId = Id;
-            find.TargetId = _target.Id;
-            GameRoom.Broadcast(find);
         }
 
         // 이동 관련 변수들

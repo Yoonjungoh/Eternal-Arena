@@ -45,7 +45,6 @@ public class Managers : MonoBehaviour
         Init();
         // 주석 해제하면 s3의 json 정보 가져옴
         //StartCoroutine(CoDataManagerInit());
-        StartCoroutine(_network.CoDownloadServerURL());
     }
 
     void Update()
@@ -68,7 +67,7 @@ public class Managers : MonoBehaviour
             DontDestroyOnLoad(go);
             s_instance = go.GetComponent<Managers>();
 
-            //s_instance._network.Init();
+            // 네트워크는 로비에 입장 시 Init
             s_instance._data.Init();
             s_instance._sound.Init();
             s_instance._resource.Init();

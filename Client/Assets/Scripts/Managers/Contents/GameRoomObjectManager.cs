@@ -67,7 +67,6 @@ public class GameRoomObjectManager
                 objectState.ServerReceivedTime
             );
             _objects.Add(objectState.ObjectId, monster.gameObject);
-            Managers.UI.ShowToastPopup($"소환: {monster.ObjectState.ObjectId}, ({monster.transform.position.x}, {monster.transform.position.y}, {monster.transform.position.z})");
         }
     }
 
