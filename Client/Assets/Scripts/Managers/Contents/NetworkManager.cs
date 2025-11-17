@@ -16,9 +16,9 @@ public class NetworkManager
     private string urlValue;
 
     // 서버와의 offset 저장
-    public double ServerOffsetMs = 0.0; // 서버 기준 시각과 내 로컬 시각의 차이 (초 단위)
-    public double RTTMs = 0.0;
-    public double LatencyMs = 0.0;
+    public double ServerOffsetMs { get; set; } // 서버 기준 시각과 내 로컬 시각의 차이 (초 단위)
+    public double RTTMs { get; set; }
+    public double LatencyMs { get; set; }
 
     #region 서버와의 시간 차이 계산
     // t1: 내가 패킷을 보낸 시각 (클라 로컬)
@@ -39,11 +39,6 @@ public class NetworkManager
     public double GetServerNowMs()
     {
         return Util.GetTimestampMs() + ServerOffsetMs;
-    }
-
-    public double GetServerNowSec()
-    {
-        return GetServerNowMs() / 1000.0;
     }
 
     public void RequestServerTimeSync()

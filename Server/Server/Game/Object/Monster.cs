@@ -8,20 +8,12 @@ namespace Server.Game
 {
     public class Monster : GameObject
     {
-        float _searchRange = 7.0f;
-        float _chaseRange = 20.0f;
-        float _commonAttackRange = 2.0f;
-        Player _target;
+        protected float _searchRange = 7.0f;
+        protected Player _target;
 
         public Monster()
         {
             ObjectType = GameObjectType.Monster;
-
-            Stat.Hp = 50f;
-            Stat.MaxHp = 50;
-            Stat.CommonAttackDamage = 5;
-            Stat.Defense = 0;
-            Stat.MoveSpeed = 5;
 
             CreatureState = CreatureState.Idle;
         }
@@ -30,17 +22,22 @@ namespace Server.Game
         {
             switch (CreatureState)
             {
-                case CreatureState.Idle: UpdateIdle(); break;
-                case CreatureState.Move: UpdateMove(); break;
-                case CreatureState.Attack: UpdateAttack(); break;
-                case CreatureState.Die: UpdateDie(); break;
+                case CreatureState.Idle:
+                    UpdateIdle();
+                    break;
+                case CreatureState.Move:
+                    UpdateMove();
+                    break;
+                case CreatureState.Attack:
+                    UpdateAttack();
+                    break;
             }
         }
 
         long _nextSearchTick = 0;
         int _searchTick = 500;
 
-        public void UpdateIdle()
+        public virtual void UpdateIdle()
         {
             if (_nextSearchTick > Environment.TickCount64)
                 return;
@@ -60,6 +57,7 @@ namespace Server.Game
 
             _target = target;
             CreatureState = CreatureState.Move;
+            BroadCastCurrentState();
 
             S_FindTarget find = new S_FindTarget();
             find.MonsterId = Id;
@@ -67,12 +65,13 @@ namespace Server.Game
             GameRoom.Broadcast(find);
         }
 
-        long _nextMoveTick = 0;
-        long _nextPathTick = 0;
-        int _pathInterval = 500;
-        List<Vector3> _cachedPath = null;
+        // 이동 관련 변수들
+        private long _nextMoveTick = 0;
+        private long _nextPathTick = 0;
+        private int _pathInterval = 500;
+        private List<Vector3> _cachedPath = null;
 
-        Vector3 _lastDir = Vector3.Zero;
+        private Vector3 _lastDir = Vector3.Zero;
 
         protected virtual void UpdateMove()
         {
@@ -93,18 +92,12 @@ namespace Server.Game
             float dist = diff.Length();
 
             // 범위 내에 오면 공격
-            if (dist <= _commonAttackRange)
+            if (dist <= Stat.AttackRange)
             {
-                //CreatureState = CreatureState.Attack;
-                return;
-            }
-
-            // 범위 내에 오면 유저 바라보게 방향만 전환
-            if (dist <= 4f)
-            {
+                // 즉시 바라보게 하기
                 Vector3 dir = Vector3.Normalize(diff);
-                Vector3 smooth = SmoothDirection(dir);
-                MoveByDirection(smooth, moveTick);
+                MoveByDirection(dir, moveTick);
+                CreatureState = CreatureState.Attack;
                 return;
             }
 
@@ -161,49 +154,64 @@ namespace Server.Game
             GameRoom.Broadcast(move);
         }
 
-        long _nextSkillTick = 0;
+        long _nextAttackTick = 0;
 
         protected virtual void UpdateAttack()
         {
-            //if (_target == null || _target.GameRoom == null)
-            //{
-            //    CreatureState = CreatureState.Idle;
-            //    return;
-            //}
+            if (_target == null || _target.GameRoom == null || _target.IsDead)
+            {
+                CreatureState = CreatureState.Idle;
+                BroadCastCurrentState();
+                return;
+            }
 
-            //Vector3 diff = _target.CurrentPosition - CurrentPosition;
-            //float dist = diff.Length();
+            Vector3 diff = _target.CurrentPosition - CurrentPosition;
+            float dist = diff.Length();
 
-            //if (dist > _skillRange)
-            //{
-            //    CreatureState = CreatureState.Move;
-            //    return;
-            //}
+            // 공격 거리 밖이면 다시 추격 시작
+            if (dist > Stat.AttackRange)
+            {
+                CreatureState = CreatureState.Move;
+                BroadCastCurrentState();
+                return;
+            }
 
-            //if (_nextSkillTick == 0)
-            //{
-            //    float damage = Stat.CommonAttackDamage - _target.Stat.Defense;
-            //    if (damage < 0) damage = 0;
+            if (_nextAttackTick == 0)
+            {
+                // 우선 단일 타깃
+                _target.OnDamaged(this, Stat.CommonAttackDamage);
 
-            //    _target.OnDamaged(this, damage);
+                // 상태 먼저 브로드캐스트
+                BroadCastCurrentState();
 
-            //    S_Skill skill = new S_Skill();
-            //    skill.ObjectId = Id;
-            //    skill.Info = new SkillInfo() { SkillId = 1 };
-            //    skill.State = CreatureState.Skill;
-            //    GameRoom.Broadcast(skill);
+                // 공격 데미지 반영 브로드캐스트
+                S_Attack attackPacket = new S_Attack();
+                attackPacket.AttackType = AttackType.Common;
+                attackPacket.InstigatorId = Id;
 
-            //    float skillCool = 1f;
-            //    _nextSkillTick = Environment.TickCount64 + (long)(skillCool * 1000);
-            //    return;
-            //}
+                DamagedInfo damagedInfo = new DamagedInfo();
+                damagedInfo.ObjectId = _target.Id;
+                damagedInfo.RemainHp = _target.Stat.Hp;
 
-            //if (_nextSkillTick > Environment.TickCount64)
-            //    return;
+                attackPacket.DamagedObjectList.Add(damagedInfo);
+                GameRoom.Broadcast(attackPacket);
 
-            //_nextSkillTick = 0;
+                _nextAttackTick = Environment.TickCount64 + (long)(Stat.CommonAttackCoolTime * 1000);
+                return;
+            }
+
+            if (_nextAttackTick > Environment.TickCount64)
+                return;
+
+            _nextAttackTick = 0;
         }
 
-        protected virtual void UpdateDie() { }
+        protected void BroadCastCurrentState()
+        {
+            S_ChangeCreatureState changeCreatureStatePacket = new S_ChangeCreatureState();
+            changeCreatureStatePacket.ObjectId = Id;
+            changeCreatureStatePacket.CreatureState = CreatureState;
+            GameRoom.Broadcast(changeCreatureStatePacket);
+        }
     }
 }

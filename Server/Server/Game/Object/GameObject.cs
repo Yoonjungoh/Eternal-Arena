@@ -35,6 +35,8 @@ namespace Server.Game
         public CreatureState CreatureState { get { return ObjectState.CreatureState; } set { ObjectState.CreatureState = value; } }
 		public Stat Stat { get { return ObjectState.Stat; } set { ObjectState.Stat = value; } }
         public MonsterType MonsterType { get { return ObjectState.MonsterType; } set { ObjectState.MonsterType = value; } }
+        private bool _isDead = false;
+        public bool IsDead { get { return _isDead; } }
         public GameObject()
         {
             ObjectState = new ObjectState();
@@ -76,6 +78,7 @@ namespace Server.Game
 				return;
 
 			ConsoleLogManager.Instance.Log($"Id: {Id}, Type: {ObjectType} is dead");
+            _isDead = true;
 
             S_Die diePacket = new S_Die();
             diePacket.DamagedObjectId = Id;

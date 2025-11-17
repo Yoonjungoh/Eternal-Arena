@@ -8,7 +8,7 @@ ModelImporter:
     second: Bear_tpose
   - first:
       74: -4722465767704927230
-    second: Attack
+    second: Common_Attack
   externalObjects: {}
   materials:
     materialImportMode: 1
@@ -68,7 +68,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Attack
+      name: Common_Attack
       takeName: Bear_Attack1
       internalID: -4722465767704927230
       firstFrame: 2

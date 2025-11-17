@@ -21,9 +21,6 @@ public class MyPlayerController : PlayerController
 
     private float _lastAttackTime = -999f;
 
-    private float _commonAttackAnimLength;
-    private float _commonAttackAnimSpeedTime = 2.0f;    // 에디터에선 동적으로 가져올 수 있으나 런타임에선 불가능해서 하드코딩
-
 
     #region 패킷 캐싱용 필드
     private readonly C_Move _movePacket = new C_Move();
@@ -45,8 +42,7 @@ public class MyPlayerController : PlayerController
         if (Managers.Scene.CurrentScene == Define.Scene.GameRoom)
         {
             Managers.Input.RegisterMouseAction(Define.MouseEvent.LeftClick, OnAttackInput);
-            _commonAttackAnimLength = _anim.GetAnimationClipLength($"{AttackType.Common}_{CreatureState.Attack}")/ _commonAttackAnimSpeedTime;
-            _waitCommonAttackReturn ??= new WaitForSeconds(_commonAttackAnimLength);
+            _commonAttackAnimSpeedTime = 2.0f;  // 에디터에선 동적으로 가져올 수 있으나 런타임에선 불가능해서 하드코딩
         }
     }
 

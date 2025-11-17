@@ -20,6 +20,9 @@ public class CreatureController : MonoBehaviour
     protected UI_HpBar _hpBar;
     protected Vector3 _hpBarPosOffset;
 
+    protected float _commonAttackAnimLength;
+    protected float _commonAttackAnimSpeedTime = 1.0f;
+
     public ObjectState ObjectState { get; set; } = new ObjectState();
     public int Id { get { return ObjectState.ObjectId; } set { ObjectState.ObjectId = value; } }
     public CreatureState CreatureState 
@@ -105,9 +108,6 @@ public class CreatureController : MonoBehaviour
             case CreatureState.Attack:
                 UpdateAttack();
                 break;
-            case CreatureState.Skill:
-                UpdateSkill();
-                break;
         }
     }
 
@@ -119,6 +119,8 @@ public class CreatureController : MonoBehaviour
 
         // 애니메이션 네임 초기화
         _commonAttackanimName = $"{AttackType.Common}_{CreatureState.Attack}";
+        _commonAttackAnimLength = _anim.GetAnimationClipLength($"{AttackType.Common}_{CreatureState.Attack}") / _commonAttackAnimSpeedTime;
+        _waitCommonAttackReturn ??= new WaitForSeconds(_commonAttackAnimLength);
 
         // 체력바 소환 (투사체는 이후에 조절)
         _hpBar = Managers.UI.MakeWorldSpaceUI<UI_HpBar>(transform, worldPositionStays: false);
@@ -130,7 +132,6 @@ public class CreatureController : MonoBehaviour
     protected virtual void UpdateMove() { }
     protected virtual void UpdateIdle() { }
     protected virtual void UpdateAttack() { }
-    protected virtual void UpdateSkill() { }
 
     protected virtual void UpdateDeadReckoning()
     {

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,17 +19,28 @@ public class SceneManagerEx
         }
     }
 
+    public void LoadScene(string sceneName)
+    {
+        Define.Scene sceneEnumValue = Define.Scene.Unknown;
+
+        if (Enum.TryParse(sceneName, out sceneEnumValue))
+        {
+            Managers.Clear();
+            UI_Loading.Instance.LoadScene(sceneName);
+            Debug.Log($"Loading {sceneName} Scene");
+        }
+        else
+        {
+            Debug.Log($"Dont exist {sceneName} Scene");
+        }
+        CurrentScene = sceneEnumValue;
+    }
+
     public void LoadScene(Define.Scene type)
     {
         Managers.Clear();
         CurrentScene = type;
-        SceneManager.LoadScene(GetSceneName(type));
-    }
-
-    public void LoadScene(string sceneName)
-    {
-        Managers.Clear();
-        SceneManager.LoadScene(sceneName);
+        UI_Loading.Instance.LoadScene(GetSceneName(type));
     }
 
     string GetSceneName(Define.Scene type)

@@ -48,13 +48,15 @@ namespace Server.Game
 
         public void SpawnMonster(MonsterType monsterType, Vector3 spawnPos)
         {
-            Monster monster = ObjectManager.Instance.Add<Monster>();
+            Monster monster = MonsterFactory.Create(monsterType);
+
             monster.MonsterType = monsterType;
-            monster.ObjectState.Name = $"Monster_{monster.ObjectState.ObjectId}";
+            monster.ObjectState.Name = $"{monsterType}_{monster.ObjectState.ObjectId}";
             monster.Position = MovementHelper.Vec3ToProtoVec3(spawnPos);
 
             Push(EnterGame, monster);
         }
+
 
         public void HandleAttack(Player instigator, AttackType attackType)
         {
