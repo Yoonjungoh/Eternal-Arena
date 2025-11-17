@@ -133,14 +133,28 @@ namespace Server.Game
 
             Vector3 newPos = CurrentPosition + dir * moveDist;
 
+            // 지형 높이 읽기
             float groundY = GameRoom.Map.GetHeight(newPos);
             if (groundY == -9999)
                 return;
 
-            newPos.Y = groundY;
+            float currentY = CurrentPosition.Y;
+            float diff = groundY - currentY;
 
-            if (newPos.Y < CurrentPosition.Y - 1f)
-                newPos.Y = CurrentPosition.Y;
+            // 1. 경사면 미세한 차이는 그대로 따라가기
+            if (Math.Abs(diff) <= 0.3f)
+            {
+                newPos.Y = groundY;
+            }
+            else
+            {
+                // 2. 급경사 / 튐 방지: 변화량 제한
+                if (diff > 1f) diff = 1f;
+                if (diff < -1f) diff = -1f;
+
+                // 3. 부드럽게 보간하여 높이 이동
+                newPos.Y = currentY + diff * 0.35f;
+            }
 
             ObjectState.Position.X = newPos.X;
             ObjectState.Position.Y = newPos.Y;
@@ -153,6 +167,7 @@ namespace Server.Game
             move.ObjectState.ServerReceivedTime = Util.GetTimestampMs();
             GameRoom.Broadcast(move);
         }
+
 
         long _nextAttackTick = 0;
 

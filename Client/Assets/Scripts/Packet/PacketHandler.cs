@@ -55,6 +55,10 @@ class PacketHandler
         }
 
         UI_Lobby lobbyUI = Managers.UI.CurrentScene.GetComponent<UI_Lobby>();
+        if (Managers.UI.CurrentScene == null)
+        {
+            Managers.UI.ShowToastPopup("다시 시도해주세요.");
+        }
         if (lobbyUI == null)
         {
             Debug.Log("현재 로비가 아닌데 로비에 입장하려고 합니다.");
