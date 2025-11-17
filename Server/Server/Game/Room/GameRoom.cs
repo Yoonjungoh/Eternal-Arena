@@ -26,11 +26,13 @@ namespace Server.Game
         private Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
 
         public event Action<int> OnEmptyRoom; // 방이 비었을 때 알림 (roomId)
-        public event Action<int> OnRoomInfoChanged;  // 방 정보 바뀌었을 때 알림 (roomId)
+        public event Action OnPlayerInfoChanged;  // 방 정보 바뀌었을 때 알림 (roomId)
         public void Init()
         {
             //TestTimer();
             Map.MapData = MapManager.Instance.CreateCopy();
+            OnPlayerInfoChanged -= CheckForWinner;
+            OnPlayerInfoChanged += CheckForWinner;
             // TODO
             SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 527));
         }
@@ -231,7 +233,7 @@ namespace Server.Game
             if (type == GameObjectType.Player)
             {
                 Player player = null;
-                if (_players.Remove(objectId, out player) == false)
+                if (_players.TryGetValue(objectId, out player) == false)
                     return;
 
                 player.GameRoom = null;
@@ -239,48 +241,14 @@ namespace Server.Game
                 // 본인한테 정보 전송
                 {
                     S_LeaveGame leavePacket = new S_LeaveGame();
+                    leavePacket.RoomExitReason = RoomExitReason.GameLose;
                     player.Session.Send(leavePacket);
                 }
-
-                // 플레이어가 있었던 방인데 혼자 남거나 동시에 다 나가서 터진방일 때
-                if (_players.Count <= 1)
-                {
-                    foreach (Player p in _players.Values)
-                    {
-                        S_LeaveGame leavePacket = new S_LeaveGame();
-                        p.Session.Send(leavePacket);
-                    }
-                    Console.WriteLine($"Dont enough player so Room {RoomId} Delete!");
-                    OnEmptyRoom?.Invoke(RoomId);
-                }
-
-                //if (_players.Count == 1 && IsGameStart)
-                //{
-                //    IsGameOver = true;
-                //    // 최후의 플레이어를 승자로 판정
-                //    foreach (Player p in _players.Values)
-                //    {
-                //        p.IsWinner = true;
-                //        Winner = p;
-                //        // 이제 P에게 패킷 전송
-                //        S_EndGame endPacket = new S_EndGame();
-                //        endPacket.IsGameEnd = true;
-                //        p.Session.Send(endPacket);
-                //    }
-                //    if (IsGameOver == true)
-                //    {
-                //        Console.WriteLine($"Game is end so Room {RoomId} Delete!");
-                //        // 터진 방의 플레이어 정보 밀어주기
-                //        foreach (Player p in _players.Values)
-                //            p.Init();
-                //        RoomManager.Instance.Remove(RoomId);
-                //    }
-                //    Console.WriteLine($"Remain User Count in Room {RoomId}: " + _players.Count);
-                //}
+                RemoveObject(objectId);
             }
             else if (type == GameObjectType.Monster)
             {
-                _gameObjects.Remove(objectId);
+                RemoveObject(objectId);
             }
             // 타인한테 정보 전송
             {
@@ -337,6 +305,23 @@ namespace Server.Game
             resMovePacket.ObjectState = movePacket.ObjectState;
             resMovePacket.ObjectState.ServerReceivedTime = Util.GetTimestampMs();
             Broadcast(resMovePacket, player.Id);
+        }
+
+        private void CheckForWinner()
+        {
+            // 플레이어가 있었던 방인데 혼자 남거나 동시에 다 나가서 터진방일 때
+            // 게임룸에선 승리 처리
+            if (_players.Count <= 1)
+            {
+                foreach (Player p in _players.Values)
+                {
+                    S_LeaveGame leavePacket = new S_LeaveGame();
+                    leavePacket.RoomExitReason = RoomExitReason.GameWin;
+                    p.Session.Send(leavePacket);
+                }
+                Console.WriteLine($"Dont enough player so Room {RoomId} Delete!");
+                OnEmptyRoom?.Invoke(RoomId);
+            }
         }
 
         public void HandleChangeCreatureState(int objectId, CreatureState creatureState)
@@ -399,6 +384,23 @@ namespace Server.Game
                 Monster monster = (Monster)gameObject;
                 _monsters.Add(monster.Id, monster);
             }
+        }
+
+        private bool RemoveObject(int id) 
+        {
+            if (_gameObjects.ContainsKey(id))
+            {
+                GameObjectType gameObjectType = ObjectManager.Instance.GetObjectTypeById(id);
+                _gameObjects.Remove(id);
+                if (gameObjectType == GameObjectType.Player)
+                {
+                    _players.Remove(id);
+                    OnPlayerInfoChanged?.Invoke();
+                }
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -224,9 +224,12 @@ class PacketHandler
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
     {
         S_LeaveGame leaveGamePacket = packet as S_LeaveGame;
-        //if (leaveGamePacket.IsAttacked && Managers.Object.MyPlayer.IsWinner == false)
-        //    Managers.Resource.InstantiateResources("UI_Dead");
-        Managers.GameRoom.ExitGame();
+
+        UI_GameResult gameResultUI = Managers.UI.ShowPopupUI<UI_GameResult>();
+        gameResultUI.SetData(new GameResultPopupData
+        {
+            GameResultText = Util.GetGameResult(leaveGamePacket.RoomExitReason)
+        });
     }
 
     public static void S_SpawnHandler(PacketSession session, IMessage packet)

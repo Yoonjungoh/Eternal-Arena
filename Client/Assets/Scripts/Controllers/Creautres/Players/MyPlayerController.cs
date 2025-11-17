@@ -43,6 +43,8 @@ public class MyPlayerController : PlayerController
         {
             Managers.Input.RegisterMouseAction(Define.MouseEvent.LeftClick, OnAttackInput);
             _commonAttackAnimSpeedTime = 2.0f;  // 에디터에선 동적으로 가져올 수 있으나 런타임에선 불가능해서 하드코딩
+            _commonAttackAnimLength = _anim.GetAnimationClipLength($"{AttackType.Common}_{CreatureState.Attack}") / _commonAttackAnimSpeedTime;
+            _waitCommonAttackReturn = new WaitForSeconds(_commonAttackAnimLength);
         }
     }
 

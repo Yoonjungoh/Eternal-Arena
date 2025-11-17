@@ -58,9 +58,16 @@ enum AttackType {
   COMMON = 1;
 }
 
-enum MonsterType{
+enum MonsterType {
   MONSTER_TYPE_NONE = 0;
   BEAR = 1;
+}
+
+enum RoomExitReason {
+  ROOM_EXIT_REASON_NONE = 0;
+  GAME_WIN = 1;
+  GAME_LOSE = 2;
+  MANUAL_EXIT = 3;
 }
 
 message S_AssignUserId {
@@ -138,6 +145,7 @@ message C_EnterLobby {
 message S_LeaveGame {
   int32 playerCount = 1;
   bool isAttacked = 2;
+  RoomExitReason roomExitReason = 3;	// 떠나는 사유
 }
 
 message S_Spawn {

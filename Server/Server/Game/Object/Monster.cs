@@ -173,7 +173,7 @@ namespace Server.Game
 
         protected virtual void UpdateAttack()
         {
-            if (_target == null || _target.GameRoom == null || _target.IsDead)
+            if (_target == null || _target.GameRoom == null || _target.CreatureState == CreatureState.Die)
             {
                 CreatureState = CreatureState.Idle;
                 BroadCastCurrentState();

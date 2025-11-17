@@ -22,6 +22,7 @@ public class CreatureController : MonoBehaviour
 
     protected float _commonAttackAnimLength;
     protected float _commonAttackAnimSpeedTime = 1.0f;
+    protected string _commonAttackHitEffectName;
 
     public ObjectState ObjectState { get; set; } = new ObjectState();
     public int Id { get { return ObjectState.ObjectId; } set { ObjectState.ObjectId = value; } }
@@ -127,6 +128,9 @@ public class CreatureController : MonoBehaviour
         _hpBarPosOffset = Vector3.up * _collider.bounds.size.y;
         _hpBar.SetData(_hpBarPosOffset);
         _hpBar.UpdateHpBar(Stat.Hp, Stat.MaxHp);
+
+        // 이펙트 네이밍 초기화
+        _commonAttackHitEffectName = $"{AttackType.Common}_{CreatureState.Attack}HitEffect";
     }
 
     protected virtual void UpdateMove() { }
@@ -177,6 +181,10 @@ public class CreatureController : MonoBehaviour
 
     public virtual float OnDamaged(float remainHp)
     {
+        // TODO - DamageCauser 만들고 Effect 분리
+        // 히트 이펙트
+        Managers.Resource.Instantiate($"Effects/{_commonAttackHitEffectName}", transform);
+
         // 데미지 계산
         float damage = Stat.Hp - remainHp;
         Stat.Hp -= damage;

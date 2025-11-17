@@ -2,9 +2,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Google.Protobuf.Protocol;
 
 public class Util
 {
+    public static string GetGameResult(RoomExitReason leaveRoomReason)
+    {
+        string gameResultText = string.Empty;
+
+        switch (leaveRoomReason)
+        {
+            case RoomExitReason.GameWin:
+                gameResultText = "게임에서 승리했습니다.";
+                break;
+            case RoomExitReason.GameLose:
+                gameResultText = "게임에서 패배했습니다.";
+                break;
+            case RoomExitReason.None:
+                gameResultText = "에러가 발생했습니다.";
+                break;
+        }
+
+        return gameResultText;
+    }
+
     public static long GetTimestampMs()
     {
         return (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
