@@ -76,13 +76,13 @@ public class GameRoomObjectManager
         if (go == null)
             return;
 
-        _objects.Remove(id);
         CreatureController cc = go.GetComponent<CreatureController>();
         if (cc == null)
         {
             Managers.Resource.Destroy(go);
             return;
         }
+        _objects.Remove(id);
         cc.OnDead();
     }
 

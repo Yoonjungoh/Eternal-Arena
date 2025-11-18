@@ -68,12 +68,12 @@ public class MyPlayerController : PlayerController
         
         // Idle일때만 공격 시전
         if (CreatureState != CreatureState.Idle)
-        return;
+            return;
 
         // 공격 시간 쿨타임 계산
         if (Time.time - _lastAttackTime < Stat.CommonAttackCoolTime)
             return;
-
+        
         _lastAttackTime = Time.time;
         CreatureState = CreatureState.Attack;
 

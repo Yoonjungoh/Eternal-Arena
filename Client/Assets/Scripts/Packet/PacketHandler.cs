@@ -224,7 +224,8 @@ class PacketHandler
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
     {
         S_LeaveGame leaveGamePacket = packet as S_LeaveGame;
-
+        // 다른 상태로 전환 못 하게 None으로 막아주기
+        Managers.GameRoomObject.MyPlayer.CreatureState = CreatureState.None;
         UI_GameResult gameResultUI = Managers.UI.ShowPopupUI<UI_GameResult>();
         gameResultUI.SetData(new GameResultPopupData
         {
@@ -345,6 +346,20 @@ class PacketHandler
     public static void S_DieHandler(PacketSession session, IMessage packet)
     {
         S_Die diePacket = packet as S_Die;
+        // 죽은 오브젝트 상태 변경
+        GameObject go = Managers.GameRoomObject.FindById(diePacket.DamagedObjectId);
+        if (go == null)
+        {
+            Debug.Log($"Id: {diePacket.DamagedObjectId}가 존재하지 않음");
+            return;
+        }
+        CreatureController cc = go.GetComponent<CreatureController>();
+        if (cc == null)
+        {
+            Debug.Log($"Id: {diePacket.DamagedObjectId}의 CreatureController가 존재하지 않음");
+            return;
+        }
+        cc.CreatureState = diePacket.CreatureState;
         Managers.GameRoomObject.Remove(diePacket.DamagedObjectId);
     }
 

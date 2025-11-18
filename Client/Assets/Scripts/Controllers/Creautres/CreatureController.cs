@@ -23,6 +23,7 @@ public class CreatureController : MonoBehaviour
     protected float _commonAttackAnimLength;
     protected float _commonAttackAnimSpeedTime = 1.0f;
     protected string _commonAttackHitEffectName;
+    protected Vector3 _commonAttackHitEffectOffset;
 
     public ObjectState ObjectState { get; set; } = new ObjectState();
     public int Id { get { return ObjectState.ObjectId; } set { ObjectState.ObjectId = value; } }
@@ -118,7 +119,7 @@ public class CreatureController : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
 
-        // 애니메이션 네임 초기화
+        // 애니메이션 관련 초기화
         _commonAttackanimName = $"{AttackType.Common}_{CreatureState.Attack}";
         _commonAttackAnimLength = _anim.GetAnimationClipLength($"{AttackType.Common}_{CreatureState.Attack}") / _commonAttackAnimSpeedTime;
         _waitCommonAttackReturn ??= new WaitForSeconds(_commonAttackAnimLength);
@@ -129,8 +130,9 @@ public class CreatureController : MonoBehaviour
         _hpBar.SetData(_hpBarPosOffset);
         _hpBar.UpdateHpBar(Stat.Hp, Stat.MaxHp);
 
-        // 이펙트 네이밍 초기화
+        // 이펙트 관련 초기화
         _commonAttackHitEffectName = $"{AttackType.Common}_{CreatureState.Attack}HitEffect";
+        _commonAttackHitEffectOffset = new Vector3(0, _collider.bounds.size.y / 2, 0);
     }
 
     protected virtual void UpdateMove() { }
@@ -161,6 +163,9 @@ public class CreatureController : MonoBehaviour
 
     protected IEnumerator CoReturnToIdleAfterAttack(WaitForSeconds waitAttackReturn)
     {
+        if (this == null || _anim == null)
+            yield break;
+
         yield return waitAttackReturn;
 
         if (this == null || _anim == null)
@@ -183,7 +188,12 @@ public class CreatureController : MonoBehaviour
     {
         // TODO - DamageCauser 만들고 Effect 분리
         // 히트 이펙트
-        Managers.Resource.Instantiate($"Effects/{_commonAttackHitEffectName}", transform);
+        Managers.Resource.Instantiate(
+            $"Effects/{_commonAttackHitEffectName}",
+            _commonAttackHitEffectOffset,
+            new Quaternion(0, 0, 0, 0),
+            worldPositionStays: false,
+            transform);
 
         // 데미지 계산
         float damage = Stat.Hp - remainHp;

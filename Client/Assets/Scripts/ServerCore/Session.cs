@@ -117,7 +117,7 @@ namespace ServerCore
 
 		#region 네트워크 통신
 
-		void RegisterSend()
+		private void RegisterSend()
 		{
 			if (_disconnected == 1)
 				return;
@@ -141,7 +141,7 @@ namespace ServerCore
 			}
 		}
 
-		void OnSendCompleted(object sender, SocketAsyncEventArgs args)
+        private void OnSendCompleted(object sender, SocketAsyncEventArgs args)
 		{
 			lock (_lock)
 			{
@@ -169,7 +169,7 @@ namespace ServerCore
 			}
 		}
 
-		void RegisterRecv()
+        private void RegisterRecv()
 		{
 			if (_disconnected == 1)
 				return;
@@ -190,7 +190,7 @@ namespace ServerCore
 			}
 		}
 
-		void OnRecvCompleted(object sender, SocketAsyncEventArgs args)
+        private void OnRecvCompleted(object sender, SocketAsyncEventArgs args)
 		{
 			if (args.BytesTransferred > 0 && args.SocketError == SocketError.Success)
 			{

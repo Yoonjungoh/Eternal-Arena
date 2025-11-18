@@ -38,12 +38,13 @@ enum MsgId {
 }
 
 enum CreatureState {
-  IDLE = 0;
-  MOVE = 1;
-  ATTACK = 2;
-  ON_DAMAGED = 3;
-  SKILL = 4;
-  DIE = 5;
+  CREATURE_STATE_NONE = 0;
+  IDLE = 1;
+  MOVE = 2;
+  ATTACK = 3;
+  ON_DAMAGED = 4;
+  SKILL = 5;
+  DIE = 6;
 }
 
 enum GameObjectType {
@@ -178,6 +179,7 @@ message S_Attack {
 message S_Die {
   int32 damagedObjectId = 1;
   int32 instigatorId = 2;
+  CreatureState creatureState = 3;
 }
 
 message C_Timestamp {

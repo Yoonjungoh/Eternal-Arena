@@ -132,7 +132,28 @@ public class ResourceManager
         return go;
     }
 
-    public GameObject Instantiate(string path, Vector3 position, Quaternion rotation, Transform parent = null)
+    public GameObject Instantiate(string path, Vector3 position, Quaternion rotation)
+    {
+        GameObject original = Load<GameObject>($"Prefabs/{path}");
+        if (original == null)
+        {
+            Debug.Log($"Failed to load prefab : {path}");
+            return null;
+        }
+
+        if (original.GetComponent<Poolable>() != null)
+        {
+            GameObject pooled = Managers.Pool.Pop(original).gameObject;
+            pooled.transform.SetPositionAndRotation(position, rotation);
+            return pooled;
+        }
+
+        GameObject go = Object.Instantiate(original, position, rotation);
+        go.name = original.name;
+        return go;
+    }
+
+    public GameObject Instantiate(string path, Vector3 position, Quaternion rotation, Transform parent)
     {
         GameObject original = Load<GameObject>($"Prefabs/{path}");
         if (original == null)
@@ -153,6 +174,51 @@ public class ResourceManager
         return go;
     }
 
+    public GameObject Instantiate(string path, Vector3 position, Quaternion rotation, bool worldPositionStays = false, Transform parent = null)
+    {
+        GameObject original = Load<GameObject>($"Prefabs/{path}");
+        if (original == null)
+        {
+            Debug.Log($"Failed to load prefab : {path}");
+            return null;
+        }
+
+        GameObject go;
+
+        // 풀링 처리
+        if (original.GetComponent<Poolable>() != null)
+        {
+            go = Managers.Pool.Pop(original, parent).gameObject;
+
+            if (parent != null && worldPositionStays == false)
+            {
+                go.transform.SetParent(parent, worldPositionStays: false);
+                go.transform.localPosition = position;
+                go.transform.localRotation = rotation;
+            }
+            else
+            {
+                go.transform.SetParent(parent, worldPositionStays: true);
+                go.transform.SetPositionAndRotation(position, rotation);
+            }
+
+            return go;
+        }
+
+        if (parent != null && !worldPositionStays)
+        {
+            go = Object.Instantiate(original, parent);
+            go.transform.localPosition = position;
+            go.transform.localRotation = rotation;
+        }
+        else
+        {
+            go = Object.Instantiate(original, position, rotation, parent);
+        }
+
+        go.name = original.name;
+        return go;
+    }
     public void Destroy(GameObject go, float destroyTime = 0f)
     {
         if (go == null)

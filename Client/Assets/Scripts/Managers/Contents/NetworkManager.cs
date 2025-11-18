@@ -19,6 +19,7 @@ public class NetworkManager
     public double ServerOffsetMs { get; set; } // 서버 기준 시각과 내 로컬 시각의 차이 (초 단위)
     public double RTTMs { get; set; }
     public double LatencyMs { get; set; }
+    public bool IsInitialized { get; set; } = false;
 
     #region 서버와의 시간 차이 계산
     // t1: 내가 패킷을 보낸 시각 (클라 로컬)
@@ -92,6 +93,8 @@ public class NetworkManager
            1);
 
         callBack?.Invoke();
+
+        IsInitialized = true;
     }
 
     public void OnUpdate()

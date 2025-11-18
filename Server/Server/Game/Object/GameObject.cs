@@ -77,10 +77,11 @@ namespace Server.Game
 
 			ConsoleLogManager.Instance.Log($"Id: {Id}, Type: {ObjectType} is dead");
             CreatureState = CreatureState.Die;
-
+            
             S_Die diePacket = new S_Die();
             diePacket.DamagedObjectId = Id;
             diePacket.InstigatorId = instigator.Id;
+            diePacket.CreatureState = CreatureState;
 
             if (GameRoom != null)
             {
