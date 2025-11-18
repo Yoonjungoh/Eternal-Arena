@@ -39,10 +39,15 @@ namespace Server.Game
             } },
             { RoomType.GameRoom, new List<Vector3>()
             {
+                // 평지 Test
+                //new Vector3(63, -26, 527),
+                //new Vector3(64, -26, 527),
+                //new Vector3(65, -26, 527),
+                //new Vector3(66, -26, 527),
                 new Vector3(63, -26, 527),
-                new Vector3(64, -26, 527),
-                new Vector3(65, -26, 527),
-                new Vector3(66, -26, 527),
+                new Vector3(69, -22, 460),
+                new Vector3(120, -23, 480),
+                new Vector3(122, -20, 507),
             } }
         };
 

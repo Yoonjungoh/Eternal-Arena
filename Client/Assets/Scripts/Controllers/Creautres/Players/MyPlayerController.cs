@@ -79,7 +79,7 @@ public class MyPlayerController : PlayerController
     private void HandleInput()
     {
         // 카운트다운 중일 때는 입력 거부
-        if (Managers.GameRoom.IsCountdownFinished == false)
+        if (Managers.Scene.CurrentScene == Define.Scene.GameRoom && Managers.GameRoom.IsCountdownFinished == false)
             return;
 
         // 공격 중일 때는 인풋 받는 거 불가
