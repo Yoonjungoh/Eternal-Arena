@@ -37,6 +37,9 @@ namespace Server.Game
             OnPlayerInfoChanged += CheckForWinner;
             // TODO
             SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 527));
+            SpawnMonster(MonsterType.Bear, new Vector3(90, -26, 527));
+            SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 420));
+            SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 480));
         }
 
         // 어디선가 주기적으로 호출해줘야 함
