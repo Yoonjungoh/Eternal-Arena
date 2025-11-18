@@ -193,8 +193,11 @@ class PacketHandler
             Debug.Log("S_EnterGame 패킷이 null입니다");
             return;
         }
-
+        
+        // 처음 입장했다는 걸 서버에게 알려서 카운트다운 패킷 받을 준비 하기
         Managers.GameRoomObject.Add(enterGamePacket.ObjectState, isMyPlayer: true);
+        C_StartCountdown startContdownPacket = new C_StartCountdown();
+        Managers.Network.Send(startContdownPacket);
     }
 
     public static void S_AttackHandler(PacketSession session, IMessage packet)
@@ -363,6 +366,13 @@ class PacketHandler
         Managers.GameRoomObject.Remove(diePacket.DamagedObjectId);
     }
 
+    public static void S_StartCountdownHandler(PacketSession session, IMessage packet)
+    {
+        S_StartCountdown startCountdownPacket = packet as S_StartCountdown;
+        float time = startCountdownPacket.GameStartCountdownTime + (float)(Managers.Network.ServerOffsetMs / 1000.0f);
+        Managers.GameRoom.StartGame(time);
+    }
+    
     public static void S_TimestampHandler(PacketSession session, IMessage packet)
     {
         S_Timestamp sereverTimestamp = packet as S_Timestamp;

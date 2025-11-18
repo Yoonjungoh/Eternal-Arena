@@ -43,6 +43,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.CAttack, PacketHandler.C_AttackHandler);		
 		_onRecv.Add((ushort)MsgId.CMove, MakePacket<C_Move>);
 		_handler.Add((ushort)MsgId.CMove, PacketHandler.C_MoveHandler);		
+		_onRecv.Add((ushort)MsgId.CStartCountdown, MakePacket<C_StartCountdown>);
+		_handler.Add((ushort)MsgId.CStartCountdown, PacketHandler.C_StartCountdownHandler);		
 		_onRecv.Add((ushort)MsgId.CTimestamp, MakePacket<C_Timestamp>);
 		_handler.Add((ushort)MsgId.CTimestamp, PacketHandler.C_TimestampHandler);		
 		_onRecv.Add((ushort)MsgId.CChangeCreatureState, MakePacket<C_ChangeCreatureState>);

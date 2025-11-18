@@ -13,6 +13,7 @@ public class Managers : MonoBehaviour
     private LobbyManager _lobby = new LobbyManager();
     private MapManager _map = new MapManager();
     private NetworkManager _network = new NetworkManager();
+    private TimeManager _time = new TimeManager();
     private WaitingRoomObjectManager _waitingRoomObject = new WaitingRoomObjectManager();
     private WaitingRoomManager _waitingRoom = new WaitingRoomManager();
     private PoolManager _pool = new PoolManager();
@@ -29,6 +30,7 @@ public class Managers : MonoBehaviour
     public static LobbyManager Lobby { get { return Instance._lobby; } }
     public static MapManager Map { get { return Instance._map; } }
     public static NetworkManager Network { get { return Instance._network; } }
+    public static TimeManager Time { get { return Instance._time; } }
     public static WaitingRoomObjectManager WaitingRoomObject { get { return Instance._waitingRoomObject; } }
     public static WaitingRoomManager WaitingRoom { get { return Instance._waitingRoom; } }
     public static PoolManager Pool { get { return Instance._pool; } }
@@ -82,7 +84,10 @@ public class Managers : MonoBehaviour
         UI.Clear();
 
         Pool.Clear();
+
         WaitingRoomObject.Clear();
+
+        GameRoom.Clear();
         GameRoomObject.Clear();
     }
 

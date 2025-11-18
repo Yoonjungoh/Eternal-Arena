@@ -183,4 +183,20 @@ class PacketHandler
 
         player.GameRoom.Push(player.GameRoom.HandleChangeCreatureState, player.Id, changeCreatureStatePacket.CreatureState);
     }
+
+    public static void C_StartCountdownHandler(PacketSession session, IMessage packet)
+    {
+        C_StartCountdown startCountdownPacket = packet as C_StartCountdown;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null || player.Lobby == null || player.GameRoom == null)
+            return;
+
+        // 방에 인원 가득차면 게임 스타트를 위한 카운트다운 시작
+        if (player.GameRoom.IsRoomFull)
+        {
+            player.GameRoom.Push(player.GameRoom.HandleStartCountdown);
+        }
+    }
 }

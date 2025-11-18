@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -14,6 +15,12 @@ public class UI_ToastPopup : UI_Popup
     private Color _currentColor;
     private bool _hasMessage = false;
 
+    // 카운트다운 변수
+    private const float COUNTDOWN_DLEAY_TIME = 0.1f;
+    private WaitForSeconds _countdownDelay = new WaitForSeconds(0);
+    private bool _countdownActive = false;
+    private Coroutine _countdownCoroutine;
+
     enum Texts
     {
         ToastPopupText,
@@ -24,6 +31,55 @@ public class UI_ToastPopup : UI_Popup
         base.Init();
         Bind<TextMeshProUGUI>(typeof(Texts));
         _toastPopupText = GetTextMeshProUGUI((int)Texts.ToastPopupText);
+        _countdownDelay = new WaitForSeconds(COUNTDOWN_DLEAY_TIME);
+    }
+
+    public void ShowCountdown(float time, Action callBack = null)
+    {
+        // 이미 카운트다운 중이면 무시
+        if (_countdownActive)
+            return;
+
+        // 토스트 루프 메시지 무시 상태로 전환
+        _countdownActive = true;
+        _hasMessage = false;
+
+        // 기존 카운트다운 코루틴 있으면 중단
+        if (_countdownCoroutine != null)
+            StopCoroutine(_countdownCoroutine);
+
+        _countdownCoroutine = StartCoroutine(CoCountdown(time, callBack));
+    }
+
+    private IEnumerator CoCountdown(float time, Action callBack = null)
+    {
+        float remain = time;
+
+        while (remain > 0f)
+        {
+            // 0.1 단위 표시
+            float displayValue = Mathf.Max(0f, remain);
+            _toastPopupText.text = displayValue.ToString("0.0");
+
+            Color c = _toastPopupText.color;
+            c.a = 1f;
+            _toastPopupText.color = c;
+
+            remain -= COUNTDOWN_DLEAY_TIME;
+            yield return _countdownDelay;
+        }
+
+        // 카운트다운 종료
+        _toastPopupText.text = "";
+        Color fade = _toastPopupText.color;
+        fade.a = 0f;
+        _toastPopupText.color = fade;
+
+        _countdownActive = false;
+        _countdownCoroutine = null;
+
+        // 콜백 호출
+        callBack?.Invoke();
     }
 
     public void ShowToastPopup(string message, float duration, Color? colorOverride = null)

@@ -49,6 +49,7 @@ namespace Server.Game
         public static DataManager Instance { get; } = new DataManager();
         public int MaxLobbyCount = 3;  // 최대 로비 개수
         public int MaxRoomPlayerCount = 2; // 방당 최대 플레이어 수
+        public float GameStartCountdownTime = 3.0f; // 게임 시작 카운트다운 초기값 (클라 offset 영향 받음)
         
         public Vector3 GetStartPosition(RoomType roomType, int index)
         {

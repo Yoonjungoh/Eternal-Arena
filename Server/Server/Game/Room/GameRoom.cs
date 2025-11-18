@@ -25,6 +25,8 @@ namespace Server.Game
         private Dictionary<int, Player> _players = new Dictionary<int, Player>();
         private Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
 
+        public bool IsRoomFull { get { return _players.Count == DataManager.Instance.MaxRoomPlayerCount; } }
+
         public event Action<int> OnEmptyRoom; // 방이 비었을 때 알림 (roomId)
         public event Action OnPlayerInfoChanged;  // 방 정보 바뀌었을 때 알림 (roomId)
         public void Init()
@@ -46,7 +48,6 @@ namespace Server.Game
                 monster.Update();
             }
         }
-
 
         public void SpawnMonster(MonsterType monsterType, Vector3 spawnPos)
         {
@@ -330,6 +331,15 @@ namespace Server.Game
             changeCreatureStatePacket.ObjectId = objectId;
             changeCreatureStatePacket.CreatureState = creatureState;
             Broadcast(changeCreatureStatePacket, objectId);
+        }
+
+        public void HandleStartCountdown()
+        {
+            S_StartCountdown startCountdownPacket = new S_StartCountdown();
+
+            // 게임 시작 시간 초기화
+            startCountdownPacket.GameStartCountdownTime = DataManager.Instance.GameStartCountdownTime;
+            Broadcast(startCountdownPacket);
         }
 
         public Player FindPlayer(Func<GameObject, bool> condition)

@@ -7,7 +7,7 @@ using Unity.Profiling;
 public class MyPlayerController : PlayerController
 {
     [SerializeField] private float _rotateSpeed = 10.0f;
-    public float RotateSpeed => _rotateSpeed;
+    public float RotateSpeed { get { return _rotateSpeed; } }
 
     private Vector3 _moveDir = Vector3.zero;
     private Vector3 _prevPosition;
@@ -38,14 +38,6 @@ public class MyPlayerController : PlayerController
         _cameraTransform = Camera.main.transform;
         _prevPosition = transform.position;
         _prevRotation = transform.rotation;
-        // 인게임에서만 공격 기능 활성화
-        if (Managers.Scene.CurrentScene == Define.Scene.GameRoom)
-        {
-            Managers.Input.RegisterMouseAction(Define.MouseEvent.LeftClick, OnAttackInput);
-            _commonAttackAnimSpeedTime = 2.0f;  // 에디터에선 동적으로 가져올 수 있으나 런타임에선 불가능해서 하드코딩
-            _commonAttackAnimLength = _anim.GetAnimationClipLength($"{AttackType.Common}_{CreatureState.Attack}") / _commonAttackAnimSpeedTime;
-            _waitCommonAttackReturn = new WaitForSeconds(_commonAttackAnimLength);
-        }
     }
 
     private void Update()
@@ -86,6 +78,10 @@ public class MyPlayerController : PlayerController
     
     private void HandleInput()
     {
+        // 카운트다운 중일 때는 입력 거부
+        if (Managers.GameRoom.IsCountdownFinished == false)
+            return;
+
         // 공격 중일 때는 인풋 받는 거 불가
         if (CreatureState == CreatureState.Attack)
             return;
@@ -219,6 +215,20 @@ public class MyPlayerController : PlayerController
     private void Start()
     {
         Init();
+    }
+
+    public void OnStartGame()
+    {
+        // 인게임에서만 공격 기능 활성화
+        if (Managers.Scene.CurrentScene == Define.Scene.GameRoom)
+        {
+            Managers.Input.RegisterMouseAction(Define.MouseEvent.LeftClick, Managers.GameRoomObject.MyPlayer.OnAttackInput);
+            _commonAttackAnimSpeedTime = 2.0f;  // 에디터에선 동적으로 가져올 수 있으나 런타임에선 불가능해서 하드코딩
+            _commonAttackAnimLength = _anim.GetAnimationClipLength($"{AttackType.Common}_{CreatureState.Attack}") / _commonAttackAnimSpeedTime;
+            _waitCommonAttackReturn = new WaitForSeconds(_commonAttackAnimLength);
+
+            
+        }
     }
 
     #region Gizmos 코드

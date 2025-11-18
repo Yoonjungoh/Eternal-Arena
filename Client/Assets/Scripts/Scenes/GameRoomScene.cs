@@ -13,8 +13,6 @@ public class GameRoomScene : BaseScene
         C_EnterGame enterGamePacket = new C_EnterGame();
         enterGamePacket.RoomId = Managers.WaitingRoom.RoomInfo.RoomId;
         Managers.Network.Send(enterGamePacket);
-
-        //Managers.UI.ShowSceneUI<UI_WaitingRoom>();
     }
     
     private void Awake()

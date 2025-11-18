@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Protobuf.WellKnownTypes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -32,6 +33,15 @@ public class UIManager
             _toastPopup = Managers.UI.ShowPopupUI<UI_ToastPopup>();
         }
         _toastPopup.ShowToastPopup(message, duration);
+    }
+
+    public void ShowCountdown(float time, Action callBack = null)
+    {
+        if (_toastPopup == null)
+        {
+            _toastPopup = Managers.UI.ShowPopupUI<UI_ToastPopup>();
+        }
+        _toastPopup.ShowCountdown(time, callBack);
     }
 
     public void SetCanvas(GameObject go, bool sort = true)
