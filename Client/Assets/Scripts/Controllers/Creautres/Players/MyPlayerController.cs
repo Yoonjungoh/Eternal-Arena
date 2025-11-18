@@ -38,6 +38,13 @@ public class MyPlayerController : PlayerController
         _cameraTransform = Camera.main.transform;
         _prevPosition = transform.position;
         _prevRotation = transform.rotation;
+
+        // 커서 잠금
+        if (Managers.Scene.CurrentScene == Define.Scene.GameRoom)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     private void Update()

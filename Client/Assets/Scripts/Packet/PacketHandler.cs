@@ -229,6 +229,9 @@ class PacketHandler
         S_LeaveGame leaveGamePacket = packet as S_LeaveGame;
         // 다른 상태로 전환 못 하게 None으로 막아주기
         Managers.GameRoomObject.MyPlayer.CreatureState = CreatureState.None;
+        // 커서 잠금 풀기
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         UI_GameResult gameResultUI = Managers.UI.ShowPopupUI<UI_GameResult>();
         gameResultUI.SetData(new GameResultPopupData
         {

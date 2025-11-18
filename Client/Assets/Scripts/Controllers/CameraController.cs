@@ -35,10 +35,6 @@ public class CameraController : MonoBehaviour
         Vector3 angles = transform.eulerAngles;
         _yaw = angles.y;
         _pitch = angles.x;
-
-        //// TODO - 우선 커서 잠금
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
     }
 
     void LateUpdate()

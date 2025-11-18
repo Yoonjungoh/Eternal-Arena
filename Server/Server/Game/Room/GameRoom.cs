@@ -37,9 +37,9 @@ namespace Server.Game
             OnPlayerInfoChanged += CheckForWinner;
             // TODO
             SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 527));
-            SpawnMonster(MonsterType.Bear, new Vector3(90, -26, 527));
+            SpawnMonster(MonsterType.Bear, new Vector3(80, -27, 500));
             SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 420));
-            SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 480));
+            //SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 480));
         }
 
         // 어디선가 주기적으로 호출해줘야 함
@@ -107,7 +107,7 @@ namespace Server.Game
 
             // 5. 데미지 처리
             S_Attack attackPacket = new S_Attack();
-            foreach (int objectId in damagedObjectList) 
+            foreach (int objectId in damagedObjectList)
             {
                 _gameObjects.TryGetValue(objectId, out GameObject damagedObject);
                 if (damagedObject == null)
@@ -221,9 +221,9 @@ namespace Server.Game
             spawnToOthersPacket.ObjectStateList.Add(gameObject.ObjectState);
             foreach (Player p in _players.Values)
             {
-                if (p == null || p.Session == null || gameObject.Id == p.Id )
+                if (p == null || p.Session == null || gameObject.Id == p.Id)
                     continue;
-                
+
                 p.ObjectState.ServerReceivedTime = serverReceivedTime;
                 p.Session.Send(spawnToOthersPacket);
                 ConsoleLogManager.Instance.Log($"[GameRoom Update] Player {p.Id} Pos({p.Position.X}, {p.Position.Y}, {p.Position.Z})");
@@ -385,7 +385,7 @@ namespace Server.Game
         {
             // 모든 오브젝트 관리하는 딕셔너리에 추가
             _gameObjects.Add(gameObject.Id, gameObject);
-            
+
             // 분기별로 추가
             if (gameObject.ObjectType == GameObjectType.Player)
             {
@@ -399,7 +399,7 @@ namespace Server.Game
             }
         }
 
-        private bool RemoveObject(int id) 
+        private bool RemoveObject(int id)
         {
             if (_gameObjects.ContainsKey(id))
             {
