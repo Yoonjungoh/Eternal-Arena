@@ -186,14 +186,16 @@ public class CreatureController : MonoBehaviour
 
     public virtual float OnDamaged(float remainHp)
     {
-        // TODO - DamageCauser 만들고 Effect 분리
         // 히트 이펙트
-        Managers.Resource.Instantiate(
+        ParticleSystem particleSystem = Managers.Resource.Instantiate(
             $"Effects/{_commonAttackHitEffectName}",
             _commonAttackHitEffectOffset,
             new Quaternion(0, 0, 0, 0),
             worldPositionStays: false,
-            transform);
+            transform).GetComponent<ParticleSystem>();
+
+        float duration = particleSystem.main.duration + particleSystem.main.startLifetime.constantMax;
+        Managers.Resource.Destroy(particleSystem.gameObject, duration);
 
         // 데미지 계산
         float damage = Stat.Hp - remainHp;
@@ -212,6 +214,17 @@ public class CreatureController : MonoBehaviour
 
     public virtual void OnDead()
     {
+        // 죽는 이펙트
+        ParticleSystem particleSystem = Managers.Resource.Instantiate(
+            $"Effects/{CreatureState}Effect",
+            _commonAttackHitEffectOffset,
+            new Quaternion(0, 0, 0, 0),
+            worldPositionStays: false,
+            transform).GetComponent<ParticleSystem>();
+
+        float duration = particleSystem.main.duration + particleSystem.main.startLifetime.constantMax;
+        Managers.Resource.Destroy(particleSystem.gameObject, duration);
+
         // 죽은 오브젝트가 방해 안하게 하기
         _collider.isTrigger = true;
         _rb.isKinematic = true;

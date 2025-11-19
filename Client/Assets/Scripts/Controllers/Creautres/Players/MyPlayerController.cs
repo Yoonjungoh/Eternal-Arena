@@ -89,6 +89,10 @@ public class MyPlayerController : PlayerController
         if (Managers.Scene.CurrentScene == Define.Scene.GameRoom && Managers.GameRoom.IsCountdownFinished == false)
             return;
 
+        // 죽으면 이동 불가
+        if (CreatureState == CreatureState.Die)
+            return;
+
         // 공격 중일 때는 인풋 받는 거 불가
         if (CreatureState == CreatureState.Attack)
             return;
