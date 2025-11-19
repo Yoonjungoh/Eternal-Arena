@@ -34,7 +34,7 @@ public class UI_ToastPopup : UI_Popup
         _countdownDelay = new WaitForSeconds(COUNTDOWN_DLEAY_TIME);
     }
 
-    public void ShowCountdown(float time, Action callBack = null)
+    public void ShowCountdown(float time, Action callBack = null, bool isHideCountdownText = false)
     {
         // 이미 카운트다운 중이면 무시
         if (_countdownActive)
@@ -48,12 +48,13 @@ public class UI_ToastPopup : UI_Popup
         if (_countdownCoroutine != null)
             StopCoroutine(_countdownCoroutine);
 
-        _countdownCoroutine = StartCoroutine(CoCountdown(time, callBack));
+        _countdownCoroutine = StartCoroutine(CoCountdown(time, callBack, isHideCountdownText));
     }
 
-    private IEnumerator CoCountdown(float time, Action callBack = null)
+    private IEnumerator CoCountdown(float time, Action callBack = null, bool isHideCountdownText = false)
     {
         float remain = time;
+        _toastPopupText.gameObject.SetActive(isHideCountdownText == false);
 
         while (remain > 0f)
         {

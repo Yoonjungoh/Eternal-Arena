@@ -35,13 +35,13 @@ public class UIManager
         _toastPopup.ShowToastPopup(message, duration);
     }
 
-    public void ShowCountdown(float time, Action callBack = null)
+    public void ShowCountdown(float time, Action callBack = null, bool isHideCountdownText = false)
     {
         if (_toastPopup == null)
         {
             _toastPopup = Managers.UI.ShowPopupUI<UI_ToastPopup>();
         }
-        _toastPopup.ShowCountdown(time, callBack);
+        _toastPopup.ShowCountdown(time, callBack, isHideCountdownText);
     }
 
     public void SetCanvas(GameObject go, bool sort = true)

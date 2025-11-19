@@ -50,6 +50,7 @@ public class MonsterController : CreatureController
     {
         base.OnDead();
 
+        _lastAnimState = CreatureState.Die;
         float dieLength = _anim.GetAnimationClipLength("Die");
         _anim.CrossFade("Die", _transitionTime);
         Managers.Resource.Destroy(gameObject, dieLength);
