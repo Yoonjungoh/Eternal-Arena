@@ -5,6 +5,7 @@ public class MyPlayerController : PlayerController
 {
     private const float ROT_THRESHOLD = 2.0f;
     private const float MOVE_THRESHOLD = 0.05f;
+    private const float FALL_SPEED_THRESHOLD = 1.0f;
 
     [SerializeField] private float _rotateSpeed = 10.0f;
     public float RotateSpeed { get { return _rotateSpeed; } }
@@ -21,7 +22,7 @@ public class MyPlayerController : PlayerController
     private readonly ProtoVector3 _movePos = new ProtoVector3();
     private readonly ProtoVector3 _moveVel = new ProtoVector3();
     private readonly ProtoQuaternion _moveRot = new ProtoQuaternion();
-    
+
     private void OnAttackInput() => Attack(AttackType.Common);
 
     public override void Init()
@@ -34,6 +35,7 @@ public class MyPlayerController : PlayerController
 
         if (Managers.Scene.CurrentScene == Define.Scene.GameRoom)
         {
+            // 커서 잠금
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
@@ -55,9 +57,7 @@ public class MyPlayerController : PlayerController
         );
 
         _commonAttackAnimSpeedTime = 2.0f;
-        _commonAttackAnimLength =
-            _anim.GetAnimationClipLength($"{AttackType.Common}_{CreatureState.Attack}") /
-            _commonAttackAnimSpeedTime;
+        _commonAttackAnimLength = _anim.GetAnimationClipLength($"{AttackType.Common}_{CreatureState.Attack}") / _commonAttackAnimSpeedTime;
 
         _waitCommonAttackReturn = new WaitForSeconds(_commonAttackAnimLength);
     }
@@ -87,8 +87,10 @@ public class MyPlayerController : PlayerController
 
         Vector3 f = _cameraTransform.forward;
         Vector3 r = _cameraTransform.right;
-        f.y = 0; r.y = 0;
-        f.Normalize(); r.Normalize();
+        f.y = 0;
+        r.y = 0;
+        f.Normalize();
+        r.Normalize();
 
         if (Input.GetKey(KeyCode.W)) _moveDir += f;
         if (Input.GetKey(KeyCode.S)) _moveDir -= f;
@@ -107,11 +109,7 @@ public class MyPlayerController : PlayerController
             return;
         }
 
-        transform.rotation = Quaternion.Lerp(
-            transform.rotation,
-            Quaternion.LookRotation(_moveDir),
-            Time.deltaTime * _rotateSpeed
-        );
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(_moveDir), Time.deltaTime * _rotateSpeed);
 
         CreatureState = CreatureState.Move;
     }
@@ -130,23 +128,36 @@ public class MyPlayerController : PlayerController
             _rb.MovePosition(newPos);
 
         Quaternion targetRot = Quaternion.LookRotation(_moveDir);
-        _rb.MoveRotation( Quaternion.Lerp(_rb.rotation, targetRot, _rotateSpeed * Time.fixedDeltaTime));
+        _rb.MoveRotation(Quaternion.Lerp(_rb.rotation, targetRot, _rotateSpeed * Time.fixedDeltaTime));
 
         CreatureState = CreatureState.Move;
     }
 
     private void CheckMovePacket()
     {
-        Vector3 curPos = _rb.position;
         Quaternion curRot = _rb.rotation;
+        Vector3 physicsVelocity = _rb.velocity;
 
-        Vector3 curVelocity = _moveDir * Stat.MoveSpeed;
+        bool isFalling = physicsVelocity.y < -FALL_SPEED_THRESHOLD;
+
+        if (isFalling)
+        {
+            // 낙하 중이면 물리 속도 그대로 패킷 전송
+            Debug.Log("isFalling");
+            SendMovePacket(physicsVelocity);
+            _prevRotation = curRot;
+            _prevVelocity = physicsVelocity;
+            return;
+        }
+
+        Vector3 curVelocity = (_moveDir.sqrMagnitude < MOVE_THRESHOLD) ? Vector3.zero : _moveDir * Stat.MoveSpeed;
 
         bool rotChanged = Quaternion.Angle(curRot, _prevRotation) > ROT_THRESHOLD;
         bool velChanged = (curVelocity - _prevVelocity).sqrMagnitude > MOVE_THRESHOLD;
 
         if (rotChanged || velChanged)
         {
+            Debug.Log("Changed");
             SendMovePacket(curVelocity);
             _prevRotation = curRot;
             _prevVelocity = curVelocity;
