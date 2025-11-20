@@ -25,6 +25,9 @@ public class CreatureController : MonoBehaviour
     protected string _commonAttackHitEffectName;
     protected Vector3 _commonAttackHitEffectOffset;
 
+    protected string _dieEffectName;
+    protected Vector3 _dieEffectOffset;
+
     public ObjectState ObjectState { get; set; } = new ObjectState();
     public int Id { get { return ObjectState.ObjectId; } set { ObjectState.ObjectId = value; } }
     public CreatureState CreatureState 
@@ -133,6 +136,9 @@ public class CreatureController : MonoBehaviour
         // 이펙트 관련 초기화
         _commonAttackHitEffectName = $"{AttackType.Common}_{CreatureState.Attack}HitEffect";
         _commonAttackHitEffectOffset = new Vector3(0, _collider.bounds.size.y / 2, 0);
+
+        _dieEffectName = $"{CreatureState.Die}Effect";
+        _dieEffectOffset = new Vector3(0, _collider.bounds.size.y / 2, 0);
     }
 
     protected virtual void UpdateMove() { }
@@ -142,12 +148,13 @@ public class CreatureController : MonoBehaviour
     protected virtual void UpdateDeadReckoning()
     {
         double serverNowMs = Managers.Network.GetServerNowMs();
-
-        // Ms 단위 s로 바꿔주기... 이거 안 해줘서 엄청 헤맸다..
         double deltaSec = Mathf.Max(0f, (float)((serverNowMs - _serverReceivedTimeMs) / 1000.0));
 
-        // 예측 위치
-        Vector3 predicted = _serverPosition + _serverVelocity * (float)deltaSec;
+        // XZ만 예측
+        Vector3 predicted = _serverPosition;
+        predicted.x += _serverVelocity.x * (float)deltaSec;
+        predicted.z += _serverVelocity.z * (float)deltaSec;
+        predicted.y = _serverPosition.y; // Y는 서버 포지션 고정
 
         transform.position = Vector3.Lerp(transform.position, predicted, Time.deltaTime * _lerpSpeed);
         transform.rotation = Quaternion.Slerp(transform.rotation, _serverRotation, Time.deltaTime * _lerpSpeed);
@@ -187,8 +194,8 @@ public class CreatureController : MonoBehaviour
     public virtual float OnDamaged(float remainHp)
     {
         // 히트 이펙트
-        ParticleSystem particleSystem = Managers.Resource.Instantiate(
-            $"Effects/{_commonAttackHitEffectName}",
+        ParticleSystem particleSystem = Managers.Resource.SpawnEffect(
+            _commonAttackHitEffectName,
             _commonAttackHitEffectOffset,
             new Quaternion(0, 0, 0, 0),
             worldPositionStays: false,
@@ -215,9 +222,9 @@ public class CreatureController : MonoBehaviour
     public virtual void OnDead()
     {
         // 죽는 이펙트
-        ParticleSystem particleSystem = Managers.Resource.Instantiate(
-            $"Effects/{CreatureState}Effect",
-            _commonAttackHitEffectOffset,
+        ParticleSystem particleSystem = Managers.Resource.SpawnEffect(
+            _dieEffectName,
+            _dieEffectOffset,
             new Quaternion(0, 0, 0, 0),
             worldPositionStays: false,
             transform).GetComponent<ParticleSystem>();

@@ -40,7 +40,7 @@ namespace Server.Game
 
 		private HashSet<string> _exceptJobName = new HashSet<string>()
 		{
-			"HandleMove",
+			//"HandleMove",
 		};
 
 		public void Flush()

@@ -231,17 +231,10 @@ class PacketHandler
         // 커서 잠금 풀기
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        Managers.UI.ShowCountdown(3.0f, () =>
-        {
-            // 다른 상태로 전환 못 하게 None으로 막아주기
-            Managers.GameRoomObject.MyPlayer.CreatureState = CreatureState.None;
-            UI_GameResult gameResultUI = Managers.UI.ShowPopupUI<UI_GameResult>();
-            gameResultUI.SetData(new GameResultPopupData
-            {
-                GameResultText = Util.GetGameResult(leaveGamePacket.RoomExitReason)
-            });
-        },
-        isHideCountdownText: true);
+        Managers.UI.ShowCountdown(
+            Managers.GameRoom.GameOverPopupDelayTime, 
+            () => Managers.GameRoom.OnShowGameOverPopup(leaveGamePacket.RoomExitReason),
+            isHideCountdownText: false);
     }
 
     public static void S_SpawnHandler(PacketSession session, IMessage packet)

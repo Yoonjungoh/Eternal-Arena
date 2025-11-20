@@ -11,10 +11,21 @@ public class GameRoomManager
     public RoomInfo RoomInfo { get; set; } = new RoomInfo();
     public RepeatedField<int> PlayerIdList = new RepeatedField<int>();
     public bool IsCountdownFinished { get; set; } = false;
+    public float GameOverPopupDelayTime { get; set; } = 3.0f;
 
     public void Init()
     {
 
+    }
+
+    public void OnShowGameOverPopup(RoomExitReason roomExitReason)
+    {
+        Managers.GameRoomObject.MyPlayer.CreatureState = CreatureState.None;
+        UI_GameResult gameResultUI = Managers.UI.ShowPopupUI<UI_GameResult>();
+        gameResultUI.SetData(new GameResultPopupData
+        {
+            GameResultText = Util.GetGameResult(roomExitReason)
+        });
     }
 
     public void EnterGame(RoomInfo roomInfo, RepeatedField<int> playerIdList)

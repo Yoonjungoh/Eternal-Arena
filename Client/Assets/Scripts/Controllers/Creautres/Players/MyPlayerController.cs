@@ -6,6 +6,9 @@ using Unity.Profiling;
 
 public class MyPlayerController : PlayerController
 {
+    private const float FALLING_VELOCITY_THRESHOLD = -0.01f;
+    private const float NEARLY_STOPPED_VELOCITY_THRESHOLD = 0.01f;
+
     [SerializeField] private float _rotateSpeed = 10.0f;
     public float RotateSpeed { get { return _rotateSpeed; } }
 
@@ -164,11 +167,10 @@ public class MyPlayerController : PlayerController
     private void HandlePhysicsMovement()
     {
         Vector3 velocity = _rb.velocity;
+        bool wasFalling = _prevVelocity.y < FALLING_VELOCITY_THRESHOLD;
+        bool isNearlyStopped = velocity.sqrMagnitude <= NEARLY_STOPPED_VELOCITY_THRESHOLD;
 
-        bool wasFalling = _prevVelocity.y < -0.01f;
-        bool isNearlyStopped = velocity.sqrMagnitude <= 0.0001f;
-
-        if (velocity.sqrMagnitude > 0.0001f)
+        if (velocity.sqrMagnitude > NEARLY_STOPPED_VELOCITY_THRESHOLD)
         {
             SendMovePacket(velocity);
         }
