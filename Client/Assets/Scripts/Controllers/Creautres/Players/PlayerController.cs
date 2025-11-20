@@ -23,7 +23,7 @@ public class PlayerController : CreatureController
             _lastAnimState = CreatureState.Idle;
         }
     }
-
+    
     protected override void UpdateMove()
     {
         base.UpdateMove();
@@ -47,6 +47,7 @@ public class PlayerController : CreatureController
     public override void OnDead()
     {
         base.OnDead();
+        gameObject.SetActive(false);
     }
 
     protected override void OnDestroy()
