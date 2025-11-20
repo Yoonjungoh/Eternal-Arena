@@ -211,4 +211,46 @@ public class MyPlayerController : PlayerController
     {
         base.OnDestroy();
     }
+
+    #region Gizmos 코드
+    private void OnDrawGizmos()
+    {
+        if (Stat == null)
+            return;
+        Color gizmoColor = new Color(1f, 0.3f, 0f, 0.25f);
+        Gizmos.color = gizmoColor;
+
+        float range = Stat.AttackRange;
+        float halfAngle = Stat.AttackHalfAngleDeg;
+        float height = Stat.AttackHeight;
+
+        if (range <= 0f)
+            return;
+
+        Vector3 origin = transform.position;
+        Vector3 forward = transform.forward;
+
+        DrawCommonAttackCollision(origin, forward, range, halfAngle, height);
+    }
+
+    private void DrawCommonAttackCollision(Vector3 origin, Vector3 forward, float radius, float halfAngle, float height)
+    {
+        int segments = 30;
+        float step = halfAngle * 2f / segments;
+        Quaternion leftRot = Quaternion.AngleAxis(-halfAngle, Vector3.up);
+        Vector3 prev = origin + leftRot * forward * radius;
+
+        for (int i = 1; i <= segments; i++)
+        {
+            float angle = -halfAngle + step * i;
+            Quaternion rot = Quaternion.AngleAxis(angle, Vector3.up);
+            Vector3 next = origin + rot * forward * radius;
+            Gizmos.DrawLine(origin, next);
+            Gizmos.DrawLine(prev, next);
+            prev = next;
+        }
+
+        Gizmos.DrawLine(origin + Vector3.up * (height * 0.5f), origin - Vector3.up * (height * 0.5f));
+    }
+    #endregion
 }
