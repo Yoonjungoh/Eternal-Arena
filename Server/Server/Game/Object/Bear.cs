@@ -15,7 +15,7 @@ namespace Server.Game.Object
             Stat.Hp = Stat.MaxHp;
             Stat.CommonAttackDamage = 20;
             Stat.CommonAttackCoolTime = 3;
-            Stat.AttackRange = 7;
+            Stat.AttackRange = 4;
             Stat.Defense = 0;
             Stat.MoveSpeed = 7;
         }
