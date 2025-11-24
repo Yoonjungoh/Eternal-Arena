@@ -58,6 +58,7 @@ enum GameObjectType {
 enum AttackType {
   ATTACK_TYPE_NONE = 0;
   COMMON = 1;
+  MAGIC_MISSILE = 2;
 }
 
 enum MonsterType {
@@ -170,6 +171,7 @@ message S_Move {
 
 message C_Attack {
   AttackType attackType = 1;
+  int32 damagedObjectId = 2;	// 투사체가 맞춘 대상 (서버 충돌 처리하는 부분은 해당 부분 비워서 보내도 됨)
 }
 
 message S_Attack {

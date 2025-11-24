@@ -8,8 +8,17 @@ public class GameRoomObjectManager
 {
     public int UserId;  // 현재 UserId랑 Player의 Id랑 같이 쓰는 중
     public MyPlayerController MyPlayer { get; set; }
+
     private Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
+
     public Dictionary<int, GameObject> Objects { get { return _objects; } set { _objects = value; } }
+
+    private HashSet<string> _damagedObjectName = new HashSet<string>()
+    {
+        "Player",
+        "Monster"
+    };
+    private HashSet<int> _damagedObjects = new HashSet<int>();
 
     public GameObjectType GetObjectTypeById(int id)
     {
@@ -104,6 +113,11 @@ public class GameRoomObjectManager
         return null;
     }
 
+    public bool IsDamageable(int layer)
+    {
+        return _damagedObjects.Contains(layer);
+    }
+
     public void HandleChangeCreatureState(int objectId, CreatureState creatureState)
     {
         _objects.TryGetValue(objectId, out GameObject go);
@@ -121,6 +135,14 @@ public class GameRoomObjectManager
         }
 
         creatureController.ObjectState.CreatureState = creatureState;
+    }
+
+    public void Init()
+    {
+        foreach (string damagedObjectName in _damagedObjectName)
+        {
+            _damagedObjects.Add(LayerMask.NameToLayer(damagedObjectName));
+        }
     }
 
     public void Clear()
