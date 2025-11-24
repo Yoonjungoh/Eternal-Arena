@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Game;
+using Server.Game.Object;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace Server.Game
         private Dictionary<int, GameObject> _gameObjects = new Dictionary<int, GameObject>();
         private Dictionary<int, Player> _players = new Dictionary<int, Player>();
         private Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
+        private Dictionary<int, Monster> _projectiles = new Dictionary<int, Monster>();
 
         public bool IsRoomFull { get { return _players.Count == DataManager.Instance.MaxRoomPlayerCount; } }
 
@@ -63,10 +65,70 @@ namespace Server.Game
             Push(EnterGame, monster);
         }
 
-
-        public void HandleAttack(Player instigator, AttackType attackType)
+        public void SpawnProjectile(ProjectileType projectileType)
         {
-            if (instigator == null) return;
+            Projectile projectile = ProjectileFactory.Create(projectileType);
+
+            projectile.ObjectState.Name = $"{projectile.ProjectileType}_{projectile.ObjectState.ObjectId}";
+            // 위치, 각도 추가해주기
+
+            Push(EnterGame, projectile);
+        }
+
+        public void HandleAttack(int InstigatorId, int damagedObjectId, AttackType attackType)
+        {
+            switch (attackType)
+            {
+                case AttackType.CommonAttack:
+                    HandleCommonAttack(InstigatorId);
+                    break;
+                case AttackType.RangedAttack:
+                    HandleProjectileAttack(InstigatorId, damagedObjectId);
+                    break;
+                default:
+                    ConsoleLogManager.Instance.Log($"Unknown AttackType: {attackType}");
+                    break;
+            }
+        }
+
+        private void HandleProjectileAttack(int instigatorId, int damagedObjectId)
+        {
+            _gameObjects.TryGetValue(instigatorId, out GameObject instigator);
+            if (instigator == null) 
+                return;
+
+            _gameObjects.TryGetValue(damagedObjectId, out GameObject damagedObject);
+            if (damagedObject == null)
+                return;
+
+            // 서버에서 예측한 투사체 위치랑 적 위치 비교해서 오차 심하지 않으면 데미지 허용
+            Vector3 instigatorPos = instigator.CurrentPosition;
+            Vector3 damagedObjectPos = damagedObject.CurrentPosition;
+            float dist = Vector3.Distance(instigatorPos, damagedObjectPos);
+            if (dist > DataManager.Instance.ProjectileDistanceErrorThreshold)
+            {
+                // 너무 멀리 떨어져 있음
+                ConsoleLogManager.Instance.Log($"[Warning] Projectile attack distance too far: {dist}");
+                return;
+            }
+            
+            // 데미지 처리
+            S_Attack attackPacket = new S_Attack();
+            damagedObject.OnDamaged(instigator, instigator.ObjectState.Stat.CommonAttackDamage);
+
+            DamagedInfo damagedInfo = new DamagedInfo();
+            damagedInfo.ObjectId = damagedObjectId;
+            damagedInfo.RemainHp = damagedObject.ObjectState.Stat.Hp;
+            attackPacket.DamagedObjectList.Add(damagedInfo);
+            
+            Broadcast(attackPacket);
+        }
+
+        private void HandleCommonAttack(int instigatorId)
+        {
+            _gameObjects.TryGetValue(instigatorId, out GameObject instigator);
+            if (instigator == null) 
+                return;
 
             // 서버 기준 공격 시간 (플레이어 위치, 방향 예상하기 위함)
             long attackTimeMs = Util.GetTimestampMs();

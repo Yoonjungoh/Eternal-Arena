@@ -49,7 +49,19 @@ class PacketHandler
         if (player == null || player.Lobby == null || player.WaitingRoom == null || player.GameRoom == null)
             return;
 
-        player.GameRoom.Push(player.GameRoom.HandleAttack, player, attackPacket.AttackType);
+        player.GameRoom.Push(player.GameRoom.HandleAttack, attackPacket.InstigatorId, attackPacket.DamagedObjectId, attackPacket.AttackType);
+    }
+
+    public static void C_SpawnProjectileHandler(PacketSession session, IMessage packet)
+    {
+        C_SpawnProjectile spawnProjectilePacket = packet as C_SpawnProjectile;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null || player.Lobby == null || player.WaitingRoom == null || player.GameRoom == null)
+            return;
+
+        player.GameRoom.Push(player.GameRoom.SpawnProjectile, spawnProjectilePacket.ProjectileType);
     }
 
     public static void C_MoveHandler(PacketSession session, IMessage packet)

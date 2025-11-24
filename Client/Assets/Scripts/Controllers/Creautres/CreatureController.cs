@@ -20,8 +20,10 @@ public class CreatureController : BaseController
 
     protected string _dieEffectName;
     protected Vector3 _dieEffectOffset;
+    
+    protected AttackType _meleeAttackType = AttackType.None;
+    protected AttackType _rangedAttackType = AttackType.None;
 
-    protected AttackType _attackType;   // 공격 타입
     protected WaitForSeconds _waitCommonAttackReturn;
 
     protected override void OnUpdate()
@@ -50,8 +52,8 @@ public class CreatureController : BaseController
         _collider = GetComponent<Collider>();
 
         // 애니메이션 관련 초기화
-        _commonAttackanimName = $"{AttackType.Common}_{CreatureState.Attack}";
-        _commonAttackAnimLength = _anim.GetAnimationClipLength($"{AttackType.Common}_{CreatureState.Attack}") / _commonAttackAnimSpeedTime;
+        _commonAttackanimName = $"Common_Attack";
+        _commonAttackAnimLength = _anim.GetAnimationClipLength(_commonAttackanimName) / _commonAttackAnimSpeedTime;
         _waitCommonAttackReturn ??= new WaitForSeconds(_commonAttackAnimLength);
 
         // 체력바 소환 (투사체는 이후에 조절)
@@ -61,7 +63,7 @@ public class CreatureController : BaseController
         _hpBar.UpdateHpBar(Stat.Hp, Stat.MaxHp);
 
         // 이펙트 관련 초기화
-        _commonAttackHitEffectName = $"{AttackType.Common}_{CreatureState.Attack}HitEffect";
+        _commonAttackHitEffectName = $"{_commonAttackanimName}HitEffect";
         _commonAttackHitEffectOffset = new Vector3(0, _collider.bounds.size.y / 2, 0);
 
         _dieEffectName = $"{CreatureState.Die}Effect";

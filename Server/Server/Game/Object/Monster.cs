@@ -196,7 +196,7 @@ namespace Server.Game
 
                 // 공격 데미지 반영 브로드캐스트
                 S_Attack attackPacket = new S_Attack();
-                attackPacket.AttackType = AttackType.Common;
+                attackPacket.AttackType = AttackType.CommonAttack;
                 attackPacket.InstigatorId = Id;
 
                 DamagedInfo damagedInfo = new DamagedInfo();

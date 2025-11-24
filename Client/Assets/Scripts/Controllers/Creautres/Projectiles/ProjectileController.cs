@@ -25,7 +25,8 @@ public class ProjectileController : BaseController
             {
                 // 서버에 데미지 요청
                 C_Attack attackPacket = new C_Attack();
-                attackPacket.AttackType = AttackType.MagicMissile;
+                attackPacket.AttackType = AttackType.RangedAttack;
+                attackPacket.InstigatorId = Id;
                 attackPacket.DamagedObjectId = creature.Id;
                 Managers.Network.Send(attackPacket);
             }

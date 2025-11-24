@@ -33,6 +33,7 @@ enum MsgId {
   S_DIE = 26;
   C_START_COUNTDOWN = 27;
   S_START_COUNTDOWN = 28;
+  C_SPAWN_PROJECTILE = 29;
   C_TIMESTAMP = 105;
   S_TIMESTAMP = 106;
   C_CHANGE_CREATURE_STATE = 107;
@@ -53,17 +54,23 @@ enum GameObjectType {
   GAME_OBJECT_TYPE_NONE = 0;
   PLAYER = 1;
   MONSTER = 2;
+  PROJECTILE = 3;
 }
 
 enum AttackType {
   ATTACK_TYPE_NONE = 0;
-  COMMON = 1;
-  MAGIC_MISSILE = 2;
+  COMMON_ATTACK = 1;
+  RANGED_ATTACK = 2;
 }
 
 enum MonsterType {
   MONSTER_TYPE_NONE = 0;
   BEAR = 1;
+}
+
+enum ProjectileType {
+  PROJECTILE_TYPE_NONE = 0;
+  MAGIC_MISSILE = 1;
 }
 
 enum RoomExitReason {
@@ -171,7 +178,8 @@ message S_Move {
 
 message C_Attack {
   AttackType attackType = 1;
-  int32 damagedObjectId = 2;	// 투사체가 맞춘 대상 (서버 충돌 처리하는 부분은 해당 부분 비워서 보내도 됨)
+  int32 InstigatorId = 2;	// 데미지를 입힌 자
+  int32 damagedObjectId = 3;	// 투사체가 맞춘 대상 (서버 충돌 처리하는 부분은 해당 부분 비워서 보내도 됨)
 }
 
 message S_Attack {
@@ -191,6 +199,10 @@ message C_StartCountdown {
 
 message S_StartCountdown {
   float gameStartCountdownTime = 1;
+}
+
+message C_SpawnProjectile {
+  ProjectileType projectileType = 1;
 }
 
 message C_Timestamp {
@@ -258,7 +270,9 @@ message Stat {
   float moveSpeed = 4;
   float commonAttackDamage = 5;
   float commonAttackCoolTime = 6;
-  float attackRange = 7;          // 반지름 r
-  float attackHalfAngleDeg = 8;  // 부채꼴의 반각 d(도)
-  float attackHeight = 9;        // 높이
+  float magicMissileAttakDamage = 7;
+  float magicMissileAttackCoolTime = 8;
+  float attackRange = 9;          // 반지름 r
+  float attackHalfAngleDeg = 10;  // 부채꼴의 반각 d(도)
+  float attackHeight = 11;        // 높이
 }

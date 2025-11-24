@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MyPlayerController : PlayerController
@@ -23,7 +24,11 @@ public class MyPlayerController : PlayerController
     private readonly ProtoVector3 _moveVel = new ProtoVector3();
     private readonly ProtoQuaternion _moveRot = new ProtoQuaternion();
 
-    private void OnAttackInput() => Attack(AttackType.Common);
+    private Dictionary<AttackType, float> _attackCoolTimeDict;
+    private ProjectileType _projectileType = ProjectileType.None;
+
+    private void OnMeleeAttackInput() => MeleeAttack(_meleeAttackType);
+    private void OnProjectileSpawnInput() => ProjectileSpawn(_rangedAttackType);
 
     public override void Init()
     {
@@ -35,9 +40,19 @@ public class MyPlayerController : PlayerController
 
         if (Managers.Scene.CurrentScene == Define.Scene.GameRoom)
         {
+            _projectileType = ProjectileType.MagicMissile;
+           _attackCoolTimeDict = new Dictionary<AttackType, float>()
+           {
+                { AttackType.CommonAttack, Stat.CommonAttackCoolTime },
+                { AttackType.RangedAttack, Stat.MagicMissileAttackCoolTime }
+           };
+
             // 커서 잠금
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+
+            _meleeAttackType = AttackType.CommonAttack;
+            _rangedAttackType = AttackType.RangedAttack;
         }
     }
 
@@ -53,13 +68,66 @@ public class MyPlayerController : PlayerController
 
         Managers.Input.RegisterMouseAction(
             Define.MouseEvent.LeftClick,
-            Managers.GameRoomObject.MyPlayer.OnAttackInput
+            Managers.GameRoomObject.MyPlayer.OnMeleeAttackInput
+        );
+
+        Managers.Input.RegisterKeyAction(
+            KeyCode.F,
+            Managers.GameRoomObject.MyPlayer.OnProjectileSpawnInput
         );
 
         _commonAttackAnimSpeedTime = 2.0f;
-        _commonAttackAnimLength = _anim.GetAnimationClipLength($"{AttackType.Common}_{CreatureState.Attack}") / _commonAttackAnimSpeedTime;
+        _commonAttackAnimLength = _anim.GetAnimationClipLength(_commonAttackanimName) / _commonAttackAnimSpeedTime;
 
         _waitCommonAttackReturn = new WaitForSeconds(_commonAttackAnimLength);
+    }
+
+    private void ProjectileSpawn(AttackType attackType)
+    {
+        if (Managers.Scene.CurrentScene != Define.Scene.GameRoom)
+            return;
+
+        if (CreatureState != CreatureState.Idle)
+            return;
+
+        if (Time.time - _lastAttackTime < _attackCoolTimeDict[attackType])
+            return;
+
+        _lastAttackTime = Time.time;
+        CreatureState = CreatureState.Attack;
+
+        C_SpawnProjectile spawnProjectilePacket = new C_SpawnProjectile();
+        spawnProjectilePacket.ProjectileType = _projectileType;
+        Managers.Network.Send(spawnProjectilePacket);
+    }
+
+    private void MeleeAttack(AttackType attackType)
+    {
+        if (CanAttack() == false)
+            return;
+
+        _lastAttackTime = Time.time;
+        CreatureState = CreatureState.Attack;
+
+        C_Attack p = new C_Attack();
+        p.InstigatorId = Id;
+        p.AttackType = attackType;
+        Managers.Network.Send(p);
+
+        StartCoroutine(CoReturnToIdleAfterAttack(_waitCommonAttackReturn));
+    }
+
+    // Scene, CreatureState, 쿨타임 체크
+    private bool CanAttack()
+    {
+        if (Managers.Scene.CurrentScene != Define.Scene.GameRoom)
+            return false;
+        if (CreatureState != CreatureState.Idle)
+            return false;
+        if (Time.time - _lastAttackTime < _attackCoolTimeDict[AttackType.CommonAttack])
+            return false;
+        
+        return true;
     }
 
     private void Update()
@@ -184,27 +252,6 @@ public class MyPlayerController : PlayerController
 
         _movePacket.ObjectState = _moveState;
         Managers.Network.Send(_movePacket);
-    }
-
-    private void Attack(AttackType attackType)
-    {
-        if (Managers.Scene.CurrentScene != Define.Scene.GameRoom)
-            return;
-
-        if (CreatureState != CreatureState.Idle)
-            return;
-
-        if (Time.time - _lastAttackTime < Stat.CommonAttackCoolTime)
-            return;
-
-        _lastAttackTime = Time.time;
-        CreatureState = CreatureState.Attack;
-
-        C_Attack p = new C_Attack();
-        p.AttackType = attackType;
-        Managers.Network.Send(p);
-
-        StartCoroutine(CoReturnToIdleAfterAttack(_waitCommonAttackReturn));
     }
 
     protected override void OnDestroy()
