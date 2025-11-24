@@ -39,19 +39,7 @@ namespace Server
 
 			while (true)
 			{
-                //List<GameRoom> rooms = new List<GameRoom>(RoomManager.Instance.Rooms.Values);
-
-                //for (int i = 0; i < rooms.Count; i++)
-                //{
-                //	GameRoom room = rooms[i];
-                //	if (room != null)
-                //                {
-                //		GameRoom gameRoom = RoomManager.Instance.Find(room.RoomId);
-                //		if (gameRoom != null)
-                //                        gameRoom.Push(gameRoom.Update);
-                //	}
-                //}
-                Thread.Sleep(1);
+                Thread.Sleep(Timeout.Infinite);
             }
         }
 	}
