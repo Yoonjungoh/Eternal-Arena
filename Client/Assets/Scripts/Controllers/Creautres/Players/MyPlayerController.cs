@@ -95,10 +95,13 @@ public class MyPlayerController : PlayerController
 
         _lastAttackTime = Time.time;
         CreatureState = CreatureState.Attack;
-
+        
         C_SpawnProjectile spawnProjectilePacket = new C_SpawnProjectile();
+        spawnProjectilePacket.OwnerId = Id;
         spawnProjectilePacket.ProjectileType = _projectileType;
         Managers.Network.Send(spawnProjectilePacket);
+
+        StartCoroutine(CoReturnToIdleAfterAttack(_waitCommonAttackReturn));
     }
 
     private void MeleeAttack(AttackType attackType)
@@ -109,10 +112,10 @@ public class MyPlayerController : PlayerController
         _lastAttackTime = Time.time;
         CreatureState = CreatureState.Attack;
 
-        C_Attack p = new C_Attack();
-        p.InstigatorId = Id;
-        p.AttackType = attackType;
-        Managers.Network.Send(p);
+        C_Attack attackPacket = new C_Attack();
+        attackPacket.InstigatorId = Id;
+        attackPacket.AttackType = attackType;
+        Managers.Network.Send(attackPacket);
 
         StartCoroutine(CoReturnToIdleAfterAttack(_waitCommonAttackReturn));
     }
@@ -211,7 +214,6 @@ public class MyPlayerController : PlayerController
         if (isFalling)
         {
             // 낙하 중이면 물리 속도 그대로 패킷 전송
-            Debug.Log("isFalling");
             SendMovePacket(physicsVelocity);
             _prevRotation = curRot;
             _prevVelocity = physicsVelocity;
@@ -225,7 +227,6 @@ public class MyPlayerController : PlayerController
 
         if (rotChanged || velChanged)
         {
-            Debug.Log("Changed");
             SendMovePacket(curVelocity);
             _prevRotation = curRot;
             _prevVelocity = curVelocity;

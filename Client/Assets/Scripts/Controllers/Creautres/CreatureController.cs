@@ -85,11 +85,21 @@ public class CreatureController : BaseController
         base.UpdateAttack();
     }
 
-    protected override void UpdateDeadReckoning()
+    protected virtual void UpdateDeadReckoning()
     {
-        base.UpdateDeadReckoning();
-    }
+        double serverNowMs = Managers.Network.GetServerNowMs();
+        double deltaSec = Mathf.Max(0f, (float)((serverNowMs - _serverReceivedTimeMs) / 1000.0));
 
+        // XZ만 예측
+        Vector3 predicted = _serverPosition;
+        predicted.x += _serverVelocity.x * (float)deltaSec;
+        predicted.z += _serverVelocity.z * (float)deltaSec;
+        predicted.y = _serverPosition.y; // Y는 서버 포지션 고정
+
+        transform.position = Vector3.Lerp(transform.position, predicted, Time.deltaTime * _lerpSpeed);
+        transform.rotation = Quaternion.Slerp(transform.rotation, _serverRotation, Time.deltaTime * _lerpSpeed);
+    }
+    
     protected override void OnDestroy()
     {
         base.OnDestroy();
@@ -140,10 +150,13 @@ public class CreatureController : BaseController
         _collider.isTrigger = true;
         _rb.isKinematic = true;
     }
-    
-    public override void SetServerState(ProtoVector3 pos, ProtoQuaternion rot, ProtoVector3 vel, long serverReceivedTime)
+
+    public virtual void SetServerState(ProtoVector3 pos, ProtoQuaternion rot, ProtoVector3 vel, long serverReceivedTime)
     {
-        base.SetServerState(pos, rot, vel, serverReceivedTime);
+        _serverPosition = new Vector3(pos.X, pos.Y, pos.Z);
+        _serverRotation = new Quaternion(rot.X, rot.Y, rot.Z, rot.W);
+        _serverVelocity = new Vector3(vel.X, vel.Y, vel.Z);
+        _serverReceivedTimeMs = serverReceivedTime;
     }
 
     protected IEnumerator CoReturnToIdleAfterAttack(WaitForSeconds waitAttackReturn)

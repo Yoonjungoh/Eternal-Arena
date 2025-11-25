@@ -19,6 +19,7 @@ public class GameRoomObjectManager
         "Monster"
     };
     private HashSet<int> _damagedObjects = new HashSet<int>();
+    private Dictionary<int, int> _projectileOwners = new Dictionary<int, int>();    // key = 투사체, value = 주인
 
     public GameObjectType GetObjectTypeById(int id)
     {
@@ -77,8 +78,27 @@ public class GameRoomObjectManager
             );
             _objects.Add(objectState.ObjectId, monster.gameObject);
         }
+        else if (objectType == GameObjectType.Projectile)
+        {
+            GameObject go = Managers.Resource.Instantiate($"Creatures/Projectiles/{objectState.ProjectileType}", position, rotation);
+            ProjectileController projectile = go.GetComponent<ProjectileController>();
+            
+            projectile.ObjectState = objectState;
+            projectile.GameObjectType = objectType;
+            
+            //projectile.SetServerState(
+            //    objectState.Position,
+            //    objectState.Rotation,
+            //    objectState.Velocity,
+            //    objectState.ServerReceivedTime
+            //);
+            
+            _objects.Add(objectState.ObjectId, projectile.gameObject);
+            _projectileOwners.Add(objectState.ObjectId, objectState.OwnerId);
+        }
     }
 
+    // 게임룸에서 사라질 때 반드시 호출하는 함수 (이것만 호출하면 됨)
     public void Remove(int id)
     {
         GameObject go = FindById(id);
@@ -92,6 +112,11 @@ public class GameRoomObjectManager
             return;
         }
         _objects.Remove(id);
+        GameObjectType gameObjectType = GetObjectTypeById(id);
+        if (gameObjectType == GameObjectType.Projectile)
+        {
+            _projectileOwners.Remove(id);
+        }
         cc.OnDead();
     }
 
@@ -135,6 +160,16 @@ public class GameRoomObjectManager
         }
 
         creatureController.ObjectState.CreatureState = creatureState;
+    }
+
+    public int GetProjectileOwnerId(int projectileId)
+    {
+        if (_projectileOwners.TryGetValue(projectileId, out int ownerId))
+        {
+            return ownerId;
+        }
+
+        return -1;  // 없다는 의미
     }
 
     public void Init()

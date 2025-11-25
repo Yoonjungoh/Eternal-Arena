@@ -19,6 +19,7 @@ namespace Server.Game
 
 		public ObjectState ObjectState { get; set; }
         public ProtoVector3 Position { get { return ObjectState.Position; } set { ObjectState.Position = value; } }
+        public ProtoQuaternion Rotation { get { return ObjectState.Rotation; } set { ObjectState.Rotation = value; } }
         public ProtoVector3 Velocity { get { return ObjectState.Velocity; } set { ObjectState.Velocity = value; } }
 		public Vector3 CurrentPosition
 		{
@@ -35,6 +36,8 @@ namespace Server.Game
         public CreatureState CreatureState { get { return ObjectState.CreatureState; } set { ObjectState.CreatureState = value; } }
 		public Stat Stat { get { return ObjectState.Stat; } set { ObjectState.Stat = value; } }
         public MonsterType MonsterType { get { return ObjectState.MonsterType; } set { ObjectState.MonsterType = value; } }
+        public ProjectileType ProjectileType { get { return ObjectState.ProjectileType; } set { ObjectState.ProjectileType = value; } }
+        public int OwnerId { get { return ObjectState.OwnerId; } set { ObjectState.OwnerId = value; } }
         public GameObject()
         {
             ObjectState = new ObjectState();

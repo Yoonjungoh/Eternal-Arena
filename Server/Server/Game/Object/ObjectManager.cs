@@ -13,6 +13,7 @@ namespace Server.Game
 		private object _lock = new object();
         private Dictionary<int, Player> _players = new Dictionary<int, Player>();
         private Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
+        private Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
 
         // [UNUSED(1)][TYPE(7)][ID(24)]
         private int _counter = 0;
@@ -34,6 +35,10 @@ namespace Server.Game
                     else if (gameObject.ObjectType == GameObjectType.Monster)
                     {
                         _monsters.Add(gameObject.Id, gameObject as Monster);
+                    }
+                    else if (gameObject.ObjectType == GameObjectType.Projectile)
+                    {
+                        _projectiles.Add(gameObject.Id, gameObject as Projectile);
                     }
                     // 네이밍
                     gameObject.ObjectState.Name = $"{gameObject.ObjectType}_{gameObject.ObjectState.ObjectId}";

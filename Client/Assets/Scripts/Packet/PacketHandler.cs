@@ -372,7 +372,7 @@ class PacketHandler
         S_StartCountdown startCountdownPacket = packet as S_StartCountdown;
         Managers.GameRoom.StartGame(startCountdownPacket.GameStartCountdownTime);
     }
-    
+
     public static void S_TimestampHandler(PacketSession session, IMessage packet)
     {
         S_Timestamp sereverTimestamp = packet as S_Timestamp;

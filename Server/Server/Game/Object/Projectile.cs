@@ -8,8 +8,6 @@ namespace Server.Game
 {
     public class Projectile : GameObject
     {
-        public ProjectileType ProjectileType { get; set; }
-
         public Projectile()
         {
             ObjectType = GameObjectType.Projectile;

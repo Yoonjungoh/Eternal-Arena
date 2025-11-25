@@ -61,7 +61,10 @@ class PacketHandler
         if (player == null || player.Lobby == null || player.WaitingRoom == null || player.GameRoom == null)
             return;
 
-        player.GameRoom.Push(player.GameRoom.SpawnProjectile, spawnProjectilePacket.ProjectileType);
+        player.GameRoom.Push
+            (player.GameRoom.SpawnProjectile,
+            spawnProjectilePacket.OwnerId, 
+            spawnProjectilePacket.ProjectileType);
     }
 
     public static void C_MoveHandler(PacketSession session, IMessage packet)

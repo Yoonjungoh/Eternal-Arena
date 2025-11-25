@@ -202,7 +202,13 @@ message S_StartCountdown {
 }
 
 message C_SpawnProjectile {
-  ProjectileType projectileType = 1;
+  int32 ownerId = 1;
+  ProjectileType projectileType = 2;
+}
+
+message S_SpawnProjectile {
+  int32 ownerId = 1;
+  ProjectileType projectileType = 2;
 }
 
 message C_Timestamp {
@@ -256,6 +262,8 @@ message ObjectState {
   Stat stat = 9;                     // 캐릭터 스탯
   GameObjectType objectType = 10;	 // 플레이어인지 몬스터인지
   MonsterType monsterType = 11;		 // 몬스터면 무슨 타입인지
+  ProjectileType projectileType = 12;		 // 투사체면 무슨 타입인지
+  int32 ownerId = 13;		 // 투사체 소유자가 누구인지 다른 플레이어에게 알리기
 }
 
 message DamagedInfo {

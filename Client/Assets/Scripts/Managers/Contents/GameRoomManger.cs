@@ -27,7 +27,7 @@ public class GameRoomManager
             GameResultText = Util.GetGameResult(roomExitReason)
         });
     }
-
+    
     public void EnterGame(RoomInfo roomInfo, RepeatedField<int> playerIdList)
     {
         RoomInfo = roomInfo;

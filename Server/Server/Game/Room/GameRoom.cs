@@ -25,8 +25,8 @@ namespace Server.Game
         private Dictionary<int, GameObject> _gameObjects = new Dictionary<int, GameObject>();
         private Dictionary<int, Player> _players = new Dictionary<int, Player>();
         private Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
-        private Dictionary<int, Monster> _projectiles = new Dictionary<int, Monster>();
-
+        private Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
+        
         public bool IsRoomFull { get { return _players.Count == DataManager.Instance.MaxRoomPlayerCount; } }
 
         public event Action<int> OnEmptyRoom; // 방이 비었을 때 알림 (roomId)
@@ -59,18 +59,32 @@ namespace Server.Game
             Monster monster = MonsterFactory.Create(monsterType);
 
             monster.MonsterType = monsterType;
-            monster.ObjectState.Name = $"{monsterType}_{monster.ObjectState.ObjectId}";
+            //monster.ObjectState.Name = $"{monsterType}_{monster.ObjectState.ObjectId}";
             monster.Position = MovementHelper.Vec3ToProtoVec3(spawnPos);
 
             Push(EnterGame, monster);
         }
 
-        public void SpawnProjectile(ProjectileType projectileType)
+        public void SpawnProjectile(int ownerId, ProjectileType projectileType)
         {
             Projectile projectile = ProjectileFactory.Create(projectileType);
+            // 주인이 존재하지 않는 오브젝트거나 똑같은 투사체 존재하면 스폰 안 함  
+            if (_gameObjects.ContainsKey(ownerId) == false || _projectiles.ContainsKey(projectile.Id))
+            {
+                ConsoleLogManager.Instance.Log($"[Warning] Cannot spawn projectile. OwnerId: {ownerId}, ProjectileId: {projectile.Id}");
+                return;
+            }
 
-            projectile.ObjectState.Name = $"{projectile.ProjectileType}_{projectile.ObjectState.ObjectId}";
-            // 위치, 각도 추가해주기
+            // 주인 추가해주기
+            projectile.OwnerId = ownerId;
+            //projectile.ObjectState.Name = $"{projectile.ProjectileType}_{projectile.ObjectState.ObjectId}";
+
+            // 위치, 각도 추가해주기 (속도는 본인 속도)
+            projectile.Position = _gameObjects[ownerId].Position; 
+            projectile.Rotation = _gameObjects[ownerId].Rotation;
+            
+            Vector3 forward = MovementHelper.ForwardFrom(projectile.Rotation);
+            projectile.Velocity = MovementHelper.Vec3ToProtoVec3(forward * projectile.Stat.MoveSpeed);
 
             Push(EnterGame, projectile);
         }
@@ -210,10 +224,22 @@ namespace Server.Game
             // objectType 초기화
             enteGamePacket.ObjectState.ObjectType = objectType;
 
-            // monsterType 초기화
+            // creatureState 초기화
+            gameObject.CreatureState = CreatureState.Idle;
+            enteGamePacket.ObjectState.CreatureState = CreatureState.Idle;
+
+            // Type 관련 분기 초기화
             if (objectType == GameObjectType.Monster)
             {
                 enteGamePacket.ObjectState.MonsterType = gameObject.MonsterType;
+            }
+            else if (objectType == GameObjectType.Projectile)
+            {
+                enteGamePacket.ObjectState.ProjectileType = gameObject.ProjectileType;
+                enteGamePacket.ObjectState.OwnerId = gameObject.OwnerId;
+                // 투사체는 Move로 변경해주기
+                gameObject.CreatureState = CreatureState.Move;
+                enteGamePacket.ObjectState.CreatureState = CreatureState.Move;
             }
 
             // name 초기화
@@ -221,6 +247,7 @@ namespace Server.Game
 
             // position 초기화
             Vector3 startPos = Vector3.Zero;
+
             // 플레이어 이외는 다른 곳에서 위치 미리 받고 옴
             if (objectType == GameObjectType.Player)
             {
@@ -237,13 +264,9 @@ namespace Server.Game
             enteGamePacket.ObjectState.Position.X = gameObject.ObjectState.Position.X;
             enteGamePacket.ObjectState.Position.Y = gameObject.ObjectState.Position.Y;
             enteGamePacket.ObjectState.Position.Z = gameObject.ObjectState.Position.Z;
-
+            
             // stat 초기화
             enteGamePacket.ObjectState.Stat = gameObject.Stat;
-
-            // creatureState 초기화
-            gameObject.CreatureState = CreatureState.Idle;
-            enteGamePacket.ObjectState.CreatureState = CreatureState.Idle;
 
             // 플레이어면 본인 입장 패킷 전송
             if (objectType == GameObjectType.Player)
@@ -310,12 +333,9 @@ namespace Server.Game
                     leavePacket.RoomExitReason = RoomExitReason.GameLose;
                     player.Session.Send(leavePacket);
                 }
-                RemoveObject(objectId);
             }
-            else if (type == GameObjectType.Monster)
-            {
-                RemoveObject(objectId);
-            }
+            RemoveObject(objectId);
+
             // 타인한테 정보 전송
             {
                 S_Despawn despawnPacket = new S_Despawn();
@@ -336,7 +356,7 @@ namespace Server.Game
         {
             if (player == null || movePacket == null)
                 return;
-
+            
             // 서버에서 상태 업데이트
             player.ObjectState = movePacket.ObjectState;
 
@@ -458,6 +478,11 @@ namespace Server.Game
             {
                 Monster monster = (Monster)gameObject;
                 _monsters.Add(monster.Id, monster);
+            }
+            else if (gameObject.ObjectType == GameObjectType.Projectile)
+            {
+                Projectile projectile = (Projectile)gameObject;
+                _projectiles.Add(projectile.Id, projectile);
             }
         }
 
