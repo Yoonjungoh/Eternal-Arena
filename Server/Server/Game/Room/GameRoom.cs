@@ -154,7 +154,7 @@ namespace Server.Game
             attackPacket.DamagedObjectList.Add(damagedInfo);
 
             // 디스폰도 같이 처리해줘야 함
-            
+            LeaveGame(projectile.Id);
 
             Broadcast(attackPacket);
         }
