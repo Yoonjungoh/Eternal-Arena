@@ -34,6 +34,7 @@ enum MsgId {
   C_START_COUNTDOWN = 27;
   S_START_COUNTDOWN = 28;
   C_SPAWN_PROJECTILE = 29;
+  C_DESPAWN = 30;
   C_TIMESTAMP = 105;
   S_TIMESTAMP = 106;
   C_CHANGE_CREATURE_STATE = 107;
@@ -165,7 +166,11 @@ message S_Spawn {
 message S_Despawn {
   repeated int32 objectIdList = 1;
   int32 playerCount = 2;
-  bool canRespawn = 3;
+  bool can
+  Respawn = 3;
+} 
+message C_Despawn {
+  int32 objectId = 1;
 } 
 
 message C_Move {

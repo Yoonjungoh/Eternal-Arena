@@ -19,6 +19,7 @@ public class ProjectileController : BaseController
     protected override void UpdateMove()
     {
         base.UpdateMove();
+
         // 서버에서 받은 Velocity로 이동
         Vector3 moveVelocity = new Vector3(Velocity.X, Velocity.Y, Velocity.Z);
         transform.position += moveVelocity * Time.deltaTime;

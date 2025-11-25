@@ -31,6 +31,8 @@ namespace Server.Game
 
         public event Action<int> OnEmptyRoom; // 방이 비었을 때 알림 (roomId)
         public event Action OnPlayerInfoChanged;  // 방 정보 바뀌었을 때 알림 (roomId)
+        private bool _isInit = false;
+
         public void Init()
         {
             //TestTimer();
@@ -42,11 +44,16 @@ namespace Server.Game
             SpawnMonster(MonsterType.Bear, new Vector3(80, -27, 500));
             SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 420));
             //SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 480));
+
+            _isInit = true;
         }
 
         // 어디선가 주기적으로 호출해줘야 함
         public void Update()
         {
+            if (_isInit == false)
+                return;
+
             Flush();
             foreach (Monster monster in _monsters.Values)
             {
@@ -85,10 +92,11 @@ namespace Server.Game
             // 회전에서 forward 뽑기
             Vector3 forward = MovementHelper.ForwardFrom(projectile.Rotation);
 
-            //// Y 제거 + 정규화
-            //forward.Y = 0;
+            // 정규화
             if (forward.LengthSquared() > 1e-6f)
+            {
                 forward = Vector3.Normalize(forward);
+            }
 
             // 스폰 위치 = 플레이어 위치 + forward * 오프셋
             Vector3 ownerPos = MovementHelper.ProtoVec3ToVec3(owner.Position);
@@ -135,14 +143,14 @@ namespace Server.Game
             // 서버에서 예측한 투사체 위치랑 적 위치 비교해서 오차 심하지 않으면 데미지 허용
             Vector3 projectilePos = projectile.CurrentPosition;
             Vector3 damagedObjectPos = damagedObject.CurrentPosition;
-            //float dist = Vector3.Distance(instigatorPos, damagedObjectPos);
+            //float dist = Vector3.Distance(projectilePos, damagedObjectPos);
             //if (dist > DataManager.Instance.ProjectileDistanceErrorThreshold)
             //{
             //    // 너무 멀리 떨어져 있음
             //    ConsoleLogManager.Instance.Log($"[Warning] Projectile attack distance too far: {dist}");
             //    return;
             //}
-            
+
             // 데미지 처리
             S_Attack attackPacket = new S_Attack();
             damagedObject.OnDamaged(projectile, projectile.ObjectState.Stat.MagicMissileAttakDamage);
@@ -249,7 +257,7 @@ namespace Server.Game
             gameObject.CreatureState = CreatureState.Idle;
             enteGamePacket.ObjectState.CreatureState = CreatureState.Idle;
 
-            // Type 관련 분기 초기화
+            // TODO - Type 관련 분기 초기화 (없어도 되지 않나..?)
             if (objectType == GameObjectType.Monster)
             {
                 enteGamePacket.ObjectState.MonsterType = gameObject.MonsterType;
