@@ -85,14 +85,14 @@ public class GameRoomObjectManager
             
             projectile.ObjectState = objectState;
             projectile.GameObjectType = objectType;
-            
-            //projectile.SetServerState(
-            //    objectState.Position,
-            //    objectState.Rotation,
-            //    objectState.Velocity,
-            //    objectState.ServerReceivedTime
-            //);
-            
+
+            projectile.SetServerState(
+                objectState.Position,
+                objectState.Rotation,
+                objectState.Velocity,
+                objectState.ServerReceivedTime
+            );
+
             _objects.Add(objectState.ObjectId, projectile.gameObject);
             _projectileOwners.Add(objectState.ObjectId, objectState.OwnerId);
         }

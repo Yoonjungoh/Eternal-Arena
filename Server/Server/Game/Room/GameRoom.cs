@@ -77,15 +77,27 @@ namespace Server.Game
 
             // 주인 추가해주기
             projectile.OwnerId = ownerId;
-            //projectile.ObjectState.Name = $"{projectile.ProjectileType}_{projectile.ObjectState.ObjectId}";
+            var owner = _gameObjects[ownerId];
 
-            // 위치, 각도 추가해주기 (속도는 본인 속도)
-            projectile.Position = _gameObjects[ownerId].Position; 
-            projectile.Rotation = _gameObjects[ownerId].Rotation;
-            
+            // 먼저 회전부터 세팅
+            projectile.Rotation = owner.Rotation;
+
+            // 회전에서 forward 뽑기
             Vector3 forward = MovementHelper.ForwardFrom(projectile.Rotation);
-            projectile.Velocity = MovementHelper.Vec3ToProtoVec3(forward * projectile.Stat.MoveSpeed);
 
+            //// Y 제거 + 정규화
+            //forward.Y = 0;
+            if (forward.LengthSquared() > 1e-6f)
+                forward = Vector3.Normalize(forward);
+
+            // 스폰 위치 = 플레이어 위치 + forward * 오프셋
+            Vector3 ownerPos = MovementHelper.ProtoVec3ToVec3(owner.Position);
+            Vector3 spawnPos = ownerPos + forward * owner.ProjectileSpawnOffset;
+
+            // 세팅
+            projectile.Position = MovementHelper.Vec3ToProtoVec3(spawnPos);
+            projectile.Velocity = MovementHelper.Vec3ToProtoVec3(forward * projectile.Stat.MoveSpeed);
+            
             Push(EnterGame, projectile);
         }
 
@@ -111,30 +123,39 @@ namespace Server.Game
             if (instigator == null) 
                 return;
 
+            // 이미 데미지 입힌 투사체면 return
+            Projectile projectile = instigator as Projectile;
+            if (projectile == null || projectile.hasDealtDamage == true)
+                return;
+
             _gameObjects.TryGetValue(damagedObjectId, out GameObject damagedObject);
             if (damagedObject == null)
                 return;
 
             // 서버에서 예측한 투사체 위치랑 적 위치 비교해서 오차 심하지 않으면 데미지 허용
-            Vector3 instigatorPos = instigator.CurrentPosition;
+            Vector3 projectilePos = projectile.CurrentPosition;
             Vector3 damagedObjectPos = damagedObject.CurrentPosition;
-            float dist = Vector3.Distance(instigatorPos, damagedObjectPos);
-            if (dist > DataManager.Instance.ProjectileDistanceErrorThreshold)
-            {
-                // 너무 멀리 떨어져 있음
-                ConsoleLogManager.Instance.Log($"[Warning] Projectile attack distance too far: {dist}");
-                return;
-            }
+            //float dist = Vector3.Distance(instigatorPos, damagedObjectPos);
+            //if (dist > DataManager.Instance.ProjectileDistanceErrorThreshold)
+            //{
+            //    // 너무 멀리 떨어져 있음
+            //    ConsoleLogManager.Instance.Log($"[Warning] Projectile attack distance too far: {dist}");
+            //    return;
+            //}
             
             // 데미지 처리
             S_Attack attackPacket = new S_Attack();
-            damagedObject.OnDamaged(instigator, instigator.ObjectState.Stat.CommonAttackDamage);
+            damagedObject.OnDamaged(projectile, projectile.ObjectState.Stat.MagicMissileAttakDamage);
+            projectile.hasDealtDamage = true;   // 데미지 한 번 입혔으니 다시 요청들어 오면 거부
 
             DamagedInfo damagedInfo = new DamagedInfo();
             damagedInfo.ObjectId = damagedObjectId;
             damagedInfo.RemainHp = damagedObject.ObjectState.Stat.Hp;
             attackPacket.DamagedObjectList.Add(damagedInfo);
+
+            // 디스폰도 같이 처리해줘야 함
             
+
             Broadcast(attackPacket);
         }
 

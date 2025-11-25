@@ -8,6 +8,8 @@ namespace Server.Game
 {
     public class Projectile : GameObject
     {
+        public bool hasDealtDamage { get; set; } = false;
+
         public Projectile()
         {
             ObjectType = GameObjectType.Projectile;

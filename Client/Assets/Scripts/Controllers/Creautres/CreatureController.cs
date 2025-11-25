@@ -151,12 +151,9 @@ public class CreatureController : BaseController
         _rb.isKinematic = true;
     }
 
-    public virtual void SetServerState(ProtoVector3 pos, ProtoQuaternion rot, ProtoVector3 vel, long serverReceivedTime)
+    public override void SetServerState(ProtoVector3 pos, ProtoQuaternion rot, ProtoVector3 vel, long serverReceivedTime)
     {
-        _serverPosition = new Vector3(pos.X, pos.Y, pos.Z);
-        _serverRotation = new Quaternion(rot.X, rot.Y, rot.Z, rot.W);
-        _serverVelocity = new Vector3(vel.X, vel.Y, vel.Z);
-        _serverReceivedTimeMs = serverReceivedTime;
+        base.SetServerState(pos, rot, vel, serverReceivedTime);
     }
 
     protected IEnumerator CoReturnToIdleAfterAttack(WaitForSeconds waitAttackReturn)

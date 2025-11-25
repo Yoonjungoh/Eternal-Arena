@@ -38,6 +38,7 @@ namespace Server.Game
         public MonsterType MonsterType { get { return ObjectState.MonsterType; } set { ObjectState.MonsterType = value; } }
         public ProjectileType ProjectileType { get { return ObjectState.ProjectileType; } set { ObjectState.ProjectileType = value; } }
         public int OwnerId { get { return ObjectState.OwnerId; } set { ObjectState.OwnerId = value; } }
+        public float ProjectileSpawnOffset { get; set; } = 3.0f;   // 투사체 소환 오프셋 (기본은 주인 중앙에 스폰됨)
         public GameObject()
         {
             ObjectState = new ObjectState();
