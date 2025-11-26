@@ -27,32 +27,45 @@ public class ProjectileController : BaseController
 
     protected virtual void OnTriggerEnter(Collider other)
     {
-        if (Managers.GameRoomObject.IsLayerIgnoredByProjectile(other.gameObject.layer))
+        int layer = other.gameObject.layer;
+
+        // 1. 무시해야 하는 레이어면 바로 탈출 (가장 빠른 필터)
+        if (Managers.GameRoomObject.IsLayerIgnoredByProjectile(layer))
             return;
 
-        int ownerId = Managers.GameRoomObject.GetProjectileOwnerId(Id);
-        if (ownerId == -1)
-            return;
-
-        Managers.UI.ShowToastPopup($"{other.name}");
-        CreatureController creature = other.gameObject.GetComponent<CreatureController>();
-
-        // 타깃이 주인이 아니고 데미지를 입는 레이어의 오브젝트여야 함
-        if (creature != null && creature.Id != ownerId &&
-            Managers.GameRoomObject.IsDamageable(other.gameObject.layer))
+        // 2. 데미지를 입을 수 없는 레이어면 바로 탈출
+        if (!Managers.GameRoomObject.IsDamageable(layer))
         {
-            // 서버에 데미지 요청
-            C_Attack attackPacket = new C_Attack();
-            attackPacket.AttackType = AttackType.RangedAttack;
-            attackPacket.InstigatorId = Id;
-            attackPacket.DamagedObjectId = creature.Id;
-            Managers.Network.Send(attackPacket);
+            // 데미지 불가 → 그냥 삭제
+            Managers.GameRoomObject.Remove(Id);
             return;
         }
 
-        // 다른 곳에 닿으면 그냥 삭제
-        Managers.GameRoomObject.Remove(Id);
+        // 3. 여기까지 왔다는 건 '데미지 가능한 레이어'
+        // 이제서야 GetComponent 호출 (최소 비용)
+        CreatureController creature = other.gameObject.GetComponent<CreatureController>();
+        if (creature == null)
+        {
+            Managers.GameRoomObject.Remove(Id);
+            return;
+        }
+
+        // 4. 주인 ID 체크
+        int ownerId = Managers.GameRoomObject.GetProjectileOwnerId(Id);
+        if (ownerId == -1 || creature.Id == ownerId)
+            return;
+
+        // 5. 데미지 요청 전송
+        C_Attack attackPacket = new C_Attack()
+        {
+            AttackType = AttackType.RangedAttack,
+            InstigatorId = Id,
+            DamagedObjectId = creature.Id
+        };
+
+        Managers.Network.Send(attackPacket);
     }
+
 
     public override void OnDead()
     {
