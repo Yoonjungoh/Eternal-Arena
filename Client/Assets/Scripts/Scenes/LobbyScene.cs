@@ -18,6 +18,10 @@ public class LobbyScene : BaseScene
         {
             Managers.UI.ShowSceneUI<UI_Lobby>();
         }
+
+        // 커서 잠금 풀기
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private void Awake()

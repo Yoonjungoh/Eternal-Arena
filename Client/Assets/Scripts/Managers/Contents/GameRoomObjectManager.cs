@@ -18,7 +18,16 @@ public class GameRoomObjectManager
         "Player",
         "Monster"
     };
+
+    private HashSet<string> _IgnoredLayerByProjectileName = new HashSet<string>()
+    {
+        "Ground",
+    };
+
     private HashSet<int> _damagedObjects = new HashSet<int>();
+
+    private HashSet<int> _IgnoredLayerByProjectiles = new HashSet<int>();
+
     private Dictionary<int, int> _projectileOwners = new Dictionary<int, int>();    // key = 투사체, value = 주인
 
     public GameObjectType GetObjectTypeById(int id)
@@ -143,6 +152,11 @@ public class GameRoomObjectManager
         return _damagedObjects.Contains(layer);
     }
 
+    public bool IsLayerIgnoredByProjectile(int layer)
+    {
+        return _IgnoredLayerByProjectiles.Contains(layer);
+    }
+
     public void HandleChangeCreatureState(int objectId, CreatureState creatureState)
     {
         _objects.TryGetValue(objectId, out GameObject go);
@@ -174,9 +188,13 @@ public class GameRoomObjectManager
 
     public void Init()
     {
-        foreach (string damagedObjectName in _damagedObjectName)
+        foreach (string objectName in _damagedObjectName)
         {
-            _damagedObjects.Add(LayerMask.NameToLayer(damagedObjectName));
+            _damagedObjects.Add(LayerMask.NameToLayer(objectName));
+        }
+        foreach (string objectName in _IgnoredLayerByProjectileName)
+        {
+            _IgnoredLayerByProjectiles.Add(LayerMask.NameToLayer(objectName));
         }
     }
 

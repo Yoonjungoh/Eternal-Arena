@@ -31,7 +31,6 @@ namespace Server.Game
 
         public event Action<int> OnEmptyRoom; // 방이 비었을 때 알림 (roomId)
         public event Action OnPlayerInfoChanged;  // 방 정보 바뀌었을 때 알림 (roomId)
-        private bool _isInit = false;
 
         public void Init()
         {
@@ -44,16 +43,11 @@ namespace Server.Game
             SpawnMonster(MonsterType.Bear, new Vector3(80, -27, 500));
             SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 420));
             //SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 480));
-
-            _isInit = true;
         }
 
         // 어디선가 주기적으로 호출해줘야 함
         public void Update()
         {
-            if (_isInit == false)
-                return;
-
             Flush();
             foreach (Monster monster in _monsters.Values)
             {
@@ -100,7 +94,7 @@ namespace Server.Game
 
             // 스폰 위치 = 플레이어 위치 + forward * 오프셋
             Vector3 ownerPos = MovementHelper.ProtoVec3ToVec3(owner.Position);
-            Vector3 spawnPos = ownerPos + forward * owner.ProjectileSpawnOffset;
+            Vector3 spawnPos = ownerPos + (forward * owner.ProjectileSpawnOffset) + Vector3.UnitY;   // 살짝 위에
 
             // 세팅
             projectile.Position = MovementHelper.Vec3ToProtoVec3(spawnPos);

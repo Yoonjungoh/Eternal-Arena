@@ -23,15 +23,18 @@ public class ProjectileController : BaseController
         // 서버에서 받은 Velocity로 이동
         Vector3 moveVelocity = new Vector3(Velocity.X, Velocity.Y, Velocity.Z);
         transform.position += moveVelocity * Time.deltaTime;
-        Debug.Log($"{moveVelocity.magnitude} => ({transform.position.x}, {transform.position.y} ,{transform.position.z} )");
     }
 
     protected virtual void OnTriggerEnter(Collider other)
     {
+        if (Managers.GameRoomObject.IsLayerIgnoredByProjectile(other.gameObject.layer))
+            return;
+
         int ownerId = Managers.GameRoomObject.GetProjectileOwnerId(Id);
         if (ownerId == -1)
             return;
 
+        Managers.UI.ShowToastPopup($"{other.name}");
         CreatureController creature = other.gameObject.GetComponent<CreatureController>();
 
         // 타깃이 주인이 아니고 데미지를 입는 레이어의 오브젝트여야 함
