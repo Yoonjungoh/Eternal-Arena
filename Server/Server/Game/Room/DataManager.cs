@@ -71,5 +71,7 @@ namespace Server.Game
         public float MaxDamage { get; set; } = 1000.0f;
 
         public float ProjectileDistanceErrorThreshold = 0.1f;  // 투사체 오차 허용 스레시 홀드
+
+        public long ProcessStartTime = Util.GetTimestampMs();
     }
 }

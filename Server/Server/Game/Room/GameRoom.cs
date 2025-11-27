@@ -49,9 +49,38 @@ namespace Server.Game
         public void Update()
         {
             Flush();
+            UpdateMonsters();
+            UpdateProjectiles();
+        }
+
+        private void UpdateMonsters()
+        {
             foreach (Monster monster in _monsters.Values)
             {
                 monster.Update();
+            }
+        }
+
+        private void UpdateProjectiles()
+        {
+            if (_projectiles == null || _projectiles.Count == 0)
+                return;
+
+            long now = Util.GetTimestampMs();
+
+            List<int> removeList = new List<int>();
+
+            foreach (Projectile projectile in _projectiles.Values)
+            {
+                if (now - projectile.SpawnTime >= projectile.LifeTime)
+                {
+                    removeList.Add(projectile.Id);
+                }
+            }
+
+            foreach (int id in removeList)
+            {
+                LeaveGame(id);
             }
         }
 
@@ -99,7 +128,8 @@ namespace Server.Game
             // 세팅
             projectile.Position = MovementHelper.Vec3ToProtoVec3(spawnPos);
             projectile.Velocity = MovementHelper.Vec3ToProtoVec3(forward * projectile.Stat.MoveSpeed);
-            
+            projectile.SpawnTime = Util.GetTimestampMs();
+
             Push(EnterGame, projectile);
         }
 
@@ -519,6 +549,14 @@ namespace Server.Game
                 {
                     _players.Remove(id);
                     OnPlayerInfoChanged?.Invoke();
+                }
+                else if (gameObjectType == GameObjectType.Monster)
+                {
+                    _monsters.Remove(id);
+                }
+                else if (gameObjectType == GameObjectType.Projectile)
+                {
+                    _projectiles.Remove(id);
                 }
                 return true;
             }
