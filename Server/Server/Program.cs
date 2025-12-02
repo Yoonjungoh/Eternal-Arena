@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
+using Server.DB;
 using Server.Game;
 using ServerCore;
 
@@ -23,6 +24,11 @@ namespace Server
 		{
 			// Json 데이터 역직렬화
 			//DataManager.Instance.LoadAllData();
+			using (GameDbContext db = new GameDbContext())
+			{
+				db.Accounts.Add(new AccountDb() { AccountName = "TestAccount1" });
+				db.SaveChanges();
+			}
 
 			// DNS (Domain Name System)
 			string host = Dns.GetHostName();
