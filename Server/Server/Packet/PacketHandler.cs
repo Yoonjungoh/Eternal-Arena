@@ -1,10 +1,12 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server;
+using Server.DB;
 using Server.Game;
 using ServerCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using static System.Collections.Specialized.BitVector32;
@@ -197,6 +199,42 @@ class PacketHandler
             return;
 
         player.GameRoom.Push(player.GameRoom.HandleChangeCreatureState, player.Id, changeCreatureStatePacket.CreatureState);
+    }
+    public static void C_LoginHandler(PacketSession session, IMessage packet)
+    {
+        C_Login loginPacket = packet as C_Login;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null || player.Lobby == null || player.GameRoom == null)
+            return;
+
+        // TODO - 현재 문제 있음
+        using (GameDbContext db = new GameDbContext())
+        {
+            AccountDb findAccount = db.Accounts
+                .Where(a => (a.AccountId == loginPacket.Id) && a.AccountPassword == loginPacket.Password).FirstOrDefault();
+
+            if (findAccount != null)
+            {
+                S_Login serverLoginPacket = new S_Login();
+                serverLoginPacket.LoginStatus = LoginStatus.Success;
+                clientSession.Send(serverLoginPacket);
+            }
+            else
+            {
+                // TODO - 우선은 회원가입 바로 시키기
+                AccountDb newAccount = new AccountDb();
+                newAccount.AccountId = loginPacket.Id;
+                newAccount.AccountPassword = loginPacket.Password;
+                db.Accounts.Add(newAccount);
+                db.SaveChanges();
+
+                S_Login serverLoginPacket = new S_Login();
+                serverLoginPacket.LoginStatus = LoginStatus.Success;
+                clientSession.Send(serverLoginPacket);
+            }
+        }
     }
 
     public static void C_StartCountdownHandler(PacketSession session, IMessage packet)

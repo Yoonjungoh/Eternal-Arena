@@ -12,7 +12,8 @@ namespace Server.DB
     public class AccountDb
     {
         public int AccountDbId { get; set; }    // ByConvention 방법으로 클래스 이름에 Id 붙이면 자동으로 pk됨
-        public string AccountName { get; set; } // 일단은 Unique 하게 설정 (Index 해줌)
+        public string AccountId { get; set; } // 일단은 Unique 하게 설정 (Index 해줌)
+        public string AccountPassword { get; set; } // 일단은 Unique 하게 설정 (Index 해줌)
         public ICollection<PlayerDb> Players { get; set; }  // 이렇게 하면 Player 테이블에 FK 컬럼이 생성됨 
     }
 

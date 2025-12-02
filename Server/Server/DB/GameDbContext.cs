@@ -28,7 +28,7 @@ namespace Server.DB
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<AccountDb>()
-                .HasIndex(a => a.AccountName)
+                .HasIndex(a => a.AccountId)
                 .IsUnique();
             
             builder.Entity<PlayerDb>()

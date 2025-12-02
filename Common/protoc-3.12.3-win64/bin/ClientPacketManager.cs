@@ -60,7 +60,11 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.STimestamp, MakePacket<S_Timestamp>);
 		_handler.Add((ushort)MsgId.STimestamp, PacketHandler.S_TimestampHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeCreatureState, MakePacket<S_ChangeCreatureState>);
-		_handler.Add((ushort)MsgId.SChangeCreatureState, PacketHandler.S_ChangeCreatureStateHandler);
+		_handler.Add((ushort)MsgId.SChangeCreatureState, PacketHandler.S_ChangeCreatureStateHandler);		
+		_onRecv.Add((ushort)MsgId.SConnected, MakePacket<S_Connected>);
+		_handler.Add((ushort)MsgId.SConnected, PacketHandler.S_ConnectedHandler);		
+		_onRecv.Add((ushort)MsgId.SLogin, MakePacket<S_Login>);
+		_handler.Add((ushort)MsgId.SLogin, PacketHandler.S_LoginHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

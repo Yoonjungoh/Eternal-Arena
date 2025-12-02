@@ -34,11 +34,13 @@ enum MsgId {
   C_START_COUNTDOWN = 27;
   S_START_COUNTDOWN = 28;
   C_SPAWN_PROJECTILE = 29;
-  C_DESPAWN = 30;
   C_TIMESTAMP = 105;
   S_TIMESTAMP = 106;
   C_CHANGE_CREATURE_STATE = 107;
   S_CHANGE_CREATURE_STATE = 108;
+  S_CONNECTED = 109;
+  C_LOGIN = 110;
+  S_LOGIN = 111;
 }
 
 enum CreatureState {
@@ -81,6 +83,12 @@ enum RoomExitReason {
   MANUAL_EXIT = 3;
 }
 
+enum LoginStatus {
+  LOGIN_STATUS_NONE = 0; 
+  LOGIN_STATUS_SUCCESS = 1; 
+  LOGIN_STATUS_ID_WRONG = 2; // ID가 틀림
+  LOGIN_STATUS_PASSWORD_WRONG = 3;	// 비밀번호가 틀림
+}
 message S_AssignUserId {
   int32 userId = 1;
 }
@@ -166,11 +174,7 @@ message S_Spawn {
 message S_Despawn {
   repeated int32 objectIdList = 1;
   int32 playerCount = 2;
-  bool can
-  Respawn = 3;
-} 
-message C_Despawn {
-  int32 objectId = 1;
+  bool canRespawn = 3;
 } 
 
 message C_Move {
@@ -232,6 +236,18 @@ message C_ChangeCreatureState {
 message S_ChangeCreatureState {
   int32 objectId = 1;
   CreatureState creatureState = 2;
+}
+
+message S_Connected {
+}
+
+message C_Login {
+  string id = 1;
+  string password = 2;
+}
+
+message S_Login {
+  LoginStatus loginStatus = 1; 
 }
 
 message RoomInfo {

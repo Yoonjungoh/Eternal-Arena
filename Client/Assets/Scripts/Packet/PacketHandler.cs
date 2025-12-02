@@ -384,4 +384,16 @@ class PacketHandler
         S_ChangeCreatureState changeCreatureStatePacket = packet as S_ChangeCreatureState;
         Managers.GameRoomObject.HandleChangeCreatureState(changeCreatureStatePacket.ObjectId, changeCreatureStatePacket.CreatureState);
     }
+
+    public static void S_ConnectedHandler(PacketSession session, IMessage packet)
+    {
+        S_Connected connectedPacket = packet as S_Connected;
+        // TODO - 연결 성공 처리
+        Managers.UI.ShowToastPopup("서버와 연결되었습니다.");
+    }
+
+    public static void S_LoginHandler(PacketSession session, IMessage packet)
+    {
+        S_Login loginPacket = packet as S_Login;
+    }
 }
