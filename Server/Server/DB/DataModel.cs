@@ -22,6 +22,11 @@ namespace Server.DB
     {
         public int PlayerDbId { get; set; }
         public string PlayerName { get; set; }  // 일단은 Unique 하게 설정 (Index 해줌)
+
+        [ForeignKey("Account")]
+        public int AccountDbId { get; set; }  // FK 컬럼
         public AccountDb Account { get; set; }
+
+        public int Gold { get; set; }
     }
 }
