@@ -251,7 +251,7 @@ namespace Server
 
                 // 4.회원 가입을 통한 로그인 성공 의미
                 ClientServerState = ClientServerState.PlayerSelect;
-                AccountId = findAccount.AccountDbId;
+                AccountId = newAccount.AccountDbId;
                 serverLoginPacket.LoginStatus = LoginStatus.Success;
                 Send(serverLoginPacket);
             }

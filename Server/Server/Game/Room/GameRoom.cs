@@ -83,13 +83,13 @@ namespace Server.Game
                 LeaveGame(id);
             }
         }
-
+        
         public void SpawnMonster(MonsterType monsterType, Vector3 spawnPos)
         {
             Monster monster = MonsterFactory.Create(monsterType);
 
             monster.MonsterType = monsterType;
-            //monster.ObjectState.Name = $"{monsterType}_{monster.ObjectState.ObjectId}";
+            monster.ObjectState.Name = $"{monsterType}_{monster.ObjectState.ObjectId}";
             monster.Position = MovementHelper.Vec3ToProtoVec3(spawnPos);
 
             Push(EnterGame, monster);
@@ -262,7 +262,6 @@ namespace Server.Game
             GameObjectType objectType = gameObject.ObjectType;
 
             gameObject.GameRoom = this;
-            gameObject.ObjectState.Name = $"{gameObject.ObjectType}_{gameObject.ObjectState.ObjectId}";
 
             S_EnterGame enteGamePacket = new S_EnterGame();
             enteGamePacket.ObjectState = new ObjectState();

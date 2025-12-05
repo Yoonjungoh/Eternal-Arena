@@ -20,6 +20,7 @@ namespace Server.Game
         public GameRoom GameRoom { get; set; }
 
 		public ObjectState ObjectState { get; set; }
+        public string Name { get { return ObjectState.Name; } set { ObjectState.Name = value; } }
         public ProtoVector3 Position { get { return ObjectState.Position; } set { ObjectState.Position = value; } }
         public ProtoQuaternion Rotation { get { return ObjectState.Rotation; } set { ObjectState.Rotation = value; } }
         public ProtoVector3 Velocity { get { return ObjectState.Velocity; } set { ObjectState.Velocity = value; } }

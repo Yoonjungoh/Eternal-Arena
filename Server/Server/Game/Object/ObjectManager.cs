@@ -40,8 +40,6 @@ namespace Server.Game
                     {
                         _projectiles.Add(gameObject.Id, gameObject as Projectile);
                     }
-                    // 네이밍
-                    gameObject.ObjectState.Name = $"{gameObject.ObjectType}_{gameObject.ObjectState.ObjectId}";
 
                 }
 				catch (Exception e)
