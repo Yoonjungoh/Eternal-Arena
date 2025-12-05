@@ -14,43 +14,100 @@ using System.Linq;
 
 namespace Server
 {
-	public partial class ClientSession : PacketSession
-	{
-		public Player MyPlayer { get; set; }
-		public int SessionId { get; set; }
+    public partial class ClientSession : PacketSession
+    {
+        #region 네트워크
 
-        public void HandleCreatePlayer(string name)
+        public void Send(IMessage packet)
         {
-
+            string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
+            MsgId msgId = (MsgId)Enum.Parse(typeof(MsgId), msgName);
+            ushort size = (ushort)packet.CalculateSize();
+            byte[] sendBuffer = new byte[size + 4];
+            Array.Copy(BitConverter.GetBytes((ushort)(size + 4)), 0, sendBuffer, 0, sizeof(ushort));
+            Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuffer, 2, sizeof(ushort));
+            Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
+            Send(new ArraySegment<byte>(sendBuffer));
         }
 
-        public void HandleLogin(C_Login loginPacket)
+        public void Send(List<IMessage> packetList)
         {
-            using (GameDbContext db = new GameDbContext())
+            foreach (IMessage packet in packetList)
             {
-                AccountDb findAccount = db.Accounts
-                    .Where(a => (a.AccountId == loginPacket.Id) && a.AccountPassword == loginPacket.Password).FirstOrDefault();
+                string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
+                MsgId msgId = (MsgId)Enum.Parse(typeof(MsgId), msgName);
+                ushort size = (ushort)packet.CalculateSize();
+                byte[] sendBuffer = new byte[size + 4];
+                Array.Copy(BitConverter.GetBytes((ushort)(size + 4)), 0, sendBuffer, 0, sizeof(ushort));
+                Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuffer, 2, sizeof(ushort));
+                Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
+                Send(new ArraySegment<byte>(sendBuffer));
+            }
+        }
 
-                if (findAccount != null)
+        public override void OnConnected(EndPoint endPoint)
+        {
+            ConsoleLogManager.Instance.Log($"OnConnected : {endPoint}");
+
+            S_Connected connectedPacket = new S_Connected();
+            Send(connectedPacket);
+
+            // TODO - MSSQL 사용시 DB에서 긁어올 부분, 유저 정보
+            MyPlayer = ObjectManager.Instance.Add<Player>();
+            MyPlayer.Init();
+            MyPlayer.Session = this;
+
+            // TODO - 이후에 메인 메뉴 생기면 분리
+            EnterLobby();
+        }
+
+        public override void OnRecvPacket(ArraySegment<byte> buffer)
+        {
+            PacketManager.Instance.OnRecvPacket(this, buffer);
+        }
+
+        public override void OnDisconnected(EndPoint endPoint)
+        {
+            if (MyPlayer == null)
+            {
+                ConsoleLogManager.Instance.Log("Can't Find MyPlayer");
+                return;
+            }
+
+            // 로비에서 내보내기
+            if (MyPlayer.Lobby != null)
+            {
+                MyPlayer.Lobby.Push(MyPlayer.Lobby.LeaveLobby, MyPlayer.Id);
+            }
+
+            // 대기방에서 내보내기
+            if (MyPlayer.WaitingRoom != null)
+            {
+                WaitingRoom watingRoom = MyPlayer.Lobby.WaitingRoomManager.Find(MyPlayer.WaitingRoom.RoomId);
+                if (watingRoom != null)
                 {
-                    S_Login serverLoginPacket = new S_Login();
-                    serverLoginPacket.LoginStatus = LoginStatus.Success;
-                    Send(serverLoginPacket);
+                    watingRoom.Push(watingRoom.LeaveRoom, MyPlayer.ObjectState.ObjectId);
                 }
                 else
                 {
-                    // TODO - 우선은 회원가입 바로 시키기
-                    AccountDb newAccount = new AccountDb();
-                    newAccount.AccountId = loginPacket.Id;
-                    newAccount.AccountPassword = loginPacket.Password;
-                    db.Accounts.Add(newAccount);
-                    db.SaveChanges();
-
-                    S_Login serverLoginPacket = new S_Login();
-                    serverLoginPacket.LoginStatus = LoginStatus.Success;
-                    Send(serverLoginPacket);
+                    ConsoleLogManager.Instance.Log($"Can't Find Room {MyPlayer.WaitingRoom.RoomId} -> UserId: {MyPlayer.Id}");
                 }
             }
+
+            SessionManager.Instance.Remove(this);
+            ConsoleLogManager.Instance.Log($"OnDisconnected : {endPoint}");
         }
+
+        public override void OnSend(int numOfBytes)
+        {
+            //ConsoleLogManager.Instance.Log($"Transferred bytes: {numOfBytes}");
+        }
+
+        public void EnterLobby()
+        {
+            ConsoleLogManager.Instance.Log($"Player Connected in Lobby {MyPlayer.Session.SessionId}");
+            LobbyManager.Instance.EnterLobby(1, MyPlayer);	// TODO - 1번 로비로 강제 이동
+        }
+        #endregion
     }
 }
