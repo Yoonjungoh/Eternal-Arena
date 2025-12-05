@@ -43,6 +43,7 @@ namespace Server
                 {
                     // 1. DB 로드
                     AccountDb account = db.Accounts
+                        .AsNoTracking()
                         .Include(a => a.Players)
                         .Where(a => a.AccountDbId == AccountId)
                         .FirstOrDefault();
@@ -86,6 +87,7 @@ namespace Server
 
                     // 4. 최신 캐릭터 목록 다시 로드
                     account = db.Accounts
+                        .AsNoTracking()
                         .Include(a => a.Players)
                         .Where(a => a.AccountDbId == AccountId)
                         .FirstOrDefault();
@@ -115,6 +117,7 @@ namespace Server
                 using (GameDbContext db = new GameDbContext())
                 {
                     AccountDb account = db.Accounts
+                        .AsNoTracking()
                         .Include(a => a.Players)
                         .Where(a => a.AccountDbId == AccountId)
                         .FirstOrDefault();
@@ -153,6 +156,7 @@ namespace Server
                 using (GameDbContext db = new GameDbContext())
                 {
                     AccountDb account = db.Accounts
+                        .AsNoTracking()
                         .Include(a => a.Players)
                         .Where(a => a.AccountDbId == AccountId)
                         .FirstOrDefault();
@@ -205,6 +209,7 @@ namespace Server
 
                     // 혹시 모르니 최신 상태 다시 불러오기
                     account = db.Accounts
+                        .AsNoTracking()
                         .Include(a => a.Players)
                         .Where(a => a.AccountDbId == account.AccountDbId)
                         .FirstOrDefault();
@@ -243,6 +248,7 @@ namespace Server
                 {
                     // Account + Players 데이터를 한 번에 로드해야 함
                     AccountDb account = db.Accounts
+                        .AsNoTracking()
                         .Include(a => a.Players)
                         .Where(a => a.AccountDbId == AccountId)
                         .FirstOrDefault();
@@ -293,6 +299,7 @@ namespace Server
                 {
                     // 1. 아이디 존재하는지 먼저 확인
                     AccountDb findAccount = db.Accounts
+                        .AsNoTracking()
                         .Where(a => a.AccountId == loginPacket.Id)
                         .FirstOrDefault();
 
