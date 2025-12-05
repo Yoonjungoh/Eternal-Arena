@@ -12,7 +12,7 @@ public static class Extensions
         try
         {
             db.SaveChanges();
-            return false;
+            return true;
         }
         catch (Exception ex)
         {

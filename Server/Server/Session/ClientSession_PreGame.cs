@@ -307,7 +307,7 @@ namespace Server
                         }
 
                         // 2-2. 이미 로그인 중인 아이디면 접속 못함
-                        if (AccountManager.Instance.Add(findAccount.AccountDbId) == false)
+                        if (AccountManager.Instance.IsAccountLoggedIn(findAccount.AccountDbId))
                         {
                             serverLoginPacket.LoginStatus = LoginStatus.AlreadyLoggedIn;
                             Send(serverLoginPacket);
@@ -315,6 +315,7 @@ namespace Server
                         }
 
                         // 2-3. 비밀번호 확인 성공 후, 로그인 처리
+                        AccountManager.Instance.Add(findAccount.AccountDbId);
                         ClientServerState = ClientServerState.PlayerSelect;
                         AccountId = findAccount.AccountDbId;
                         serverLoginPacket.LoginStatus = LoginStatus.Success;
@@ -335,11 +336,10 @@ namespace Server
                     if (success == false)
                         return;
 
-                    // 4. 회원 가입을 통한 로그인 성공 의미
-                    AccountManager.Instance.Add(newAccount.AccountDbId);
-                    ClientServerState = ClientServerState.PlayerSelect;
+                    // 4. 회원 가입 성공 의미 
+                    ClientServerState = ClientServerState.Login;
                     AccountId = newAccount.AccountDbId;
-                    serverLoginPacket.LoginStatus = LoginStatus.Success;
+                    serverLoginPacket.LoginStatus = LoginStatus.SignUpSuccess;
                     Send(serverLoginPacket);
                 }
             }

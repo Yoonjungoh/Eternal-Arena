@@ -131,14 +131,15 @@ namespace Google.Protobuf.Protocol {
             "QkVBUhABKj0KDlByb2plY3RpbGVUeXBlEhgKFFBST0pFQ1RJTEVfVFlQRV9O",
             "T05FEAASEQoNTUFHSUNfTUlTU0lMRRABKlkKDlJvb21FeGl0UmVhc29uEhkK",
             "FVJPT01fRVhJVF9SRUFTT05fTk9ORRAAEgwKCEdBTUVfV0lOEAESDQoJR0FN",
-            "RV9MT1NFEAISDwoLTUFOVUFMX0VYSVQQAyqeAQoLTG9naW5TdGF0dXMSFQoR",
+            "RV9MT1NFEAISDwoLTUFOVUFMX0VYSVQQAyqzAQoLTG9naW5TdGF0dXMSFQoR",
             "TE9HSU5fU1RBVFVTX05PTkUQABIYChRMT0dJTl9TVEFUVVNfU1VDQ0VTUxAB",
             "EhkKFUxPR0lOX1NUQVRVU19JRF9XUk9ORxACEh8KG0xPR0lOX1NUQVRVU19Q",
             "QVNTV09SRF9XUk9ORxADEiIKHkxPR0lOX1NUQVRVU19BTFJFQURZX0xPR0dF",
-            "RF9JThAEKnsKEUNsaWVudFNlcnZlclN0YXRlEhwKGENMSUVOVF9TRVJWRVJf",
-            "U1RBVEVfTk9ORRAAEgkKBUxPR0lOEAESEQoNUExBWUVSX1NFTEVDVBACEgkK",
-            "BUxPQkJZEAMSEAoMV0FJVElOR19ST09NEAQSDQoJR0FNRV9ST09NEAVCG6oC",
-            "GEdvb2dsZS5Qcm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
+            "RF9JThAEEhMKD1NJR05fVVBfU1VDQ0VTUxAFKnsKEUNsaWVudFNlcnZlclN0",
+            "YXRlEhwKGENMSUVOVF9TRVJWRVJfU1RBVEVfTk9ORRAAEgkKBUxPR0lOEAES",
+            "EQoNUExBWUVSX1NFTEVDVBACEgkKBUxPQkJZEAMSEAoMV0FJVElOR19ST09N",
+            "EAQSDQoJR0FNRV9ST09NEAVCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Qcm90b2Nv",
+            "bGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.AttackType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.ProjectileType), typeof(global::Google.Protobuf.Protocol.RoomExitReason), typeof(global::Google.Protobuf.Protocol.LoginStatus), typeof(global::Google.Protobuf.Protocol.ClientServerState), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -298,6 +299,10 @@ namespace Google.Protobuf.Protocol {
     /// 이미 로그인 되어 있음
     /// </summary>
     [pbr::OriginalName("LOGIN_STATUS_ALREADY_LOGGED_IN")] AlreadyLoggedIn = 4,
+    /// <summary>
+    /// 회원가입 성공 (TODO - 나중에 회원가입 따로 빼기)
+    /// </summary>
+    [pbr::OriginalName("SIGN_UP_SUCCESS")] SignUpSuccess = 5,
   }
 
   public enum ClientServerState {

@@ -397,18 +397,20 @@ class PacketHandler
     public static void S_LoginHandler(PacketSession session, IMessage packet)
     {
         S_Login loginPacket = packet as S_Login;
-        switch (loginPacket.LoginStatus)
+        if (loginPacket == null)
         {
-            case LoginStatus.Success:
-                Managers.Scene.LoadScene(Define.Scene.PlayerSelect);
-                break;
-            case LoginStatus.PasswordWrong:
-                Managers.UI.ShowToastPopup("비밀번호가 틀렸습니다.");
-                break;
-            case LoginStatus.AlreadyLoggedIn:
-                Managers.UI.ShowToastPopup("이미 접속 중인 계정입니다.");
-                break;
+            Debug.Log("S_Login 패킷이 null입니다");
+            return;
         }
+
+        UI_Login loginUI = Managers.UI.CurrentScene.GetComponent<UI_Login>();
+        if (loginUI == null)
+        {
+            Debug.Log("현재 로그인 화면이 아닌데 로그인을 시도하려고 합니다.");
+            return;
+        }
+
+        loginUI.HandleLogin(loginPacket.LoginStatus);
     }
 
     public static void S_RequestPlayerListHandler(PacketSession session, IMessage packet)
