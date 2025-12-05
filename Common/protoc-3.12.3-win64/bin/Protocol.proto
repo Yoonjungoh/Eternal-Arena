@@ -92,12 +92,13 @@ enum LoginStatus {
   LOGIN_STATUS_PASSWORD_WRONG = 3;	// 비밀번호가 틀림
 }
 
-enum PlayerServerState {
-  PLAYER_SERVER_STATE_NONE = 0;
+enum ClientServerState {
+  CLIENT_SERVER_STATE_NONE = 0;
   LOGIN = 1;
-  LOBBY = 2;
-  WAITING_ROOM = 3;
-  GAME_ROOM = 4;
+  PlayerSelect = 2;
+  LOBBY = 3;
+  WAITING_ROOM = 4;
+  GAME_ROOM = 5;
 }
 
 message S_AssignUserId {

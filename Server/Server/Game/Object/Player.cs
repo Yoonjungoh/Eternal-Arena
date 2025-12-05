@@ -12,8 +12,6 @@ namespace Server.Game
         {
             Init();
         }
-        
-        public PlayerServerState PlayerServerState { get; set; }
 
         public string AccountId { get; set; }    // 로그인 Id
 

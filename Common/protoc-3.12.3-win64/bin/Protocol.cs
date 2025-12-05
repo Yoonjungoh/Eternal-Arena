@@ -124,13 +124,13 @@ namespace Google.Protobuf.Protocol {
             "QU5VQUxfRVhJVBADKnoKC0xvZ2luU3RhdHVzEhUKEUxPR0lOX1NUQVRVU19O",
             "T05FEAASGAoUTE9HSU5fU1RBVFVTX1NVQ0NFU1MQARIZChVMT0dJTl9TVEFU",
             "VVNfSURfV1JPTkcQAhIfChtMT0dJTl9TVEFUVVNfUEFTU1dPUkRfV1JPTkcQ",
-            "AypoChFQbGF5ZXJTZXJ2ZXJTdGF0ZRIcChhQTEFZRVJfU0VSVkVSX1NUQVRF",
-            "X05PTkUQABIJCgVMT0dJThABEgkKBUxPQkJZEAISEAoMV0FJVElOR19ST09N",
-            "EAMSDQoJR0FNRV9ST09NEARCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Qcm90b2Nv",
-            "bGIGcHJvdG8z"));
+            "Ayp6ChFDbGllbnRTZXJ2ZXJTdGF0ZRIcChhDTElFTlRfU0VSVkVSX1NUQVRF",
+            "X05PTkUQABIJCgVMT0dJThABEhAKDFBsYXllclNlbGVjdBACEgkKBUxPQkJZ",
+            "EAMSEAoMV0FJVElOR19ST09NEAQSDQoJR0FNRV9ST09NEAVCG6oCGEdvb2ds",
+            "ZS5Qcm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.AttackType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.ProjectileType), typeof(global::Google.Protobuf.Protocol.RoomExitReason), typeof(global::Google.Protobuf.Protocol.LoginStatus), typeof(global::Google.Protobuf.Protocol.PlayerServerState), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.AttackType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.ProjectileType), typeof(global::Google.Protobuf.Protocol.RoomExitReason), typeof(global::Google.Protobuf.Protocol.LoginStatus), typeof(global::Google.Protobuf.Protocol.ClientServerState), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_AssignUserId), global::Google.Protobuf.Protocol.S_AssignUserId.Parser, new[]{ "UserId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_AssignUserId), global::Google.Protobuf.Protocol.C_AssignUserId.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_EnterLobby), global::Google.Protobuf.Protocol.S_EnterLobby.Parser, new[]{ "UserIdList", "RoomInfoList" }, null, null, null, null),
@@ -276,12 +276,13 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("LOGIN_STATUS_PASSWORD_WRONG")] PasswordWrong = 3,
   }
 
-  public enum PlayerServerState {
-    [pbr::OriginalName("PLAYER_SERVER_STATE_NONE")] None = 0,
+  public enum ClientServerState {
+    [pbr::OriginalName("CLIENT_SERVER_STATE_NONE")] None = 0,
     [pbr::OriginalName("LOGIN")] Login = 1,
-    [pbr::OriginalName("LOBBY")] Lobby = 2,
-    [pbr::OriginalName("WAITING_ROOM")] WaitingRoom = 3,
-    [pbr::OriginalName("GAME_ROOM")] GameRoom = 4,
+    [pbr::OriginalName("PlayerSelect")] PlayerSelect = 2,
+    [pbr::OriginalName("LOBBY")] Lobby = 3,
+    [pbr::OriginalName("WAITING_ROOM")] WaitingRoom = 4,
+    [pbr::OriginalName("GAME_ROOM")] GameRoom = 5,
   }
 
   #endregion

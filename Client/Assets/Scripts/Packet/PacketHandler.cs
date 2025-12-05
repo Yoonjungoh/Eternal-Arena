@@ -166,6 +166,7 @@ class PacketHandler
             Managers.WaitingRoom.RoomInfo = updateWatingRoomInfoPacket.RoomInfo;
         }
     }
+
     public static void S_StartGameHandler(PacketSession session, IMessage packet)
     {
         S_StartGame startGamePacket = packet as S_StartGame;
@@ -395,5 +396,19 @@ class PacketHandler
     public static void S_LoginHandler(PacketSession session, IMessage packet)
     {
         S_Login loginPacket = packet as S_Login;
+        switch (loginPacket.LoginStatus)
+        {
+            case LoginStatus.Success:
+                Managers.Scene.LoadScene(Define.Scene.PlayerSelect);
+                break;
+            case LoginStatus.PasswordWrong:
+                Managers.UI.ShowToastPopup("비밀번호가 틀렸습니다.");
+                break;
+        }
+    }
+    
+    public static void S_CreatePlayerHandler(PacketSession session, IMessage packet)
+    {
+
     }
 }

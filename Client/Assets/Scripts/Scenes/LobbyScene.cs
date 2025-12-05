@@ -8,16 +8,8 @@ public class LobbyScene : BaseScene
     protected override void Init()
     {
         base.Init();
-        
-        // 로비 입장 처음에만 커넥팅 시도
-        if (Managers.Network.IsInitialized == false)
-        {
-            StartCoroutine(Managers.Network.CoDownloadServerURL(() => Managers.UI.ShowSceneUI<UI_Lobby>()));
-        }
-        else
-        {
-            Managers.UI.ShowSceneUI<UI_Lobby>();
-        }
+
+        Managers.UI.ShowSceneUI<UI_Lobby>();
 
         // 커서 잠금 풀기
         Cursor.lockState = CursorLockMode.None;

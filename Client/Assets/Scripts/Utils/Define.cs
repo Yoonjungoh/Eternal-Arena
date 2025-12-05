@@ -21,7 +21,8 @@ public class Define
     {
         Unknown,
         Loading,
-        MainMenu,
+        Login,
+        PlayerSelect,
         Lobby,
         WaitingRoom,
         GameRoom,
