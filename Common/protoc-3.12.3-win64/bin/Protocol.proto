@@ -45,6 +45,8 @@ enum MsgId {
   S_REQUEST_PLAYER_LIST = 113;
   C_CREATE_PLAYER = 114;
   S_CREATE_PLAYER = 115;
+  C_DELETE_PLAYER = 116;
+  S_DELETE_PLAYER = 117;
 }
 
 enum CreatureState {
@@ -280,6 +282,15 @@ message C_CreatePlayer {
 
 message S_CreatePlayer {
   bool canCreate = 1;	// 중복 이름은 불가
+  repeated PlayerSelectInfo playerInfoList = 2;	// 보유 플레이어 목록
+}
+
+message C_DeletePlayer {
+  int32 playerId = 1;
+}
+
+message S_DeletePlayer {
+  bool canDelete = 1;	// 해당 플레이어 삭제에 성공했는지
   repeated PlayerSelectInfo playerInfoList = 2;	// 보유 플레이어 목록
 }
 

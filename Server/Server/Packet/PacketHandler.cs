@@ -242,12 +242,23 @@ class PacketHandler
 
     public static void C_CreatePlayerHandler(PacketSession session, IMessage packet)
     {
-        C_CreatePlayer createPacket = packet as C_CreatePlayer;
+        C_CreatePlayer createPlayerPacket = packet as C_CreatePlayer;
         ClientSession clientSession = session as ClientSession;
-        
-        if (clientSession == null || createPacket == null)
+
+        if (clientSession == null || createPlayerPacket == null)
             return;
 
-        clientSession.HandleCreatePlayer(createPacket.Name);
+        clientSession.HandleCreatePlayer(createPlayerPacket.Name);
+    }
+    
+    public static void C_DeletePlayerHandler(PacketSession session, IMessage packet)
+    {
+        C_DeletePlayer deletePlayerPacket = packet as C_DeletePlayer;
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession == null || deletePlayerPacket == null)
+            return;
+
+        clientSession.HandleDeletePlayer(deletePlayerPacket.PlayerId);
     }
 }

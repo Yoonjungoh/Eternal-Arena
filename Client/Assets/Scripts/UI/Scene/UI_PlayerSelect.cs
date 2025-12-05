@@ -33,6 +33,12 @@ public class UI_PlayerSelect : UI_Scene
 
     public void UpdatePlayerInfos(RepeatedField<PlayerSelectInfo> playerInfoList)
     {
+        foreach (PlayerSelectInfo_SubItem playerSelectInfo_SubItem in _playerSelectInfoSubItemDict.Values)
+        {
+            Managers.Resource.Destroy(playerSelectInfo_SubItem.gameObject);
+        }
+        _playerSelectInfoSubItemDict.Clear();
+
         int playerSelectInfoListCount = playerInfoList.Count;
         for (int i = 0; i < playerSelectInfoListCount; i++)
         {

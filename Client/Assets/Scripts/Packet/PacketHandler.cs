@@ -391,7 +391,7 @@ class PacketHandler
     {
         S_Connected connectedPacket = packet as S_Connected;
         // TODO - 연결 성공 처리
-        Managers.UI.ShowToastPopup("서버와 연결되었습니다.");
+        //Managers.UI.ShowToastPopup("서버와 연결되었습니다.");
     }
 
     public static void S_LoginHandler(PacketSession session, IMessage packet)
@@ -414,7 +414,7 @@ class PacketHandler
     public static void S_RequestPlayerListHandler(PacketSession session, IMessage packet)
     {
         S_RequestPlayerList requestPlayerListPacket = packet as S_RequestPlayerList;
-        if (requestPlayerListPacket == null || requestPlayerListPacket.PlayerInfoList == null)
+        if (requestPlayerListPacket == null)
         {
             Debug.Log("S_RequestPlayerList 패킷이 null입니다");
             return;
@@ -453,5 +453,31 @@ class PacketHandler
         }
 
         playerSelectUI.UpdatePlayerInfos(createPlaerPacket.PlayerInfoList);
+    }
+
+    public static void S_DeletePlayerHandler(PacketSession session, IMessage packet)
+    {
+        S_DeletePlayer deletePlaerPacket = packet as S_DeletePlayer;
+        if (deletePlaerPacket == null)
+        {
+            Debug.Log("S_DeletePlayer 패킷이 null입니다");
+            return;
+        }
+
+        UI_PlayerSelect playerSelectUI = Managers.UI.CurrentScene.GetComponent<UI_PlayerSelect>();
+        if (playerSelectUI == null)
+        {
+            Debug.Log("현재 캐릭터 선택창이 아닌데 캐릭터 삭제를 하려고 합니다.");
+            return;
+        }
+
+        if (deletePlaerPacket.CanDelete == false)
+        {
+            Managers.UI.ShowToastPopup("캐릭터 삭제에 실패했습니다. 다시 시도해주세요.");
+            return;
+        }
+
+        Managers.UI.ShowToastPopup("캐릭터가 삭제되었습니다.");
+        playerSelectUI.UpdatePlayerInfos(deletePlaerPacket.PlayerInfoList);
     }
 }

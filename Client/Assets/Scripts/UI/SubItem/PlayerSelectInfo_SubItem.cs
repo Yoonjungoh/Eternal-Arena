@@ -18,6 +18,7 @@ public class PlayerSelectInfo_SubItem : UI_SubItem<PlayerSelectInfo>
     enum Buttons
     {
         SelectButton,
+        DeleteButton,
     }
 
     public override void Init()
@@ -26,6 +27,7 @@ public class PlayerSelectInfo_SubItem : UI_SubItem<PlayerSelectInfo>
         Bind<Button>(typeof(Buttons));
 
         GetButton((int)Buttons.SelectButton).onClick.AddListener(OnClickSelectButton);
+        GetButton((int)Buttons.DeleteButton).onClick.AddListener(OnClickDeleteButton);
     }
 
     private void OnClickSelectButton()
@@ -41,6 +43,13 @@ public class PlayerSelectInfo_SubItem : UI_SubItem<PlayerSelectInfo>
         Managers.Scene.LoadScene(Define.Scene.Lobby);
     }
 
+    private void OnClickDeleteButton()
+    {
+        // 해당 캐릭터 삭제 요청
+        C_DeletePlayer deletePlayerPacket = new C_DeletePlayer();
+        deletePlayerPacket.PlayerId = _data.PlayerId;
+        Managers.Network.Send(deletePlayerPacket);
+    }
 
     public override void SetData(PlayerSelectInfo data)
     {

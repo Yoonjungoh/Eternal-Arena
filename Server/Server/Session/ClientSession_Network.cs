@@ -65,6 +65,7 @@ namespace Server
             if (MyPlayer == null)
             {
                 ConsoleLogManager.Instance.Log("Can't Find MyPlayer");
+                AccountManager.Instance.Remove(AccountId);
                 return;
             }
 

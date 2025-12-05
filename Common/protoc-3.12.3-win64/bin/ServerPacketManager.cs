@@ -56,7 +56,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CRequestPlayerList, MakePacket<C_RequestPlayerList>);
 		_handler.Add((ushort)MsgId.CRequestPlayerList, PacketHandler.C_RequestPlayerListHandler);		
 		_onRecv.Add((ushort)MsgId.CCreatePlayer, MakePacket<C_CreatePlayer>);
-		_handler.Add((ushort)MsgId.CCreatePlayer, PacketHandler.C_CreatePlayerHandler);
+		_handler.Add((ushort)MsgId.CCreatePlayer, PacketHandler.C_CreatePlayerHandler);		
+		_onRecv.Add((ushort)MsgId.CDeletePlayer, MakePacket<C_DeletePlayer>);
+		_handler.Add((ushort)MsgId.CDeletePlayer, PacketHandler.C_DeletePlayerHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

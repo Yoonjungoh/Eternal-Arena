@@ -29,6 +29,83 @@ namespace Server
 
         public ClientServerState ClientServerState { get; private set; } = ClientServerState.Login;
 
+        public void HandleDeletePlayer(int deletePlayerId)
+        {
+            lock (_lock)
+            {
+                if (ClientServerState != ClientServerState.PlayerSelect)
+                {
+                    ConsoleLogManager.Instance.Log($"[Warning] 플레이어 선택창 상태가 아닌 곳에서 캐릭터 삭제 시도. SessionId: {SessionId}");
+                    return;
+                }
+
+                using (GameDbContext db = new GameDbContext())
+                {
+                    // 1. DB 로드
+                    AccountDb account = db.Accounts
+                        .Include(a => a.Players)
+                        .Where(a => a.AccountDbId == AccountId)
+                        .FirstOrDefault();
+
+                    if (account == null)
+                    {
+                        ConsoleLogManager.Instance.Log("[Error] 캐릭터 삭제 실패: 계정 정보 없음");
+                        return;
+                    }
+
+                    // 2. 삭제하려는 캐릭터 찾기
+                    PlayerDb target = account.Players
+                        .Where(p => p.PlayerId == deletePlayerId)
+                        .FirstOrDefault();
+
+                    S_DeletePlayer serverDeletePlayerPacket = new S_DeletePlayer();
+
+                    if (target == null)
+                    {
+                        ConsoleLogManager.Instance.Log($"[Error] 캐릭터 삭제 실패: AccountId={AccountId}, PlayerId={deletePlayerId} 없음");
+                        serverDeletePlayerPacket.CanDelete = false;
+                        Send(serverDeletePlayerPacket);
+                        return;
+                    }
+
+                    // 3. DB에서 삭제
+                    bool canDelete = db.Players.Contains(target);
+                    serverDeletePlayerPacket.CanDelete = canDelete;
+                    db.Players.Remove(target);
+
+                    try
+                    {
+                        db.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        ConsoleLogManager.Instance.Log($"[Error] 캐릭터 삭제 DB 오류: {ex.Message}");
+                        Send(serverDeletePlayerPacket);
+                        return;
+                    }
+
+                    // 4. 최신 캐릭터 목록 다시 로드
+                    account = db.Accounts
+                        .Include(a => a.Players)
+                        .Where(a => a.AccountDbId == AccountId)
+                        .FirstOrDefault();
+
+
+                    foreach (PlayerDb player in account.Players)
+                    {
+                        PlayerSelectInfo info = new PlayerSelectInfo()
+                        {
+                            PlayerId = player.PlayerId,
+                            Name = player.Name,
+                            Gold = player.Gold
+                        };
+                        serverDeletePlayerPacket.PlayerInfoList.Add(info);
+                    }
+                    Send(serverDeletePlayerPacket);
+                }
+            }
+        }
+
         public Player CreateMyPlayer(int playerId)
         {
             lock (_lock)
