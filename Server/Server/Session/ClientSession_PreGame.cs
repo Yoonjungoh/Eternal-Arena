@@ -36,6 +36,11 @@ namespace Server
 
             using (GameDbContext db = new GameDbContext())
             {
+                // 1. 아이디 존재하는지 먼저 확인
+                AccountDb = db.Accounts
+                    .Where(a => a.AccountId == AccountDb.AccountId)
+                    .FirstOrDefault();
+
                 if (AccountDb == null)
                 {
                     Console.WriteLine("[Error] 계정을 찾을 수 없음");
@@ -50,7 +55,7 @@ namespace Server
 
                 S_CreatePlayer serverCreatePlayerPacket = new S_CreatePlayer();
 
-                if (existingPlayer == null)
+                if (existingPlayer != null)
                 {
                     // 1-1. 중복이라 생성 못한다고 패킷 전달
                     serverCreatePlayerPacket.CanCreate = false;
@@ -60,27 +65,45 @@ namespace Server
 
                 // 2. 캐릭터 생성
                 // 2-1. TODO - 새로운 플레이어 아이디는 현재 db의 유저수 + 1
-                List<PlayerDb> playerList = AccountDb.Players.ToList();
-                int newPlayerId = playerList.Count + 1;
+                int newPlayerId = -1;
+                if (AccountDb.Players == null)
+                {
+                    newPlayerId = 1;
+                }
+                else
+                {
+                    newPlayerId = AccountDb.Players.ToList().Count + 1;
+                }
 
-                // TODO - 이후에 메인 메뉴 생기면 분리
-                //EnterLobby();
                 PlayerDb newPlayerDb = new PlayerDb()
                 {
                     AccountDbId = AccountDb.AccountDbId,
                     Name = name,
                     Gold = 1000,
-                    PlayerId = newPlayerId // TODO - 임시로 Ticks 이용
+                    PlayerId = newPlayerId
                 };
                 
-
                 // 3. 패킷 생성
                 serverCreatePlayerPacket.CanCreate = true;
                 // 3-1. 방금 생성한 플레이어를 playerList에 추가
-                playerList.Add(newPlayerDb);
+                if (AccountDb.Players == null)
+                {
+                    AccountDb.Players = new List<PlayerDb>();
+                }
+                AccountDb.Players.Add(newPlayerDb);
                 db.Players.Add(newPlayerDb);
-                db.SaveChanges();
+                
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (DbUpdateException ex)
+                {
+                    ConsoleLogManager.Instance.Log($"[Error] DB Update Exception: {ex.Message}");
+                    return;
+                }
 
+                List<PlayerDb> playerList = AccountDb.Players.ToList();
                 foreach (PlayerDb player in playerList)
                 {
                     PlayerSelectInfo playerSelectInfo = new PlayerSelectInfo()
@@ -107,6 +130,10 @@ namespace Server
 
             using (GameDbContext db = new GameDbContext())
             {
+                AccountDb = db.Accounts
+                    .Where(a => a.AccountId == AccountDb.AccountId)
+                    .FirstOrDefault();
+
                 if (AccountDb == null)
                 {
                     Console.WriteLine("[Error] 계정을 찾을 수 없음");
@@ -114,7 +141,11 @@ namespace Server
                 }
 
                 // 1. 계정에 속한 Player 목록 로드
-                List<PlayerDb> playerList = AccountDb.Players.ToList();
+                List<PlayerDb> playerList = new List<PlayerDb>();
+                if (AccountDb.Players != null)
+                {
+                    playerList = AccountDb.Players.ToList();
+                }
 
                 // 2. 패킷 생성
                 S_RequestPlayerList serverRequestPlayerList = new S_RequestPlayerList();

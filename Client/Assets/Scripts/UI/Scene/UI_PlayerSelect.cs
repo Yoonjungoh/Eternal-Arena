@@ -28,6 +28,7 @@ public class UI_PlayerSelect : UI_Scene
 
         // 서버에게 플레이어 리스트 요청
         C_RequestPlayerList requestPlayerListPacket = new C_RequestPlayerList();
+        Managers.Network.Send(requestPlayerListPacket);
     }
 
     public void UpdatePlayerInfos(RepeatedField<PlayerSelectInfo> playerInfoList)
@@ -35,10 +36,10 @@ public class UI_PlayerSelect : UI_Scene
         int playerSelectInfoListCount = playerInfoList.Count;
         for (int i = 0; i < playerSelectInfoListCount; i++)
         {
-            if (_playerSelectInfoSubItemDict.ContainsKey(playerInfoList[i].PlayerId)) continue;
+            if (_playerSelectInfoSubItemDict.ContainsKey(playerInfoList[i].PlayerId))
+                continue;
 
-            PlayerSelectInfo_SubItem playerSelectInfo_SubItem = 
-                Managers.UI.MakeSubItem<PlayerSelectInfo_SubItem>(_playerScrollView.transform);
+            PlayerSelectInfo_SubItem playerSelectInfo_SubItem = Managers.UI.MakeSubItem<PlayerSelectInfo_SubItem>(_playerScrollView.transform);
             playerSelectInfo_SubItem.SetData(new PlayerSelectInfo
             {
                 PlayerId = playerInfoList[i].PlayerId,

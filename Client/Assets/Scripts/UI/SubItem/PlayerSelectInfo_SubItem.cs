@@ -51,7 +51,7 @@ public class PlayerSelectInfo_SubItem : UI_SubItem<PlayerSelectInfo>
     protected override void UpdateUI()
     {
         GetTextMeshProUGUI((int)Texts.PlayerIdText).text = $"UId: {_data.PlayerId}";
-        GetTextMeshProUGUI((int)Texts.PlayerIdText).text = $"´Ð³×ÀÓ: {_data.Name}";
-        GetTextMeshProUGUI((int)Texts.PlayerIdText).text = $"°ñµå: {_data.Gold}";
+        GetTextMeshProUGUI((int)Texts.PlayerNameText).text = $"´Ð³×ÀÓ: {_data.Name}";
+        GetTextMeshProUGUI((int)Texts.GoldText).text = $"°ñµå: {_data.Gold}";
     }
 }

@@ -58,19 +58,19 @@ namespace Server.Migrations
                     b.Property<int>("Gold")
                         .HasColumnType("int");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("PlayerId")
                         .HasColumnType("int");
-
-                    b.Property<string>("PlayerName")
-                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("PlayerDbId");
 
                     b.HasIndex("AccountDbId");
 
-                    b.HasIndex("PlayerName")
+                    b.HasIndex("Name")
                         .IsUnique()
-                        .HasFilter("[PlayerName] IS NOT NULL");
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("Player");
                 });

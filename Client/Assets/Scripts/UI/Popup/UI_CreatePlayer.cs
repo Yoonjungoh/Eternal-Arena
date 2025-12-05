@@ -28,6 +28,8 @@ public class UI_CreatePlayer : UI_Popup
 
         GetButton((int)Buttons.ConfirmButton).onClick.AddListener(OnClickConfirmButton);
         GetButton((int)Buttons.CancelButton).onClick.AddListener(OnClickCancelButton);
+
+        _playerNameText = GetTextMeshProUGUI((int)Texts.PlayerNameText);
     }
 
     private void OnClickConfirmButton()
