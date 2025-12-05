@@ -1,0 +1,114 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
+using ServerCore;
+using System.Net;
+using Google.Protobuf.Protocol;
+using Google.Protobuf;
+using Server.Game;
+using Server.DB;
+using System.Linq;
+
+namespace Server
+{
+    public partial class ClientSession : PacketSession
+    {
+
+        #region 네트워크
+
+        public void Send(IMessage packet)
+        {
+            string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
+            MsgId msgId = (MsgId)Enum.Parse(typeof(MsgId), msgName);
+            ushort size = (ushort)packet.CalculateSize();
+            byte[] sendBuffer = new byte[size + 4];
+            Array.Copy(BitConverter.GetBytes((ushort)(size + 4)), 0, sendBuffer, 0, sizeof(ushort));
+            Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuffer, 2, sizeof(ushort));
+            Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
+            Send(new ArraySegment<byte>(sendBuffer));
+        }
+
+        public void Send(List<IMessage> packetList)
+        {
+            foreach (IMessage packet in packetList)
+            {
+                string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
+                MsgId msgId = (MsgId)Enum.Parse(typeof(MsgId), msgName);
+                ushort size = (ushort)packet.CalculateSize();
+                byte[] sendBuffer = new byte[size + 4];
+                Array.Copy(BitConverter.GetBytes((ushort)(size + 4)), 0, sendBuffer, 0, sizeof(ushort));
+                Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuffer, 2, sizeof(ushort));
+                Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
+                Send(new ArraySegment<byte>(sendBuffer));
+            }
+        }
+
+        public override void OnConnected(EndPoint endPoint)
+        {
+            ConsoleLogManager.Instance.Log($"OnConnected : {endPoint}");
+
+            S_Connected connectedPacket = new S_Connected();
+            Send(connectedPacket);
+
+            // TODO - MSSQL 사용시 DB에서 긁어올 부분, 유저 정보
+            MyPlayer = ObjectManager.Instance.Add<Player>();
+            MyPlayer.Init();
+            MyPlayer.Session = this;
+
+            // TODO - 이후에 메인 메뉴 생기면 분리
+            EnterLobby();
+        }
+
+        public override void OnRecvPacket(ArraySegment<byte> buffer)
+        {
+            PacketManager.Instance.OnRecvPacket(this, buffer);
+        }
+
+        public override void OnDisconnected(EndPoint endPoint)
+        {
+            if (MyPlayer == null)
+            {
+                ConsoleLogManager.Instance.Log("Can't Find MyPlayer");
+                return;
+            }
+
+            // 로비에서 내보내기
+            if (MyPlayer.Lobby != null)
+            {
+                MyPlayer.Lobby.Push(MyPlayer.Lobby.LeaveLobby, MyPlayer.Id);
+            }
+
+            // 대기방에서 내보내기
+            if (MyPlayer.WaitingRoom != null)
+            {
+                WaitingRoom watingRoom = MyPlayer.Lobby.WaitingRoomManager.Find(MyPlayer.WaitingRoom.RoomId);
+                if (watingRoom != null)
+                {
+                    watingRoom.Push(watingRoom.LeaveRoom, MyPlayer.ObjectState.ObjectId);
+                }
+                else
+                {
+                    ConsoleLogManager.Instance.Log($"Can't Find Room {MyPlayer.WaitingRoom.RoomId} -> UserId: {MyPlayer.Id}");
+                }
+            }
+
+            SessionManager.Instance.Remove(this);
+            ConsoleLogManager.Instance.Log($"OnDisconnected : {endPoint}");
+        }
+
+        public override void OnSend(int numOfBytes)
+        {
+            //ConsoleLogManager.Instance.Log($"Transferred bytes: {numOfBytes}");
+        }
+
+        public void EnterLobby()
+        {
+            ConsoleLogManager.Instance.Log($"Player Connected in Lobby {MyPlayer.Session.SessionId}");
+            LobbyManager.Instance.EnterLobby(1, MyPlayer);	// TODO - 1번 로비로 강제 이동
+        }
+        #endregion
+    }
+}

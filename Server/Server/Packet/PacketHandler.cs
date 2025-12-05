@@ -200,42 +200,6 @@ class PacketHandler
 
         player.GameRoom.Push(player.GameRoom.HandleChangeCreatureState, player.Id, changeCreatureStatePacket.CreatureState);
     }
-    public static void C_LoginHandler(PacketSession session, IMessage packet)
-    {
-        C_Login loginPacket = packet as C_Login;
-        ClientSession clientSession = session as ClientSession;
-
-        Player player = clientSession.MyPlayer;
-        if (player == null || player.Lobby == null || player.GameRoom == null)
-            return;
-
-        // TODO - 현재 문제 있음
-        using (GameDbContext db = new GameDbContext())
-        {
-            AccountDb findAccount = db.Accounts
-                .Where(a => (a.AccountId == loginPacket.Id) && a.AccountPassword == loginPacket.Password).FirstOrDefault();
-
-            if (findAccount != null)
-            {
-                S_Login serverLoginPacket = new S_Login();
-                serverLoginPacket.LoginStatus = LoginStatus.Success;
-                clientSession.Send(serverLoginPacket);
-            }
-            else
-            {
-                // TODO - 우선은 회원가입 바로 시키기
-                AccountDb newAccount = new AccountDb();
-                newAccount.AccountId = loginPacket.Id;
-                newAccount.AccountPassword = loginPacket.Password;
-                db.Accounts.Add(newAccount);
-                db.SaveChanges();
-
-                S_Login serverLoginPacket = new S_Login();
-                serverLoginPacket.LoginStatus = LoginStatus.Success;
-                clientSession.Send(serverLoginPacket);
-            }
-        }
-    }
 
     public static void C_StartCountdownHandler(PacketSession session, IMessage packet)
     {
@@ -251,5 +215,27 @@ class PacketHandler
         {
             player.GameRoom.Push(player.GameRoom.HandleStartCountdown);
         }
+    }
+
+    public static void C_LoginHandler(PacketSession session, IMessage packet)
+    {
+        C_Login loginPacket = packet as C_Login;
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession == null || loginPacket == null)
+            return;
+
+        clientSession.HandleLogin(loginPacket);
+    }
+
+    public static void C_CreatePlayerHandler(PacketSession session, IMessage packet)
+    {
+        C_CreatePlayer createPacket = packet as C_CreatePlayer;
+        ClientSession clientSession = session as ClientSession;
+        
+        if (clientSession == null || createPacket == null)
+            return;
+
+        clientSession.HandleCreatePlayer(createPacket.Name);
     }
 }

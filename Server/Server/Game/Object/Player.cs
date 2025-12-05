@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,6 +12,10 @@ namespace Server.Game
         {
             Init();
         }
+        
+        public PlayerServerState PlayerServerState { get; set; }
+
+        public string AccountId { get; set; }    // 로그인 Id
 
         public Lobby Lobby;	// 로비 나가면 초기화 해줘야 함
 			
@@ -22,7 +27,7 @@ namespace Server.Game
 		{
 			ObjectType = GameObjectType.Player;
 
-            // DB 에서 플레이어 정보 빼오기
+            // TODO - DB 에서 플레이어 정보 빼오기
             ObjectState.Name = $"Player_{ObjectState.ObjectId}";
             ObjectState.CreatureState = CreatureState.Idle;
 

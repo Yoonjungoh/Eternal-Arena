@@ -23,9 +23,9 @@ namespace Server.Game
         public ProtoVector3 Velocity { get { return ObjectState.Velocity; } set { ObjectState.Velocity = value; } }
 		public Vector3 CurrentPosition
 		{
-			get
-			{
-				return MovementHelper.PredictPosition(
+            get
+            {
+                return MovementHelper.PredictPosition(
                 MovementHelper.ProtoVec3ToVec3(Position),
                 MovementHelper.ProtoVec3ToVec3(Velocity),
                 ObjectState.ServerReceivedTime,

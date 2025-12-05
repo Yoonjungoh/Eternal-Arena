@@ -41,6 +41,8 @@ enum MsgId {
   S_CONNECTED = 109;
   C_LOGIN = 110;
   S_LOGIN = 111;
+  C_CREATE_PLAYER = 112;
+  S_CREATE_PLAYER = 113;
 }
 
 enum CreatureState {
@@ -89,6 +91,15 @@ enum LoginStatus {
   LOGIN_STATUS_ID_WRONG = 2; // ID가 틀림
   LOGIN_STATUS_PASSWORD_WRONG = 3;	// 비밀번호가 틀림
 }
+
+enum PlayerServerState {
+  PLAYER_SERVER_STATE_NONE = 0;
+  LOGIN = 1;
+  LOBBY = 2;
+  WAITING_ROOM = 3;
+  GAME_ROOM = 4;
+}
+
 message S_AssignUserId {
   int32 userId = 1;
 }
@@ -248,6 +259,15 @@ message C_Login {
 
 message S_Login {
   LoginStatus loginStatus = 1; 
+}
+
+message C_CreatePlayer {
+  string name = 1;
+}
+
+message S_CreatePlayer {
+  bool canCreate = 1;	// 중복 이름은 불가
+  string name = 2;
 }
 
 message RoomInfo {
