@@ -131,10 +131,11 @@ namespace Google.Protobuf.Protocol {
             "Z2luU3RhdHVzEhUKEUxPR0lOX1NUQVRVU19OT05FEAASGAoUTE9HSU5fU1RB",
             "VFVTX1NVQ0NFU1MQARIZChVMT0dJTl9TVEFUVVNfSURfV1JPTkcQAhIfChtM",
             "T0dJTl9TVEFUVVNfUEFTU1dPUkRfV1JPTkcQAxIiCh5MT0dJTl9TVEFUVVNf",
-            "QUxSRUFEWV9MT0dHRURfSU4QBCp6ChFDbGllbnRTZXJ2ZXJTdGF0ZRIcChhD",
-            "TElFTlRfU0VSVkVSX1NUQVRFX05PTkUQABIJCgVMT0dJThABEhAKDFBsYXll",
-            "clNlbGVjdBACEgkKBUxPQkJZEAMSEAoMV0FJVElOR19ST09NEAQSDQoJR0FN",
-            "RV9ST09NEAVCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
+            "QUxSRUFEWV9MT0dHRURfSU4QBCp7ChFDbGllbnRTZXJ2ZXJTdGF0ZRIcChhD",
+            "TElFTlRfU0VSVkVSX1NUQVRFX05PTkUQABIJCgVMT0dJThABEhEKDVBMQVlF",
+            "Ul9TRUxFQ1QQAhIJCgVMT0JCWRADEhAKDFdBSVRJTkdfUk9PTRAEEg0KCUdB",
+            "TUVfUk9PTRAFQhuqAhhHb29nbGUuUHJvdG9idWYuUHJvdG9jb2xiBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.AttackType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.ProjectileType), typeof(global::Google.Protobuf.Protocol.RoomExitReason), typeof(global::Google.Protobuf.Protocol.LoginStatus), typeof(global::Google.Protobuf.Protocol.ClientServerState), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -295,7 +296,7 @@ namespace Google.Protobuf.Protocol {
   public enum ClientServerState {
     [pbr::OriginalName("CLIENT_SERVER_STATE_NONE")] None = 0,
     [pbr::OriginalName("LOGIN")] Login = 1,
-    [pbr::OriginalName("PlayerSelect")] PlayerSelect = 2,
+    [pbr::OriginalName("PLAYER_SELECT")] PlayerSelect = 2,
     [pbr::OriginalName("LOBBY")] Lobby = 3,
     [pbr::OriginalName("WAITING_ROOM")] WaitingRoom = 4,
     [pbr::OriginalName("GAME_ROOM")] GameRoom = 5,

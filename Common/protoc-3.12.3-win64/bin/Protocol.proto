@@ -98,7 +98,7 @@ enum LoginStatus {
 enum ClientServerState {
   CLIENT_SERVER_STATE_NONE = 0;
   LOGIN = 1;
-  PlayerSelect = 2;
+  PLAYER_SELECT = 2;
   LOBBY = 3;
   WAITING_ROOM = 4;
   GAME_ROOM = 5;
