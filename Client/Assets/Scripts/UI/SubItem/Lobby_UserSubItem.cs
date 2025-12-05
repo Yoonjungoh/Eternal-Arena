@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public struct LobbyUserSubItemData
 {
     public int UserId;
+    public string UserName;
 }
 
 public class Lobby_UserSubItem : UI_SubItem<LobbyUserSubItemData>
@@ -30,6 +31,6 @@ public class Lobby_UserSubItem : UI_SubItem<LobbyUserSubItemData>
 
     protected override void UpdateUI()
     {
-        GetTextMeshProUGUI((int)Texts.UserIdText).text = $"닉네임: {_data.UserId}";
+        GetTextMeshProUGUI((int)Texts.UserIdText).text = $"닉네임: {_data.UserName}";
     }
 }

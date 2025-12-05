@@ -39,7 +39,8 @@ class PacketHandler
             Debug.Log("현재 로비가 아닌데 로비에 입장하려고 합니다.");
             return;
         }
-        lobbyUI.EnterLobby(enterLobbyPacket.UserIdList);
+
+        lobbyUI.EnterLobby(enterLobbyPacket.UserIdList, enterLobbyPacket.UserNameList);
         lobbyUI.AddRoom(enterLobbyPacket.RoomInfoList); // 기존 방 목록 추가
     }
 

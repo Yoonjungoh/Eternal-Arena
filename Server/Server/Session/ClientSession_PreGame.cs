@@ -21,10 +21,41 @@ namespace Server
 		public Player MyPlayer { get; set; }
 
 		public int SessionId { get; set; }
-
-        public AccountDb AccountDb { get; set; }    // 캐싱용 DB 
+        
+        public int AccountId { get; set; }  // DB Id (Account 테이블의 AccountDbId임)
 
         public ClientServerState ClientServerState { get; private set; } = ClientServerState.Login;
+
+        public Player CreateMyPlayer(int playerId)
+        {
+            // enterLobbyPacket에 있는 PlayerId 활용해서 DB에서 찾은 다음 user 생성 후 넣기
+            // 로비에 진입한 플레이어의 고유 아이디 (Player 테이블의 PlayerId)
+            using (GameDbContext db = new GameDbContext())
+            {
+                AccountDb account = db.Accounts
+                    .Include(a => a.Players)
+                    .Where(a => a.AccountDbId == AccountId)
+                    .FirstOrDefault();
+
+                if (account == null)
+                {
+                    ConsoleLogManager.Instance.Log("[Error] DB에서 계정 정보를 찾을 수 없음");
+                    return null;
+                }
+
+                // 1. 플레이어 찾기
+                PlayerDb player = db.Players
+                    .Where(p => p.PlayerId == playerId)
+                    .FirstOrDefault();
+
+                // 2. 해당 플레이어 데이터를 바탕으로 현재 클라이언트 세션의 MyPlayer 생성
+                MyPlayer = ObjectManager.Instance.Add<Player>();
+                MyPlayer.Init(player.Name);
+                MyPlayer.Session = this;
+            }
+
+            return MyPlayer;
+        }
 
         public void HandleCreatePlayer(string name)
         {
@@ -36,15 +67,9 @@ namespace Server
 
             using (GameDbContext db = new GameDbContext())
             {
-                if (AccountDb == null)
-                {
-                    ConsoleLogManager.Instance.Log("[Error] AccountDb가 null임");
-                    return;
-                }
-
                 AccountDb account = db.Accounts
                     .Include(a => a.Players)
-                    .Where(a => a.AccountDbId == AccountDb.AccountDbId)
+                    .Where(a => a.AccountDbId == AccountId)
                     .FirstOrDefault();
 
                 if (account == null)
@@ -117,6 +142,7 @@ namespace Server
                 Send(serverCreatePlayerPacket);
             }
         }
+
         public void HandleRequestPlayerList(C_RequestPlayerList requestPlayerListPacket)
         {
             if (ClientServerState != ClientServerState.PlayerSelect)
@@ -130,7 +156,7 @@ namespace Server
                 // Account + Players 데이터를 한 번에 로드해야 함
                 AccountDb account = db.Accounts
                     .Include(a => a.Players)
-                    .Where(a => a.AccountDbId == AccountDb.AccountDbId)
+                    .Where(a => a.AccountDbId == AccountId)
                     .FirstOrDefault();
 
                 if (account == null)
@@ -189,7 +215,7 @@ namespace Server
                     {
                         // 2-2. 기존 아이디로 로그인 의미
                         ClientServerState = ClientServerState.PlayerSelect;
-                        AccountDb = findAccount;
+                        AccountId = findAccount.AccountDbId;
                         serverLoginPacket.LoginStatus = LoginStatus.Success;
                         Send(serverLoginPacket);
                         return;
@@ -225,7 +251,7 @@ namespace Server
 
                 // 4.회원 가입을 통한 로그인 성공 의미
                 ClientServerState = ClientServerState.PlayerSelect;
-                AccountDb = findAccount;
+                AccountId = findAccount.AccountDbId;
                 serverLoginPacket.LoginStatus = LoginStatus.Success;
                 Send(serverLoginPacket);
             }

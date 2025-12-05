@@ -113,7 +113,8 @@ message C_AssignUserId {
 
 message S_EnterLobby {
   repeated int32 userIdList = 1;
-  repeated RoomInfo roomInfoList = 2;
+  repeated string userNameList = 2;
+  repeated RoomInfo roomInfoList = 3;
 }
 
 message S_LeaveLobby {
@@ -173,6 +174,7 @@ message C_EnterGame {
 }
 
 message C_EnterLobby {
+  int32 playerId = 1;	// Player 테이블의 PlayerId
 }
 
 message S_LeaveGame {

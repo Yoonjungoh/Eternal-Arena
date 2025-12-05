@@ -19,12 +19,19 @@ namespace Server.Game
         public ClientSession Session { get; set; }
 
         // 플레이어 정보 초기화
-        public void Init()
+        public void Init(string name = null)
 		{
 			ObjectType = GameObjectType.Player;
 
             // TODO - DB 에서 플레이어 정보 빼오기
-            ObjectState.Name = $"Player_{ObjectState.ObjectId}";
+            if (name== null)
+            {
+                ObjectState.Name = $"Player_{ObjectState.ObjectId}";
+            }
+            else
+            {
+                ObjectState.Name = name;
+            }
             ObjectState.CreatureState = CreatureState.Idle;
 
 			InitStat();

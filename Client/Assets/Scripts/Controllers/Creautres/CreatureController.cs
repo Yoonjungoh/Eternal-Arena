@@ -13,6 +13,9 @@ public class CreatureController : BaseController
     protected UI_HpBar _hpBar;
     protected Vector3 _hpBarPosOffset;
 
+    protected UI_NameBar _nameBar;
+    protected Vector3 _nameBarPosOffset;
+
     protected float _commonAttackAnimLength;
     protected float _commonAttackAnimSpeedTime = 1.0f;
     protected string _commonAttackHitEffectName;
@@ -61,6 +64,11 @@ public class CreatureController : BaseController
         _hpBarPosOffset = Vector3.up * _collider.bounds.size.y;
         _hpBar.SetData(_hpBarPosOffset);
         _hpBar.UpdateHpBar(Stat.Hp, Stat.MaxHp);
+
+        // 이름바 소환
+        _nameBar = Managers.UI.MakeWorldSpaceUI<UI_NameBar>(transform, worldPositionStays: false);
+        _nameBarPosOffset = Vector3.up * (_collider.bounds.size.y + 0.5f);
+        _nameBar.SetData(Managers.Lobby.MyPlayer.Name, _nameBarPosOffset);
 
         // 이펙트 관련 초기화
         _commonAttackHitEffectName = $"{_commonAttackanimName}HitEffect";

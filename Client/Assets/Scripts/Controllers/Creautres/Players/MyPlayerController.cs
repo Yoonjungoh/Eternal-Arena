@@ -28,6 +28,7 @@ public class MyPlayerController : PlayerController
     private ProjectileType _projectileType = ProjectileType.None;
 
     private void OnMeleeAttackInput() => MeleeAttack(_meleeAttackType);
+
     private void OnProjectileSpawnInput() => ProjectileSpawn(_rangedAttackType);
 
     public override void Init()

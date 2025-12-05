@@ -135,10 +135,11 @@ class PacketHandler
         C_EnterLobby enterLobbyPacket = packet as C_EnterLobby;
         ClientSession clientSession = session as ClientSession;
 
-        Player user = clientSession.MyPlayer;
-        if (user == null || user.Lobby == null)
+        // 유저 생성
+        Player user = clientSession.CreateMyPlayer(enterLobbyPacket.PlayerId);
+        if (clientSession.MyPlayer == null)
             return;
-
+        
         LobbyManager.Instance.EnterLobby(1, user);	// TODO - 1번 로비로 강제 이동
     }
 

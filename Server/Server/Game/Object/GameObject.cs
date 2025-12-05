@@ -10,6 +10,8 @@ namespace Server.Game
 	public class GameObject
 	{
 		public GameObjectType ObjectType { get; protected set; } = GameObjectType.None;
+
+        // 오브젝트 전용 Id (계정 Id와 별개임, 휘발성이 있음)
 		public int Id
 		{
 			get { return ObjectState.ObjectId; }

@@ -29,18 +29,27 @@ public class UI_Lobby : UI_Scene
         _roomScrollView = Util.FindChild(gameObject, "RoomContent", recursive: true);
         _userScrollView = Util.FindChild(gameObject, "UserContent", recursive: true);
 
-        // 로비에 재진입 시 갱신 패킷 전송
-        if (Managers.Lobby.IsEnterFirst == true)
-        {
-            C_EnterLobby enterLobbyPacket = new C_EnterLobby();
-            Managers.Network.Send(enterLobbyPacket);
-        }
+        C_EnterLobby enterLobbyPacket = new C_EnterLobby();
+        enterLobbyPacket.PlayerId = Managers.Lobby.MyPlayer.PlayerId;
+        Managers.Network.Send(enterLobbyPacket);
 
-        Managers.Lobby.IsEnterFirst = true; // 로비 UI 초기화 시에 처음 들어왔다고 판단
+        //// 로비에 재진입 시 갱신 패킷 전송
+        //if (Managers.Lobby.IsEnterFirst == true)
+        //{
+        //    C_EnterLobby enterLobbyPacket = new C_EnterLobby();
+        //    enterLobbyPacket.PlayerId = Managers.Lobby.MyPlayer.PlayerId;
+        //    Managers.Network.Send(enterLobbyPacket);
+        //}
+
+        //Managers.Lobby.IsEnterFirst = true; // 로비 UI 초기화 시에 처음 들어왔다고 판단
     }
 
-    public void EnterLobby(RepeatedField<int> userIdList)
+    public void EnterLobby(RepeatedField<int> userIdList, RepeatedField<string> userNameList)
     {
+        // 유저 아이디 리스트와 유저 이름 리스트의 개수가 다르면 잘못된 패킷이므로 처리하지 않음
+        if (userIdList.Count != userNameList.Count)
+            return;
+
         int userIdListCount = userIdList.Count;
         for (int i = 0; i < userIdListCount; i++)
         {
@@ -49,7 +58,8 @@ public class UI_Lobby : UI_Scene
             Lobby_UserSubItem lobbyUserSubItem = Managers.UI.MakeSubItem<Lobby_UserSubItem>(_userScrollView.transform);
             lobbyUserSubItem.SetData(new LobbyUserSubItemData
             {
-                UserId = userIdList[i]
+                UserId = userIdList[i],
+                UserName = userNameList[i]
             });
             _userSubItemDict.TryAdd(userIdList[i], lobbyUserSubItem);
         }
