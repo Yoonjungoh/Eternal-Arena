@@ -22,13 +22,79 @@ namespace Server
 
 		public int SessionId { get; set; }
 
-        public string AccountId { get; set; } = string.Empty;    // 로그인 Id
+        public AccountDb AccountDb { get; set; }    // 캐싱용 DB 
 
         public ClientServerState ClientServerState { get; private set; } = ClientServerState.Login;
 
         public void HandleCreatePlayer(string name)
         {
+            if (ClientServerState != ClientServerState.PlayerSelect)
+            {
+                ConsoleLogManager.Instance.Log($"[Warning] 캐릭터 선택창 상태가 아닌 곳에서 캐릭터 선택 시도. SessionId: {SessionId}");
+                return;
+            }
 
+            using (GameDbContext db = new GameDbContext())
+            {
+                if (AccountDb == null)
+                {
+                    Console.WriteLine("[Error] 계정을 찾을 수 없음");
+                    return;
+                }
+
+                // 1. 모든 계정들의 캐릭터 이름은 고유해야 함.
+                // 따라서 모든 계정들의 캐릭터이름을 순회하면서 중복인지 알아내야 함
+                PlayerDb existingPlayer = db.Players
+                    .Where(p => p.Name == name)
+                    .FirstOrDefault();
+
+                S_CreatePlayer serverCreatePlayerPacket = new S_CreatePlayer();
+
+                if (existingPlayer == null)
+                {
+                    // 1-1. 중복이라 생성 못한다고 패킷 전달
+                    serverCreatePlayerPacket.CanCreate = false;
+                    Send(serverCreatePlayerPacket);
+                    return;
+                }
+
+                // 2. 캐릭터 생성
+                // 2-1. TODO - 새로운 플레이어 아이디는 현재 db의 유저수 + 1
+                List<PlayerDb> playerList = AccountDb.Players.ToList();
+                int newPlayerId = playerList.Count + 1;
+
+                // TODO - 이후에 메인 메뉴 생기면 분리
+                //EnterLobby();
+                PlayerDb newPlayerDb = new PlayerDb()
+                {
+                    AccountDbId = AccountDb.AccountDbId,
+                    Name = name,
+                    Gold = 1000,
+                    PlayerId = newPlayerId // TODO - 임시로 Ticks 이용
+                };
+                
+
+                // 3. 패킷 생성
+                serverCreatePlayerPacket.CanCreate = true;
+                // 3-1. 방금 생성한 플레이어를 playerList에 추가
+                playerList.Add(newPlayerDb);
+                db.Players.Add(newPlayerDb);
+                db.SaveChanges();
+
+                foreach (PlayerDb player in playerList)
+                {
+                    PlayerSelectInfo playerSelectInfo = new PlayerSelectInfo()
+                    {
+                        PlayerId = player.PlayerId,
+                        Name = player.Name,
+                        Gold = player.Gold
+                    };
+
+                    serverCreatePlayerPacket.PlayerInfoList.Add(playerSelectInfo);
+                }
+
+                Send(serverCreatePlayerPacket);
+            }
         }
 
         public void HandleRequestPlayerList(C_RequestPlayerList requestPlayerListPacket)
@@ -41,22 +107,16 @@ namespace Server
 
             using (GameDbContext db = new GameDbContext())
             {
-                // 1. 계정 조회
-                AccountDb account = db.Accounts
-                    .Where(a => a.AccountId == AccountId)
-                    .FirstOrDefault();
-
-                if (account == null)
+                if (AccountDb == null)
                 {
                     Console.WriteLine("[Error] 계정을 찾을 수 없음");
                     return;
                 }
 
-                // 2. 계정에 속한 Player 목록 로드
-                List<PlayerDb> playerList = db.Players
-                    .Where(p => p.AccountDbId == account.AccountDbId).ToList();
+                // 1. 계정에 속한 Player 목록 로드
+                List<PlayerDb> playerList = AccountDb.Players.ToList();
 
-                // 3. 패킷 생성
+                // 2. 패킷 생성
                 S_RequestPlayerList serverRequestPlayerList = new S_RequestPlayerList();
 
                 foreach (PlayerDb player in playerList)
@@ -64,11 +124,11 @@ namespace Server
                     PlayerSelectInfo playerSelectInfo = new PlayerSelectInfo()
                     {
                         PlayerId = player.PlayerId,
-                        PlayerName = player.PlayerName,
+                        Name = player.Name,
                         Gold = player.Gold
                     };
                     
-                    serverRequestPlayerList.PlayerList.Add(playerSelectInfo);
+                    serverRequestPlayerList.PlayerInfoList.Add(playerSelectInfo);
                 }
                 
                 Send(serverRequestPlayerList);
@@ -102,7 +162,7 @@ namespace Server
                     {
                         // 2-2. 기존 아이디로 로그인 의미
                         ClientServerState = ClientServerState.PlayerSelect;
-                        AccountId = findAccount.AccountId;
+                        AccountDb = findAccount;
                         serverLoginPacket.LoginStatus = LoginStatus.Success;
                         Send(serverLoginPacket);
                         return;
@@ -138,7 +198,7 @@ namespace Server
 
                 // 4.회원 가입을 통한 로그인 성공 의미
                 ClientServerState = ClientServerState.PlayerSelect;
-                AccountId = findAccount.AccountId;
+                AccountDb = findAccount;
                 serverLoginPacket.LoginStatus = LoginStatus.Success;
                 Send(serverLoginPacket);
             }

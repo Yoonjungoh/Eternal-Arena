@@ -5,8 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-public class UI_CreatePlayer : UI_Popup<AddRoomPopupData>
+public class UI_CreatePlayer : UI_Popup
 {
     enum Buttons
     {
@@ -16,8 +15,10 @@ public class UI_CreatePlayer : UI_Popup<AddRoomPopupData>
 
     enum Texts
     {
-        RoomNameText,
+        PlayerNameText,
     }
+
+    private TextMeshProUGUI _playerNameText;
 
     public override void Init()
     {
@@ -31,13 +32,10 @@ public class UI_CreatePlayer : UI_Popup<AddRoomPopupData>
 
     private void OnClickConfirmButton()
     {
-        _data.RoomName = GetTextMeshProUGUI((int)Texts.RoomNameText).text;
-        Debug.Log($"방 이름: {_data.RoomName}");
-
         // 서버에 방 생성 패킷 전송
-        C_AddRoom addRoomPacket = new C_AddRoom();
-        addRoomPacket.RoomName = _data.RoomName;
-        Managers.Network.Send(addRoomPacket);
+        C_CreatePlayer createPlayerPacket = new C_CreatePlayer();
+        createPlayerPacket.Name = _playerNameText.text;
+        Managers.Network.Send(createPlayerPacket);
         
         ClosePopupUI();
     }
@@ -45,16 +43,5 @@ public class UI_CreatePlayer : UI_Popup<AddRoomPopupData>
     private void OnClickCancelButton()
     {
         ClosePopupUI();
-    }
-    
-    public override void SetData(AddRoomPopupData data)
-    {
-        base.SetData(data);
-        UpdateUI();
-    }
-    
-    protected override void UpdateUI()
-    {
-
     }
 }

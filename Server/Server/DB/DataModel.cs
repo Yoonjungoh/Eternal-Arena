@@ -28,7 +28,7 @@ namespace Server.DB
         public AccountDb Account { get; set; }
 
         public int PlayerId { get; set; }  // 게임 내에서 사용하는 Id
-        public string PlayerName { get; set; }  // 게임 내에서 사용하는 닉네임
+        public string Name { get; set; }  // 게임 내에서 사용하는 닉네임
         public int Gold { get; set; }
     }
 }

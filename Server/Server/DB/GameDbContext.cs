@@ -32,7 +32,7 @@ namespace Server.DB
                 .IsUnique();
             
             builder.Entity<PlayerDb>()
-                .HasIndex(p => p.PlayerName)
+                .HasIndex(p => p.Name)
                 .IsUnique();
         }
     }

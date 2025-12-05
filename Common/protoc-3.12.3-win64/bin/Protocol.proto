@@ -268,7 +268,7 @@ message C_RequestPlayerList {
 }
 
 message S_RequestPlayerList {
-  repeated PlayerSelectInfo playerList = 1;
+  repeated PlayerSelectInfo playerInfoList = 1;
 }
 
 message C_CreatePlayer {
@@ -277,12 +277,12 @@ message C_CreatePlayer {
 
 message S_CreatePlayer {
   bool canCreate = 1;	// 중복 이름은 불가
-  string name = 2;
+  repeated PlayerSelectInfo playerInfoList = 2;	// 보유 플레이어 목록
 }
 
 message PlayerSelectInfo {
   int32 playerId = 1;
-  string playerName = 2;
+  string name = 2;
   int32 gold = 3;
 }
 

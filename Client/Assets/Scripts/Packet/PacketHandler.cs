@@ -410,7 +410,7 @@ class PacketHandler
     public static void S_RequestPlayerListHandler(PacketSession session, IMessage packet)
     {
         S_RequestPlayerList requestPlayerListPacket = packet as S_RequestPlayerList;
-        if (requestPlayerListPacket == null || requestPlayerListPacket.PlayerList == null)
+        if (requestPlayerListPacket == null || requestPlayerListPacket.PlayerInfoList == null)
         {
             Debug.Log("S_RequestPlayerList 패킷이 null입니다");
             return;
@@ -423,11 +423,31 @@ class PacketHandler
             return;
         }
 
-        playerSelectUI.UpdatePlayerInfos(requestPlayerListPacket.PlayerList);
+        playerSelectUI.UpdatePlayerInfos(requestPlayerListPacket.PlayerInfoList);
     }
 
     public static void S_CreatePlayerHandler(PacketSession session, IMessage packet)
     {
+        S_CreatePlayer createPlaerPacket = packet as S_CreatePlayer;
+        if (createPlaerPacket == null)
+        {
+            Debug.Log("S_CreatePlayer 패킷이 null입니다");
+            return;
+        }
 
+        UI_PlayerSelect playerSelectUI = Managers.UI.CurrentScene.GetComponent<UI_PlayerSelect>();
+        if (playerSelectUI == null)
+        {
+            Debug.Log("현재 캐릭터 선택창이 아닌데 캐릭터 선택을 하려고 합니다.");
+            return;
+        }
+
+        if (createPlaerPacket.CanCreate == false)
+        {
+            Managers.UI.ShowToastPopup("중복 닉네임이 존재하여 캐릭터를 생성할 수 없습니다");
+            return;
+        }
+
+        playerSelectUI.UpdatePlayerInfos(createPlaerPacket.PlayerInfoList);
     }
 }

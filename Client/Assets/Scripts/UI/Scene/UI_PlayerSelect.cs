@@ -30,22 +30,22 @@ public class UI_PlayerSelect : UI_Scene
         C_RequestPlayerList requestPlayerListPacket = new C_RequestPlayerList();
     }
 
-    public void UpdatePlayerInfos(RepeatedField<PlayerSelectInfo> playerSelectInfoList)
+    public void UpdatePlayerInfos(RepeatedField<PlayerSelectInfo> playerInfoList)
     {
-        int playerSelectInfoListCount = playerSelectInfoList.Count;
+        int playerSelectInfoListCount = playerInfoList.Count;
         for (int i = 0; i < playerSelectInfoListCount; i++)
         {
-            if (_playerSelectInfoSubItemDict.ContainsKey(playerSelectInfoList[i].PlayerId)) continue;
+            if (_playerSelectInfoSubItemDict.ContainsKey(playerInfoList[i].PlayerId)) continue;
 
             PlayerSelectInfo_SubItem playerSelectInfo_SubItem = 
                 Managers.UI.MakeSubItem<PlayerSelectInfo_SubItem>(_playerScrollView.transform);
             playerSelectInfo_SubItem.SetData(new PlayerSelectInfo
             {
-                PlayerId = playerSelectInfoList[i].PlayerId,
-                PlayerName = playerSelectInfoList[i].PlayerName,
-                Gold = playerSelectInfoList[i].Gold
+                PlayerId = playerInfoList[i].PlayerId,
+                Name = playerInfoList[i].Name,
+                Gold = playerInfoList[i].Gold
             });
-            _playerSelectInfoSubItemDict.TryAdd(playerSelectInfoList[i].PlayerId, playerSelectInfo_SubItem);
+            _playerSelectInfoSubItemDict.TryAdd(playerInfoList[i].PlayerId, playerSelectInfo_SubItem);
         }
     }
 
