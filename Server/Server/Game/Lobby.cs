@@ -152,7 +152,7 @@ namespace Server.Game
                     continue;
 
                 enterLobbyPacket.UserIdList.Add(u.Id);
-                enterLobbyPacket.UserNameList.Add(u.ObjectState.Name);
+                enterLobbyPacket.UserNameList.Add(u.Name);
             }
 
             foreach (WaitingRoom room in WaitingRoomManager.Rooms.Values)

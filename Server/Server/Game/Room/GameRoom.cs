@@ -89,7 +89,7 @@ namespace Server.Game
             Monster monster = MonsterFactory.Create(monsterType);
 
             monster.MonsterType = monsterType;
-            monster.ObjectState.Name = $"{monsterType}_{monster.ObjectState.ObjectId}";
+            monster.Name = $"{monsterType}_{monster.ObjectState.ObjectId}";
             monster.Position = MovementHelper.Vec3ToProtoVec3(spawnPos);
 
             Push(EnterGame, monster);
@@ -295,7 +295,7 @@ namespace Server.Game
             }
 
             // name 초기화
-            enteGamePacket.ObjectState.Name = gameObject.ObjectState.Name;
+            enteGamePacket.ObjectState.Name = gameObject.Name;
 
             // position 초기화
             Vector3 startPos = Vector3.Zero;

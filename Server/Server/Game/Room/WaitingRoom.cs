@@ -42,7 +42,6 @@ namespace Server.Game
                 return;
 
             player.WaitingRoom = this;
-            player.ObjectState.Name = player.ObjectState.Name;
 
             S_EnterWaitingRoom enterWaitingRoomPacket = new S_EnterWaitingRoom();
             enterWaitingRoomPacket.ObjectState = new ObjectState();
@@ -55,7 +54,7 @@ namespace Server.Game
             enterWaitingRoomPacket.ObjectState.ObjectId = player.Id;
 
             // name 초기화
-            enterWaitingRoomPacket.ObjectState.Name = player.ObjectState.Name;
+            enterWaitingRoomPacket.ObjectState.Name = player.Name;
 
             // position 초기화
             int spawnIndex = _players.Count % DataManager.Instance.MaxRoomPlayerCount;
@@ -74,7 +73,7 @@ namespace Server.Game
             player.ObjectState.CreatureState = CreatureState.Idle;
             enterWaitingRoomPacket.ObjectState.CreatureState = CreatureState.Idle;
 
-            player.Init();
+            //player.Init();
             _players.Add(player.Id, player);
 
             player.Session.Send(enterWaitingRoomPacket);
@@ -206,9 +205,7 @@ namespace Server.Game
             // 다른 유저들에게 브로드캐스트
             S_Move res = new S_Move { ObjectState = movePacket.ObjectState };
             res.ObjectState.ServerReceivedTime = Util.GetTimestampMs();
-            //Console.WriteLine
-            //    ($"Player {player.Id} -> Vel: ({player.Velocity.X}, {player.Velocity.Y}, {player.Velocity.Z})" +
-            //    $"Rot: ({player.Rotation.X}, {player.Rotation.Y}, {player.Rotation.Z}, {player.Rotation.W})");
+
             Broadcast(res, player.Id);
         }
 

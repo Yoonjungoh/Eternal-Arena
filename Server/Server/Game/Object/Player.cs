@@ -25,11 +25,11 @@ namespace Server.Game
 
             if (name == null)
             {
-                ObjectState.Name = $"Player_{ObjectState.ObjectId}";
+                Name = $"NameNull_Player_{ObjectState.ObjectId}";
             }
             else
             {
-                ObjectState.Name = name;
+                Name = name;
             }
             ObjectState.CreatureState = CreatureState.Idle;
 

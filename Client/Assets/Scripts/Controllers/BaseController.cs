@@ -13,6 +13,7 @@ public abstract class BaseController : MonoBehaviour
     protected double _serverReceivedTimeMs = 0.0;  // 서버에서 패킷을 보낸 시간
     
     public ObjectState ObjectState { get; set; } = new ObjectState();
+    public string Name { get { return ObjectState.Name; } set { ObjectState.Name = value; } }
     public int Id { get { return ObjectState.ObjectId; } set { ObjectState.ObjectId = value; } }
     public CreatureState CreatureState
     {

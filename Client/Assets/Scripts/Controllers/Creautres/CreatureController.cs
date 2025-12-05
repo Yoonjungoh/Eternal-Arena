@@ -68,7 +68,7 @@ public class CreatureController : BaseController
         // 이름바 소환
         _nameBar = Managers.UI.MakeWorldSpaceUI<UI_NameBar>(transform, worldPositionStays: false);
         _nameBarPosOffset = Vector3.up * (_collider.bounds.size.y + 0.5f);
-        _nameBar.SetData(ObjectState.Name, _nameBarPosOffset);
+        _nameBar.SetData(Name, _nameBarPosOffset);
 
         // 이펙트 관련 초기화
         _commonAttackHitEffectName = $"{_commonAttackanimName}HitEffect";

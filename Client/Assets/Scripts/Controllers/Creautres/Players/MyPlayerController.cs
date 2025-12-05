@@ -245,6 +245,7 @@ public class MyPlayerController : PlayerController
         _moveRot.X = rot.x; _moveRot.Y = rot.y; _moveRot.Z = rot.z; _moveRot.W = rot.w;
 
         _moveState.ObjectId = Id;
+        _moveState.Name = Name;
         _moveState.ClientSendTime = Util.GetTimestampMs();
         _moveState.Position = _movePos;
         _moveState.Velocity = _moveVel;
