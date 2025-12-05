@@ -30,25 +30,30 @@ namespace Server
         {
             if (ClientServerState != ClientServerState.PlayerSelect)
             {
-                ConsoleLogManager.Instance.Log($"[Warning] 캐릭터 선택창 상태가 아닌 곳에서 캐릭터 선택 시도. SessionId: {SessionId}");
+                ConsoleLogManager.Instance.Log($"[Warning] 캐릭터 선택창 상태가 아닌 곳에서 캐릭터 생성 시도. SessionId: {SessionId}");
                 return;
             }
 
             using (GameDbContext db = new GameDbContext())
             {
-                // 1. 아이디 존재하는지 먼저 확인
-                AccountDb = db.Accounts
-                    .Where(a => a.AccountId == AccountDb.AccountId)
-                    .FirstOrDefault();
-
                 if (AccountDb == null)
                 {
-                    Console.WriteLine("[Error] 계정을 찾을 수 없음");
+                    ConsoleLogManager.Instance.Log("[Error] AccountDb가 null임");
                     return;
                 }
 
-                // 1. 모든 계정들의 캐릭터 이름은 고유해야 함.
-                // 따라서 모든 계정들의 캐릭터이름을 순회하면서 중복인지 알아내야 함
+                AccountDb account = db.Accounts
+                    .Include(a => a.Players)
+                    .Where(a => a.AccountDbId == AccountDb.AccountDbId)
+                    .FirstOrDefault();
+
+                if (account == null)
+                {
+                    ConsoleLogManager.Instance.Log("[Error] DB에서 계정 정보를 찾을 수 없음");
+                    return;
+                }
+
+                // 1. 캐릭터 이름 중복 검사
                 PlayerDb existingPlayer = db.Players
                     .Where(p => p.Name == name)
                     .FirstOrDefault();
@@ -57,42 +62,27 @@ namespace Server
 
                 if (existingPlayer != null)
                 {
-                    // 1-1. 중복이라 생성 못한다고 패킷 전달
+                    // 중복이므로 생성 불가
                     serverCreatePlayerPacket.CanCreate = false;
                     Send(serverCreatePlayerPacket);
                     return;
                 }
 
-                // 2. 캐릭터 생성
-                // 2-1. TODO - 새로운 플레이어 아이디는 현재 db의 유저수 + 1
-                int newPlayerId = -1;
-                if (AccountDb.Players == null)
-                {
-                    newPlayerId = 1;
-                }
-                else
-                {
-                    newPlayerId = AccountDb.Players.ToList().Count + 1;
-                }
+                // 2. PlayerId 자동 생성 (모든 계정의 전체 캐릭터 수 기반)
+                int newPlayerId = db.Players.Any() ? db.Players.Max(p => p.PlayerId) + 1 : 1;
 
+                // 3. 새 PlayerDb 생성
                 PlayerDb newPlayerDb = new PlayerDb()
                 {
-                    AccountDbId = AccountDb.AccountDbId,
+                    AccountDbId = account.AccountDbId,
+                    PlayerId = newPlayerId,
                     Name = name,
-                    Gold = 1000,
-                    PlayerId = newPlayerId
+                    Gold = 1000
                 };
-                
-                // 3. 패킷 생성
-                serverCreatePlayerPacket.CanCreate = true;
-                // 3-1. 방금 생성한 플레이어를 playerList에 추가
-                if (AccountDb.Players == null)
-                {
-                    AccountDb.Players = new List<PlayerDb>();
-                }
-                AccountDb.Players.Add(newPlayerDb);
+
+                // 4. DB 저장
                 db.Players.Add(newPlayerDb);
-                
+
                 try
                 {
                     db.SaveChanges();
@@ -103,23 +93,30 @@ namespace Server
                     return;
                 }
 
-                List<PlayerDb> playerList = AccountDb.Players.ToList();
-                foreach (PlayerDb player in playerList)
+                // 혹시 모르니 최신 상태 다시 불러오기
+                account = db.Accounts
+                    .Include(a => a.Players)
+                    .Where(a => a.AccountDbId == account.AccountDbId)
+                    .FirstOrDefault();
+
+                // 5. 생성 성공 결과 패킷 전송
+                serverCreatePlayerPacket.CanCreate = true;
+
+                foreach (PlayerDb player in account.Players)
                 {
-                    PlayerSelectInfo playerSelectInfo = new PlayerSelectInfo()
+                    PlayerSelectInfo info = new PlayerSelectInfo()
                     {
                         PlayerId = player.PlayerId,
                         Name = player.Name,
                         Gold = player.Gold
                     };
 
-                    serverCreatePlayerPacket.PlayerInfoList.Add(playerSelectInfo);
+                    serverCreatePlayerPacket.PlayerInfoList.Add(info);
                 }
 
                 Send(serverCreatePlayerPacket);
             }
         }
-
         public void HandleRequestPlayerList(C_RequestPlayerList requestPlayerListPacket)
         {
             if (ClientServerState != ClientServerState.PlayerSelect)
@@ -130,38 +127,37 @@ namespace Server
 
             using (GameDbContext db = new GameDbContext())
             {
-                AccountDb = db.Accounts
-                    .Where(a => a.AccountId == AccountDb.AccountId)
+                // Account + Players 데이터를 한 번에 로드해야 함
+                AccountDb account = db.Accounts
+                    .Include(a => a.Players)
+                    .Where(a => a.AccountDbId == AccountDb.AccountDbId)
                     .FirstOrDefault();
 
-                if (AccountDb == null)
+                if (account == null)
                 {
                     Console.WriteLine("[Error] 계정을 찾을 수 없음");
                     return;
                 }
 
-                // 1. 계정에 속한 Player 목록 로드
-                List<PlayerDb> playerList = new List<PlayerDb>();
-                if (AccountDb.Players != null)
-                {
-                    playerList = AccountDb.Players.ToList();
-                }
+                // 1. 계정의 Player 목록
+                List<PlayerDb> playerList = account.Players?.ToList() ?? new List<PlayerDb>();
 
                 // 2. 패킷 생성
                 S_RequestPlayerList serverRequestPlayerList = new S_RequestPlayerList();
 
                 foreach (PlayerDb player in playerList)
                 {
-                    PlayerSelectInfo playerSelectInfo = new PlayerSelectInfo()
+                    PlayerSelectInfo info = new PlayerSelectInfo()
                     {
                         PlayerId = player.PlayerId,
                         Name = player.Name,
                         Gold = player.Gold
                     };
-                    
-                    serverRequestPlayerList.PlayerInfoList.Add(playerSelectInfo);
+
+                    serverRequestPlayerList.PlayerInfoList.Add(info);
                 }
-                
+
+                // 3. 클라로 전송
                 Send(serverRequestPlayerList);
             }
         }
