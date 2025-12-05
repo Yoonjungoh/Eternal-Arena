@@ -55,7 +55,7 @@ namespace Server
                     }
 
                     // 2. 삭제하려는 캐릭터 찾기
-                    PlayerDb target = account.Players
+                    PlayerDb target = db.Players
                         .Where(p => p.PlayerId == deletePlayerId)
                         .FirstOrDefault();
 
