@@ -74,13 +74,9 @@ namespace Server
                     serverDeletePlayerPacket.CanDelete = canDelete;
                     db.Players.Remove(target);
 
-                    try
+                    bool success = db.SaveChangeEx();
+                    if (success == false)
                     {
-                        db.SaveChanges();
-                    }
-                    catch (Exception ex)
-                    {
-                        ConsoleLogManager.Instance.Log($"[Error] 캐릭터 삭제 DB 오류: {ex.Message}");
                         Send(serverDeletePlayerPacket);
                         return;
                     }
@@ -197,15 +193,9 @@ namespace Server
                     // 4. DB 저장
                     db.Players.Add(newPlayerDb);
 
-                    try
-                    {
-                        db.SaveChanges();
-                    }
-                    catch (DbUpdateException ex)
-                    {
-                        ConsoleLogManager.Instance.Log($"[Error] DB Update Exception: {ex.Message}");
+                    bool success = db.SaveChangeEx();
+                    if (success == false)
                         return;
-                    }
 
                     // 혹시 모르니 최신 상태 다시 불러오기
                     account = db.Accounts
@@ -341,16 +331,9 @@ namespace Server
 
                     db.Accounts.Add(newAccount);
 
-                    try
-                    {
-                        db.SaveChanges();
-                    }
-                    catch (DbUpdateException ex)
-                    {
-                        // DB가 중복 계정을 감지했다는 뜻
-                        ConsoleLogManager.Instance.Log($"[Error] DB Update Exception: {ex.Message}");
+                    bool success = db.SaveChangeEx();
+                    if (success == false)
                         return;
-                    }
 
                     // 4. 회원 가입을 통한 로그인 성공 의미
                     AccountManager.Instance.Add(newAccount.AccountDbId);
