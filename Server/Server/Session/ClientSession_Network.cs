@@ -1,16 +1,18 @@
-﻿using System;
+﻿using Google.Protobuf;
+using Google.Protobuf.Protocol;
+using Server.DB;
+using Server.Game;
+using Server.Session;
+using ServerCore;
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Net;
 using System.Net.Sockets;
+using System.Security.Principal;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ServerCore;
-using System.Net;
-using Google.Protobuf.Protocol;
-using Google.Protobuf;
-using Server.Game;
-using Server.DB;
-using System.Linq;
 
 namespace Server
 {
@@ -86,7 +88,9 @@ namespace Server
                 }
             }
 
+            AccountManager.Instance.Remove(AccountId);
             SessionManager.Instance.Remove(this);
+
             ConsoleLogManager.Instance.Log($"OnDisconnected : {endPoint}");
         }
 

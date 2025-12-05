@@ -13,6 +13,7 @@ using Server.DB;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using Server.Session;
 
 namespace Server
 {
@@ -210,20 +211,28 @@ namespace Server
                 // 2. 계정이 존재하는 경우
                 if (findAccount != null)
                 {
-                    // 2-1. 비밀번호 확인
-                    if (findAccount.AccountPassword == loginPacket.Password)
+                    // 2-1. 비밀번호만 틀림
+                    if (findAccount.AccountPassword != loginPacket.Password)
                     {
-                        // 2-2. 기존 아이디로 로그인 의미
-                        ClientServerState = ClientServerState.PlayerSelect;
-                        AccountId = findAccount.AccountDbId;
-                        serverLoginPacket.LoginStatus = LoginStatus.Success;
+                        serverLoginPacket.LoginStatus = LoginStatus.PasswordWrong;
                         Send(serverLoginPacket);
                         return;
                     }
-                    else
+                    // 2-2. 이미 로그인 중인 아이디면 접속 못함
+                    if (AccountManager.Instance.IsAccountLoggedIn(findAccount.AccountDbId))
                     {
-                        // 2-3. 비밀번호만 틀림
-                        serverLoginPacket.LoginStatus = LoginStatus.PasswordWrong;
+                        serverLoginPacket.LoginStatus = LoginStatus.AlreadyLoggedIn;
+                        Send(serverLoginPacket);
+                        return;
+                    }
+                    // 2-3. 비밀번호 확인
+                    if (findAccount.AccountPassword == loginPacket.Password)
+                    {
+                        // 2-4. 기존 아이디로 로그인 의미
+                        ClientServerState = ClientServerState.PlayerSelect;
+                        AccountId = findAccount.AccountDbId;
+                        AccountManager.Instance.Add(findAccount.AccountDbId);
+                        serverLoginPacket.LoginStatus = LoginStatus.Success;
                         Send(serverLoginPacket);
                         return;
                     }
@@ -252,6 +261,7 @@ namespace Server
                 // 4.회원 가입을 통한 로그인 성공 의미
                 ClientServerState = ClientServerState.PlayerSelect;
                 AccountId = newAccount.AccountDbId;
+                AccountManager.Instance.Add(newAccount.AccountDbId);
                 serverLoginPacket.LoginStatus = LoginStatus.Success;
                 Send(serverLoginPacket);
             }

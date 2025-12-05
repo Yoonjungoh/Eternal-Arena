@@ -9,11 +9,11 @@ namespace Server
 		static SessionManager _session = new SessionManager();
 		public static SessionManager Instance { get { return _session; } }
 
-		int _sessionId = 0;
-		Dictionary<int, ClientSession> _sessions = new Dictionary<int, ClientSession>();
-		object _lock = new object();
-
-		public ClientSession Generate()
+        private int _sessionId = 0;
+		private Dictionary<int, ClientSession> _sessions = new Dictionary<int, ClientSession>();
+        private object _lock = new object();
+		
+        public ClientSession Generate()
 		{
 			lock (_lock)
 			{

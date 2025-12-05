@@ -127,14 +127,14 @@ namespace Google.Protobuf.Protocol {
             "UEVfTk9ORRAAEggKBEJFQVIQASo9Cg5Qcm9qZWN0aWxlVHlwZRIYChRQUk9K",
             "RUNUSUxFX1RZUEVfTk9ORRAAEhEKDU1BR0lDX01JU1NJTEUQASpZCg5Sb29t",
             "RXhpdFJlYXNvbhIZChVST09NX0VYSVRfUkVBU09OX05PTkUQABIMCghHQU1F",
-            "X1dJThABEg0KCUdBTUVfTE9TRRACEg8KC01BTlVBTF9FWElUEAMqegoLTG9n",
-            "aW5TdGF0dXMSFQoRTE9HSU5fU1RBVFVTX05PTkUQABIYChRMT0dJTl9TVEFU",
-            "VVNfU1VDQ0VTUxABEhkKFUxPR0lOX1NUQVRVU19JRF9XUk9ORxACEh8KG0xP",
-            "R0lOX1NUQVRVU19QQVNTV09SRF9XUk9ORxADKnoKEUNsaWVudFNlcnZlclN0",
-            "YXRlEhwKGENMSUVOVF9TRVJWRVJfU1RBVEVfTk9ORRAAEgkKBUxPR0lOEAES",
-            "EAoMUGxheWVyU2VsZWN0EAISCQoFTE9CQlkQAxIQCgxXQUlUSU5HX1JPT00Q",
-            "BBINCglHQU1FX1JPT00QBUIbqgIYR29vZ2xlLlByb3RvYnVmLlByb3RvY29s",
-            "YgZwcm90bzM="));
+            "X1dJThABEg0KCUdBTUVfTE9TRRACEg8KC01BTlVBTF9FWElUEAMqngEKC0xv",
+            "Z2luU3RhdHVzEhUKEUxPR0lOX1NUQVRVU19OT05FEAASGAoUTE9HSU5fU1RB",
+            "VFVTX1NVQ0NFU1MQARIZChVMT0dJTl9TVEFUVVNfSURfV1JPTkcQAhIfChtM",
+            "T0dJTl9TVEFUVVNfUEFTU1dPUkRfV1JPTkcQAxIiCh5MT0dJTl9TVEFUVVNf",
+            "QUxSRUFEWV9MT0dHRURfSU4QBCp6ChFDbGllbnRTZXJ2ZXJTdGF0ZRIcChhD",
+            "TElFTlRfU0VSVkVSX1NUQVRFX05PTkUQABIJCgVMT0dJThABEhAKDFBsYXll",
+            "clNlbGVjdBACEgkKBUxPQkJZEAMSEAoMV0FJVElOR19ST09NEAQSDQoJR0FN",
+            "RV9ST09NEAVCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.AttackType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.ProjectileType), typeof(global::Google.Protobuf.Protocol.RoomExitReason), typeof(global::Google.Protobuf.Protocol.LoginStatus), typeof(global::Google.Protobuf.Protocol.ClientServerState), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -286,6 +286,10 @@ namespace Google.Protobuf.Protocol {
     /// 비밀번호가 틀림
     /// </summary>
     [pbr::OriginalName("LOGIN_STATUS_PASSWORD_WRONG")] PasswordWrong = 3,
+    /// <summary>
+    /// 이미 로그인 되어 있음
+    /// </summary>
+    [pbr::OriginalName("LOGIN_STATUS_ALREADY_LOGGED_IN")] AlreadyLoggedIn = 4,
   }
 
   public enum ClientServerState {

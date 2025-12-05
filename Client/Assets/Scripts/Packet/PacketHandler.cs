@@ -405,6 +405,9 @@ class PacketHandler
             case LoginStatus.PasswordWrong:
                 Managers.UI.ShowToastPopup("비밀번호가 틀렸습니다.");
                 break;
+            case LoginStatus.AlreadyLoggedIn:
+                Managers.UI.ShowToastPopup("이미 접속 중인 계정입니다.");
+                break;
         }
     }
 
