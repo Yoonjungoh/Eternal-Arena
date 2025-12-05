@@ -53,6 +53,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.CChangeCreatureState, PacketHandler.C_ChangeCreatureStateHandler);		
 		_onRecv.Add((ushort)MsgId.CLogin, MakePacket<C_Login>);
 		_handler.Add((ushort)MsgId.CLogin, PacketHandler.C_LoginHandler);		
+		_onRecv.Add((ushort)MsgId.CRequestPlayerList, MakePacket<C_RequestPlayerList>);
+		_handler.Add((ushort)MsgId.CRequestPlayerList, PacketHandler.C_RequestPlayerListHandler);		
 		_onRecv.Add((ushort)MsgId.CCreatePlayer, MakePacket<C_CreatePlayer>);
 		_handler.Add((ushort)MsgId.CCreatePlayer, PacketHandler.C_CreatePlayerHandler);
 	}

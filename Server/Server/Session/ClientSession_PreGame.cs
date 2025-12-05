@@ -12,6 +12,7 @@ using Server.Game;
 using Server.DB;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace Server
 {
@@ -21,11 +22,57 @@ namespace Server
 
 		public int SessionId { get; set; }
 
+        public string AccountId { get; set; } = string.Empty;    // 로그인 Id
+
         public ClientServerState ClientServerState { get; private set; } = ClientServerState.Login;
 
         public void HandleCreatePlayer(string name)
         {
 
+        }
+
+        public void HandleRequestPlayerList(C_RequestPlayerList requestPlayerListPacket)
+        {
+            if (ClientServerState != ClientServerState.PlayerSelect)
+            {
+                ConsoleLogManager.Instance.Log($"[Warning] 캐릭터 선택창 상태가 아닌 곳에서 캐릭터 선택 시도. SessionId: {SessionId}");
+                return;
+            }
+
+            using (GameDbContext db = new GameDbContext())
+            {
+                // 1. 계정 조회
+                AccountDb account = db.Accounts
+                    .Where(a => a.AccountId == AccountId)
+                    .FirstOrDefault();
+
+                if (account == null)
+                {
+                    Console.WriteLine("[Error] 계정을 찾을 수 없음");
+                    return;
+                }
+
+                // 2. 계정에 속한 Player 목록 로드
+                List<PlayerDb> playerList = db.Players
+                    .Where(p => p.AccountDbId == account.AccountDbId).ToList();
+
+                // 3. 패킷 생성
+                S_RequestPlayerList serverRequestPlayerList = new S_RequestPlayerList();
+
+                foreach (PlayerDb player in playerList)
+                {
+                    PlayerSelectInfo playerSelectInfo = new PlayerSelectInfo()
+                    {
+                        PlayerId = player.PlayerId,
+                        PlayerName = player.PlayerName,
+                        Gold = player.Gold
+                    };
+                    
+                    serverRequestPlayerList.PlayerList.Add(playerSelectInfo);
+                }
+                
+                Send(serverRequestPlayerList);
+            }
         }
 
         public void HandleLogin(C_Login loginPacket)
@@ -55,6 +102,7 @@ namespace Server
                     {
                         // 2-2. 기존 아이디로 로그인 의미
                         ClientServerState = ClientServerState.PlayerSelect;
+                        AccountId = findAccount.AccountId;
                         serverLoginPacket.LoginStatus = LoginStatus.Success;
                         Send(serverLoginPacket);
                         return;
@@ -90,6 +138,7 @@ namespace Server
 
                 // 4.회원 가입을 통한 로그인 성공 의미
                 ClientServerState = ClientServerState.PlayerSelect;
+                AccountId = findAccount.AccountId;
                 serverLoginPacket.LoginStatus = LoginStatus.Success;
                 Send(serverLoginPacket);
             }

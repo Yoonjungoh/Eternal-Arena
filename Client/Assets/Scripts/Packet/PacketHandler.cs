@@ -406,7 +406,26 @@ class PacketHandler
                 break;
         }
     }
-    
+
+    public static void S_RequestPlayerListHandler(PacketSession session, IMessage packet)
+    {
+        S_RequestPlayerList requestPlayerListPacket = packet as S_RequestPlayerList;
+        if (requestPlayerListPacket == null || requestPlayerListPacket.PlayerList == null)
+        {
+            Debug.Log("S_RequestPlayerList 패킷이 null입니다");
+            return;
+        }
+
+        UI_PlayerSelect playerSelectUI = Managers.UI.CurrentScene.GetComponent<UI_PlayerSelect>();
+        if (playerSelectUI == null)
+        {
+            Debug.Log("현재 캐릭터 선택창이 아닌데 캐릭터 선택을 하려고 합니다.");
+            return;
+        }
+
+        playerSelectUI.UpdatePlayerInfos(requestPlayerListPacket.PlayerList);
+    }
+
     public static void S_CreatePlayerHandler(PacketSession session, IMessage packet)
     {
 

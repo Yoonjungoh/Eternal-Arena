@@ -13,8 +13,6 @@ namespace Server.Game
             Init();
         }
 
-        public string AccountId { get; set; }    // 로그인 Id
-
         public Lobby Lobby;	// 로비 나가면 초기화 해줘야 함
 			
         public WaitingRoom WaitingRoom;	// 방 나가면 초기화 해줘야 함

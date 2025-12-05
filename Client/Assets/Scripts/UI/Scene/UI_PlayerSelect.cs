@@ -1,3 +1,4 @@
+using Google.Protobuf.Collections;
 using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,23 +9,51 @@ public class UI_PlayerSelect : UI_Scene
 {
     enum Buttons
     {
-        EnterLobbyButton,
+        CreatePlayerButton,
         ExitGameButton,
     }
+
+    private GameObject _playerScrollView;
+    Dictionary<int, PlayerSelectInfo_SubItem> _playerSelectInfoSubItemDict = new Dictionary<int, PlayerSelectInfo_SubItem>();
 
     public override void Init()
     {
         base.Init();
 
         Bind<Button>(typeof(Buttons));
-        GetButton((int)Buttons.EnterLobbyButton).onClick.AddListener(OnClickEnterLobbyButton);
+        GetButton((int)Buttons.CreatePlayerButton).onClick.AddListener(OnClickCreatePlayerButton);
         GetButton((int)Buttons.ExitGameButton).onClick.AddListener(OnClickExitGameButton);
+
+        _playerScrollView = Util.FindChild(gameObject, "PlayerContent", recursive: true);
+
+        // 서버에게 플레이어 리스트 요청
+        C_RequestPlayerList requestPlayerListPacket = new C_RequestPlayerList();
     }
 
-    private void OnClickEnterLobbyButton()
+    public void UpdatePlayerInfos(RepeatedField<PlayerSelectInfo> playerSelectInfoList)
     {
-        Managers.Scene.LoadScene(Define.Scene.Lobby);
+        int playerSelectInfoListCount = playerSelectInfoList.Count;
+        for (int i = 0; i < playerSelectInfoListCount; i++)
+        {
+            if (_playerSelectInfoSubItemDict.ContainsKey(playerSelectInfoList[i].PlayerId)) continue;
+
+            PlayerSelectInfo_SubItem playerSelectInfo_SubItem = 
+                Managers.UI.MakeSubItem<PlayerSelectInfo_SubItem>(_playerScrollView.transform);
+            playerSelectInfo_SubItem.SetData(new PlayerSelectInfo
+            {
+                PlayerId = playerSelectInfoList[i].PlayerId,
+                PlayerName = playerSelectInfoList[i].PlayerName,
+                Gold = playerSelectInfoList[i].Gold
+            });
+            _playerSelectInfoSubItemDict.TryAdd(playerSelectInfoList[i].PlayerId, playerSelectInfo_SubItem);
+        }
     }
+
+    private void OnClickCreatePlayerButton()
+    {
+        UI_CreatePlayer createPlayerUI = Managers.UI.ShowPopupUI<UI_CreatePlayer>();
+    }
+
     private void OnClickExitGameButton()
     {
 #if UNITY_EDITOR

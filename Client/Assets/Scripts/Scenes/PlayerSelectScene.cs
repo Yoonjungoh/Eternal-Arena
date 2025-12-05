@@ -8,6 +8,7 @@ public class PlayerSelectScene : BaseScene
     protected override void Init()
     {
         base.Init();
+        Managers.UI.ShowSceneUI<UI_PlayerSelect>();
     }
 
     private void Awake()

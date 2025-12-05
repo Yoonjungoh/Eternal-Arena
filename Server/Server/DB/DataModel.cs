@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -21,12 +22,13 @@ namespace Server.DB
     public class PlayerDb
     {
         public int PlayerDbId { get; set; }
-        public string PlayerName { get; set; }  // 일단은 Unique 하게 설정 (Index 해줌)
 
         [ForeignKey("Account")]
         public int AccountDbId { get; set; }  // FK 컬럼
         public AccountDb Account { get; set; }
 
+        public int PlayerId { get; set; }  // 게임 내에서 사용하는 Id
+        public string PlayerName { get; set; }  // 게임 내에서 사용하는 닉네임
         public int Gold { get; set; }
     }
 }

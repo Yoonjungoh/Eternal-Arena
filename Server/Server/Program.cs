@@ -26,8 +26,8 @@ namespace Server
 			//DataManager.Instance.LoadAllData();
 			//using (GameDbContext db = new GameDbContext())
 			//{
-			//	db.Accounts.Add(new AccountDb() 
-			//	{ 
+			//	db.Accounts.Add(new AccountDb()
+			//	{
 			//		AccountId = "TestAccount1",
 			//		AccountPassword = "1234"
 			//	});

@@ -228,6 +228,17 @@ class PacketHandler
         clientSession.HandleLogin(loginPacket);
     }
 
+    public static void C_RequestPlayerListHandler(PacketSession session, IMessage packet)
+    {
+        C_RequestPlayerList requestPlayerList = packet as C_RequestPlayerList;
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession == null)
+            return;
+
+        clientSession.HandleRequestPlayerList(requestPlayerList);
+    }
+
     public static void C_CreatePlayerHandler(PacketSession session, IMessage packet)
     {
         C_CreatePlayer createPacket = packet as C_CreatePlayer;

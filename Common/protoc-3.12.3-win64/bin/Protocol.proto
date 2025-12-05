@@ -41,8 +41,10 @@ enum MsgId {
   S_CONNECTED = 109;
   C_LOGIN = 110;
   S_LOGIN = 111;
-  C_CREATE_PLAYER = 112;
-  S_CREATE_PLAYER = 113;
+  C_REQUEST_PLAYER_LIST = 112;
+  S_REQUEST_PLAYER_LIST = 113;
+  C_CREATE_PLAYER = 114;
+  S_CREATE_PLAYER = 115;
 }
 
 enum CreatureState {
@@ -262,6 +264,13 @@ message S_Login {
   LoginStatus loginStatus = 1; 
 }
 
+message C_RequestPlayerList {
+}
+
+message S_RequestPlayerList {
+  repeated PlayerSelectInfo playerList = 1;
+}
+
 message C_CreatePlayer {
   string name = 1;
 }
@@ -269,6 +278,12 @@ message C_CreatePlayer {
 message S_CreatePlayer {
   bool canCreate = 1;	// 중복 이름은 불가
   string name = 2;
+}
+
+message PlayerSelectInfo {
+  int32 playerId = 1;
+  string playerName = 2;
+  int32 gold = 3;
 }
 
 message RoomInfo {
