@@ -298,7 +298,8 @@ message S_DeletePlayer {
 message PlayerSelectInfo {
   int32 playerId = 1;
   string name = 2;
-  int32 gold = 3;
+  int32 jewel = 3;
+  int32 gold = 4;
 }
 
 message RoomInfo {

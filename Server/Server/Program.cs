@@ -40,7 +40,8 @@ namespace Server
 
 			while (true)
 			{
-                Thread.Sleep(Timeout.Infinite);
+				DbTransaction.Instance.Flush();
+                //Thread.Sleep(Timeout.Infinite);
             }
         }
 	}

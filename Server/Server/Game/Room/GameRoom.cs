@@ -377,6 +377,7 @@ namespace Server.Game
                 if (_players.TryGetValue(objectId, out player) == false)
                     return;
 
+                player.OnLeaveGame();
                 player.GameRoom = null;
 
                 // 본인한테 정보 전송

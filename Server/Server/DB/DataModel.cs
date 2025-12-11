@@ -29,6 +29,7 @@ namespace Server.DB
 
         public int PlayerId { get; set; }  // 게임 내에서 사용하는 고유 Id (ObjectManager에서 사용하는 Id는 다른 거임)
         public string Name { get; set; }  // 게임 내에서 사용하는 닉네임
+        public int Jewel { get; set; }
         public int Gold { get; set; }
     }
 }

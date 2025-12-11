@@ -74,7 +74,7 @@ namespace Server
                     serverDeletePlayerPacket.CanDelete = canDelete;
                     db.Players.Remove(target);
 
-                    bool success = db.SaveChangeEx();
+                    bool success = db.SaveChangesEx();
                     if (success == false)
                     {
                         Send(serverDeletePlayerPacket);
@@ -104,6 +104,7 @@ namespace Server
             }
         }
 
+        // 만들어진 캐릭터 선택 후 로비 진입
         public Player CreateMyPlayer(int playerId)
         {
             lock (_lock)
@@ -131,7 +132,7 @@ namespace Server
 
                     // 2. 해당 플레이어 데이터를 바탕으로 현재 클라이언트 세션의 MyPlayer 생성
                     MyPlayer = ObjectManager.Instance.Add<Player>();
-                    MyPlayer.Init(player.Name);
+                    MyPlayer.Init(player.PlayerId, player.Name);
                     MyPlayer.Session = this;
                 }
 
@@ -187,13 +188,14 @@ namespace Server
                         AccountDbId = account.AccountDbId,
                         PlayerId = newPlayerId,
                         Name = name,
+                        Jewel = 0,
                         Gold = 1000
                     };
 
                     // 4. DB 저장
                     db.Players.Add(newPlayerDb);
 
-                    bool success = db.SaveChangeEx();
+                    bool success = db.SaveChangesEx();
                     if (success == false)
                         return;
 
@@ -213,6 +215,7 @@ namespace Server
                         {
                             PlayerId = player.PlayerId,
                             Name = player.Name,
+                            Jewel = player.Jewel,
                             Gold = player.Gold
                         };
 
@@ -261,6 +264,7 @@ namespace Server
                         {
                             PlayerId = player.PlayerId,
                             Name = player.Name,
+                            Jewel = player.Jewel,
                             Gold = player.Gold
                         };
 
@@ -332,7 +336,7 @@ namespace Server
 
                     db.Accounts.Add(newAccount);
 
-                    bool success = db.SaveChangeEx();
+                    bool success = db.SaveChangesEx();
                     if (success == false)
                         return;
 
