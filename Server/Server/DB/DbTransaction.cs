@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Google.Protobuf.Protocol;
+using Microsoft.EntityFrameworkCore;
+using Server.DB;
 using Server.Game;
 using System;
 using System.Collections.Generic;
@@ -13,38 +15,38 @@ namespace Server.DB
     {
         public static DbTransaction Instance { get; } = new DbTransaction();
 
-        // 게임룸에서 호출하는 DB 저장 요청 부분
-        public static void SavePlayerStatus(Player player, GameRoom room)
+        public static void SavePlayerCurrency(Player player, CurrencyType currencyType, int amount,  Action callBack = null, string reason = null)
         {
-            if (player == null || room == null)
+            if (player == null)
                 return;
 
-            // Me (GameRoom)
-            PlayerDb playerDb = new PlayerDb();
-            playerDb.PlayerDbId = player.PlayerId;
-            playerDb.Jewel = player.Jewel;
-            Instance.Push<PlayerDb, GameRoom>(SavePlayerStatus_Db, playerDb, room);
+            Instance.Push<int, CurrencyType, int, Action, string>(SavePlayerCurrency_Db,
+                player.PlayerId, currencyType, amount, callBack, reason);
         }
 
-        // DB 저장 부분
-        public static void SavePlayerStatus_Db(PlayerDb playerDb, GameRoom room)
+        private static void SavePlayerCurrency_Db(int playerDbId, CurrencyType currencyType, int amount, Action callBack, string reason = null)
         {
             using (GameDbContext db = new GameDbContext())
             {
-                db.Entry(playerDb).State = EntityState.Unchanged;
-                db.Entry(playerDb).Property(nameof(PlayerDb.Jewel)).IsModified = true;
-                bool success = db.SaveChangesEx();
-                if (success)
+                var query = db.Players
+                        .Where(p => p.PlayerDbId == playerDbId);
+
+                int successRows = currencyType switch
                 {
-                    room.Push(SavePlayerStatus_OnComplete, playerDb.Jewel);
+                    CurrencyType.Jewel => query
+                        .ExecuteUpdate(s => s.SetProperty(p => p.Jewel, amount)),
+
+                    CurrencyType.Gold => query
+                        .ExecuteUpdate(s => s.SetProperty(p => p.Gold, amount)),
+
+                    _ => 0
+                };
+
+                if (successRows > 0)
+                {
+                    callBack?.Invoke();
                 }
             }
-        }
-
-        // DB 저장 완료되면 사용할 콜백
-        public static void SavePlayerStatus_OnComplete(int jewel)
-        {
-            Console.WriteLine($"Jewel Saved({jewel})");
         }
     }
 }

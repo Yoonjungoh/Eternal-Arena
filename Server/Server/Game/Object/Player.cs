@@ -69,32 +69,7 @@ namespace Server.Game
 
         public void OnLeaveGame()
         {
-            // 1) 서버 다운되면 아직 저장되지 않은 정보 날아감
-            // 2) 코드 흐름을 다 막아버림...
-            // 2-1) 계정, 캐릭터 생성에선 혼자 막으니 상관 없는데, 인게임은 안 됨
-            // -> DB 작업은 비동기로 바꿔?
-            // -> 다른 스레드로 DB 일감 던져?
-            // -> 결과를 받아서 이어서 처리하는 경우 에러 발생
-            // DB 완료 처리 되면 이어서 하게 콜백으로 가야하나?
-            using (GameDbContext db = new GameDbContext())
-            {
-                //// 아래는 좀 더 비효율적
-                //PlayerDb playerDb = db.Players.Find(PlayerId);
-                //playerDb.Jewel = Jewel;
-                //db.SaveChangeEx();
 
-                //// 아래가 더 효율적
-                //PlayerDb playerDb = new PlayerDb();
-                //playerDb.PlayerDbId = PlayerId;
-                //playerDb.Jewel = Jewel;
-
-                //db.Entry(playerDb).State = EntityState.Unchanged;
-                //db.Entry(playerDb).Property(nameof(PlayerDb.Jewel)).IsModified = true;
-                //db.SaveChangesEx();
-
-                // 아래 사용해서 db 저장 관리 부분 따로 호출하기
-                DbTransaction.SavePlayerStatus(this, GameRoom);
-            }
         }
     }
 }

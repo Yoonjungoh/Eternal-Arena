@@ -52,9 +52,9 @@ namespace Server.Game
         };
 
         public static DataManager Instance { get; } = new DataManager();
-        public int MaxLobbyCount = 3;  // 최대 로비 개수
-        public int MaxRoomPlayerCount = 2; // 방당 최대 플레이어 수
-        public float GameStartCountdownTime = 3.0f; // 게임 시작 카운트다운 초기값 (클라 offset 영향 받음)
+        public int MaxLobbyCount { get; set; } = 3;  // 최대 로비 개수
+        public int MaxRoomPlayerCount { get; set; } = 2; // 방당 최대 플레이어 수
+        public float GameStartCountdownTime { get; set; } = 3.0f; // 게임 시작 카운트다운 초기값 (클라 offset 영향 받음)
         
         public Vector3 GetStartPosition(RoomType roomType, int index)
         {
@@ -68,10 +68,13 @@ namespace Server.Game
             return StartPositions[roomType][index];
         }
         public float MaxHp { get; set; } = 10000.0f;
+
         public float MaxDamage { get; set; } = 1000.0f;
 
-        public float ProjectileDistanceErrorThreshold = 0.1f;  // 투사체 오차 허용 스레시 홀드
+        public float ProjectileDistanceErrorThreshold { get; set; } = 0.1f;  // 투사체 오차 허용 스레시 홀드
 
         public long ProcessStartTime = Util.GetTimestampMs();
+
+        public int VictoryJewelReward { get; set; } = 100;
     }
 }

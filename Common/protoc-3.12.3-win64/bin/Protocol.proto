@@ -107,6 +107,12 @@ enum ClientServerState {
   GAME_ROOM = 5;
 }
 
+enum CurrencyType {
+  CURRENCY_TYPE_NONE = 0;
+  CURRENCY_TYPE_JEWEL = 1;
+  CURRENCY_TYPE_GOLD = 2;
+}
+
 message S_AssignUserId {
   int32 userId = 1;
 }

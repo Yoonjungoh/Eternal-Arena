@@ -138,11 +138,13 @@ namespace Google.Protobuf.Protocol {
             "U19BTFJFQURZX0xPR0dFRF9JThAEEhMKD1NJR05fVVBfU1VDQ0VTUxAFKnsK",
             "EUNsaWVudFNlcnZlclN0YXRlEhwKGENMSUVOVF9TRVJWRVJfU1RBVEVfTk9O",
             "RRAAEgkKBUxPR0lOEAESEQoNUExBWUVSX1NFTEVDVBACEgkKBUxPQkJZEAMS",
-            "EAoMV0FJVElOR19ST09NEAQSDQoJR0FNRV9ST09NEAVCG6oCGEdvb2dsZS5Q",
-            "cm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
+            "EAoMV0FJVElOR19ST09NEAQSDQoJR0FNRV9ST09NEAUqVwoMQ3VycmVuY3lU",
+            "eXBlEhYKEkNVUlJFTkNZX1RZUEVfTk9ORRAAEhcKE0NVUlJFTkNZX1RZUEVf",
+            "SkVXRUwQARIWChJDVVJSRU5DWV9UWVBFX0dPTEQQAkIbqgIYR29vZ2xlLlBy",
+            "b3RvYnVmLlByb3RvY29sYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.AttackType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.ProjectileType), typeof(global::Google.Protobuf.Protocol.RoomExitReason), typeof(global::Google.Protobuf.Protocol.LoginStatus), typeof(global::Google.Protobuf.Protocol.ClientServerState), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.AttackType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.ProjectileType), typeof(global::Google.Protobuf.Protocol.RoomExitReason), typeof(global::Google.Protobuf.Protocol.LoginStatus), typeof(global::Google.Protobuf.Protocol.ClientServerState), typeof(global::Google.Protobuf.Protocol.CurrencyType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_AssignUserId), global::Google.Protobuf.Protocol.S_AssignUserId.Parser, new[]{ "UserId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_AssignUserId), global::Google.Protobuf.Protocol.C_AssignUserId.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_EnterLobby), global::Google.Protobuf.Protocol.S_EnterLobby.Parser, new[]{ "UserIdList", "UserNameList", "RoomInfoList" }, null, null, null, null),
@@ -312,6 +314,12 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("LOBBY")] Lobby = 3,
     [pbr::OriginalName("WAITING_ROOM")] WaitingRoom = 4,
     [pbr::OriginalName("GAME_ROOM")] GameRoom = 5,
+  }
+
+  public enum CurrencyType {
+    [pbr::OriginalName("CURRENCY_TYPE_NONE")] None = 0,
+    [pbr::OriginalName("CURRENCY_TYPE_JEWEL")] Jewel = 1,
+    [pbr::OriginalName("CURRENCY_TYPE_GOLD")] Gold = 2,
   }
 
   #endregion

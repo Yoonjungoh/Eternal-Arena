@@ -1,10 +1,12 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
+using Server.Currency;
 using Server.Game;
 using Server.Game.Object;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
@@ -454,13 +456,27 @@ namespace Server.Game
             {
                 foreach (Player p in _players.Values)
                 {
+                    OnGameOver(p);
                     S_LeaveGame leavePacket = new S_LeaveGame();
                     leavePacket.RoomExitReason = RoomExitReason.GameWin;
                     p.Session.Send(leavePacket);
                 }
-                Console.WriteLine($"Dont enough player so Room {RoomId} Delete!");
                 OnEmptyRoom?.Invoke(RoomId);
             }
+        }
+
+        private void OnGameOver(Player winner)
+        {
+            if (winner == null)
+            {
+                ConsoleLogManager.Instance.Log($"RoomId {RoomId}: No Winner in OnGameOver");
+                return;
+            }
+
+            CurrencyManager.Instance.AddCurrency
+                (winner, CurrencyType.Jewel, DataManager.Instance.VictoryJewelReward,
+                () => Console.WriteLine($"Jewel Saved({CurrencyManager.Instance.GetCurrentAmount(winner, CurrencyType.Jewel)})"),
+                reason: "Game win");
         }
 
         public void HandleChangeCreatureState(int objectId, CreatureState creatureState)
