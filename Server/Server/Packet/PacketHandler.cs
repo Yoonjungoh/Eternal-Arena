@@ -136,7 +136,7 @@ class PacketHandler
         ClientSession clientSession = session as ClientSession;
 
         // 유저 생성
-        Player user = clientSession.CreateMyPlayer(enterLobbyPacket.PlayerId);
+        Player user = clientSession.EnterLobby(enterLobbyPacket.PlayerId);
         if (clientSession.MyPlayer == null)
             return;
         
@@ -260,5 +260,27 @@ class PacketHandler
             return;
 
         clientSession.HandleDeletePlayer(deletePlayerPacket.PlayerId);
+    }
+
+    public static void C_UpdateCurrencyDataAllHandler(PacketSession session, IMessage packet)
+    {
+        C_UpdateCurrencyDataAll updateCurrencyDataAllPacket = packet as C_UpdateCurrencyDataAll;
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession == null)
+            return;
+        
+        clientSession.HandleUpdateCurrencyDataAll(updateCurrencyDataAllPacket.PlayerId);
+    }
+
+    public static void C_UpdateCurrencyDataHandler(PacketSession session, IMessage packet)
+    {
+        C_UpdateCurrencyData updateCurrencyDataPacket = packet as C_UpdateCurrencyData;
+        ClientSession clientSession = session as ClientSession;
+        
+        if (clientSession == null)
+            return;
+
+        clientSession.HandleUpdateCurrencyData(updateCurrencyDataPacket.PlayerId, updateCurrencyDataPacket.CurrencyType);
     }
 }

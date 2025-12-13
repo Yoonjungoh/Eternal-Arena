@@ -12,6 +12,7 @@ public class PlayerSelectInfo_SubItem : UI_SubItem<PlayerSelectInfo>
     {
         PlayerIdText,
         PlayerNameText,
+        JewelText,
         GoldText,
     }
 
@@ -61,6 +62,7 @@ public class PlayerSelectInfo_SubItem : UI_SubItem<PlayerSelectInfo>
     {
         GetTextMeshProUGUI((int)Texts.PlayerIdText).text = $"UId: {_data.PlayerId}";
         GetTextMeshProUGUI((int)Texts.PlayerNameText).text = $"´Ð³×ÀÓ: {_data.Name}";
-        GetTextMeshProUGUI((int)Texts.GoldText).text = $"°ñµå: {_data.Gold}";
+        GetTextMeshProUGUI((int)Texts.JewelText).text = $"º¸¼®: {_data.CurrencyData.Jewel}";
+        GetTextMeshProUGUI((int)Texts.GoldText).text = $"°ñµå: {_data.CurrencyData.Gold}";
     }
 }

@@ -12,6 +12,7 @@ public class UIManager
     private Stack<UI_Popup> _popupStack = new Stack<UI_Popup>();
     private UI_Scene _sceneUI = null;
     public UI_Scene CurrentScene { get { return _sceneUI; } }
+    public UI_Currency CurrencyUI { get; set; }
 
     public GameObject Root
     {
@@ -100,6 +101,7 @@ public class UIManager
 
 		GameObject go = Managers.Resource.Instantiate($"UI/Scene/{name}");
 		T sceneUI = Util.GetOrAddComponent<T>(go);
+        
         _sceneUI = sceneUI;
         _sceneUI.Init();
 

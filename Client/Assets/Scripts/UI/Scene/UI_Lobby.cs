@@ -126,7 +126,7 @@ public class UI_Lobby : UI_Scene
         Destroy(room.gameObject);
         _roomSubItemDict.Remove(roomId);
     }
-
+    
     public void UpdateRoomInfo(RoomInfo roomInfo)
     {
         if (_roomSubItemDict.ContainsKey(roomInfo.RoomId) == false)

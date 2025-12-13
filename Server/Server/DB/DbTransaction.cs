@@ -24,15 +24,16 @@ namespace Server.DB
                 player.PlayerId, currencyType, amount, callBack, reason);
         }
 
-        private static void SavePlayerCurrency_Db(int playerDbId, CurrencyType currencyType, int amount, Action callBack, string reason = null)
+        private static void SavePlayerCurrency_Db(int playerId, CurrencyType currencyType, int amount, Action callBack, string reason = null)
         {
             using (GameDbContext db = new GameDbContext())
             {
                 var query = db.Players
-                        .Where(p => p.PlayerDbId == playerDbId);
+                        .Where(p => p.PlayerId == playerId);
 
                 int successRows = currencyType switch
                 {
+                    // TODO - 재화 자동화 필요
                     CurrencyType.Jewel => query
                         .ExecuteUpdate(s => s.SetProperty(p => p.Jewel, amount)),
 

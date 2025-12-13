@@ -47,6 +47,10 @@ enum MsgId {
   S_CREATE_PLAYER = 115;
   C_DELETE_PLAYER = 116;
   S_DELETE_PLAYER = 117;
+  C_UPDATE_CURRENCY_DATA = 118;
+  S_UPDATE_CURRENCY_DATA = 119;
+  C_UPDATE_CURRENCY_DATA_ALL = 120;
+  S_UPDATE_CURRENCY_DATA_ALL = 121;
 }
 
 enum CreatureState {
@@ -301,11 +305,29 @@ message S_DeletePlayer {
   repeated PlayerSelectInfo playerInfoList = 2;	// 보유 플레이어 목록
 }
 
+message C_UpdateCurrencyData {
+  int32 playerId = 1;
+  CurrencyType currencyType = 2;
+}
+
+message S_UpdateCurrencyData {
+  CurrencyType currencyType = 1;
+  int32 amount = 2;
+}
+
+message C_UpdateCurrencyDataAll {
+  // 모든 재화 정보 요청
+  int32 playerId = 1;
+}
+
+message S_UpdateCurrencyDataAll {
+  CurrencyData currencyData = 1;	
+}
+
 message PlayerSelectInfo {
   int32 playerId = 1;
   string name = 2;
-  int32 jewel = 3;
-  int32 gold = 4;
+  CurrencyData currencyData = 3;
 }
 
 message RoomInfo {
@@ -362,4 +384,9 @@ message Stat {
   float attackRange = 9;          // 반지름 r
   float attackHalfAngleDeg = 10;  // 부채꼴의 반각 d(도)
   float attackHeight = 11;        // 높이
+}
+
+message CurrencyData {
+  int32 jewel = 1;
+  int32 gold = 2;
 }

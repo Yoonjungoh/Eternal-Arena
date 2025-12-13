@@ -49,8 +49,11 @@ public class UI_PlayerSelect : UI_Scene
             playerSelectInfo_SubItem.SetData(new PlayerSelectInfo
             {
                 PlayerId = playerInfoList[i].PlayerId,
-                Name = playerInfoList[i].Name,
-                Gold = playerInfoList[i].Gold
+                CurrencyData = new CurrencyData()
+                {
+                    Jewel = playerInfoList[i].CurrencyData.Jewel,
+                    Gold = playerInfoList[i].CurrencyData.Gold
+                }
             });
             _playerSelectInfoSubItemDict.TryAdd(playerInfoList[i].PlayerId, playerSelectInfo_SubItem);
         }

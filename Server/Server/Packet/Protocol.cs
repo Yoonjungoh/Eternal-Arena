@@ -78,70 +78,81 @@ namespace Google.Protobuf.Protocol {
             "ckluZm9MaXN0GAIgAygLMhouUHJvdG9jb2wuUGxheWVyU2VsZWN0SW5mbyIi",
             "Cg5DX0RlbGV0ZVBsYXllchIQCghwbGF5ZXJJZBgBIAEoBSJXCg5TX0RlbGV0",
             "ZVBsYXllchIRCgljYW5EZWxldGUYASABKAgSMgoOcGxheWVySW5mb0xpc3QY",
-            "AiADKAsyGi5Qcm90b2NvbC5QbGF5ZXJTZWxlY3RJbmZvIk8KEFBsYXllclNl",
-            "bGVjdEluZm8SEAoIcGxheWVySWQYASABKAUSDAoEbmFtZRgCIAEoCRINCgVq",
-            "ZXdlbBgDIAEoBRIMCgRnb2xkGAQgASgFInUKCFJvb21JbmZvEg4KBnJvb21J",
-            "ZBgBIAEoBRIQCghyb29tTmFtZRgCIAEoCRITCgtyb29tT3duZXJJZBgDIAEo",
-            "BRIaChJjdXJyZW50UGxheWVyQ291bnQYBCABKAUSFgoObWF4UGxheWVyQ291",
-            "bnQYBSABKAUiLwoMUHJvdG9WZWN0b3IzEgkKAXgYASABKAISCQoBeRgCIAEo",
-            "AhIJCgF6GAMgASgCIj0KD1Byb3RvUXVhdGVybmlvbhIJCgF4GAEgASgCEgkK",
-            "AXkYAiABKAISCQoBehgDIAEoAhIJCgF3GAQgASgCIs0DCgtPYmplY3RTdGF0",
-            "ZRIQCghvYmplY3RJZBgBIAEoBRIWCg5jbGllbnRTZW5kVGltZRgCIAEoAxIa",
-            "ChJzZXJ2ZXJSZWNlaXZlZFRpbWUYAyABKAMSKAoIcG9zaXRpb24YBCABKAsy",
-            "Fi5Qcm90b2NvbC5Qcm90b1ZlY3RvcjMSKAoIdmVsb2NpdHkYBSABKAsyFi5Q",
-            "cm90b2NvbC5Qcm90b1ZlY3RvcjMSKwoIcm90YXRpb24YBiABKAsyGS5Qcm90",
-            "b2NvbC5Qcm90b1F1YXRlcm5pb24SDAoEbmFtZRgHIAEoCRIuCg1jcmVhdHVy",
-            "ZVN0YXRlGAggASgOMhcuUHJvdG9jb2wuQ3JlYXR1cmVTdGF0ZRIcCgRzdGF0",
-            "GAkgASgLMg4uUHJvdG9jb2wuU3RhdBIsCgpvYmplY3RUeXBlGAogASgOMhgu",
-            "UHJvdG9jb2wuR2FtZU9iamVjdFR5cGUSKgoLbW9uc3RlclR5cGUYCyABKA4y",
-            "FS5Qcm90b2NvbC5Nb25zdGVyVHlwZRIwCg5wcm9qZWN0aWxlVHlwZRgMIAEo",
-            "DjIYLlByb3RvY29sLlByb2plY3RpbGVUeXBlEg8KB293bmVySWQYDSABKAUi",
-            "MQoLRGFtYWdlZEluZm8SEAoIb2JqZWN0SWQYASABKAUSEAoIcmVtYWluSHAY",
-            "AiABKAIiiwIKBFN0YXQSDQoFbWF4SHAYASABKAISCgoCaHAYAiABKAISDwoH",
-            "ZGVmZW5zZRgDIAEoAhIRCgltb3ZlU3BlZWQYBCABKAISGgoSY29tbW9uQXR0",
-            "YWNrRGFtYWdlGAUgASgCEhwKFGNvbW1vbkF0dGFja0Nvb2xUaW1lGAYgASgC",
-            "Eh8KF21hZ2ljTWlzc2lsZUF0dGFrRGFtYWdlGAcgASgCEiIKGm1hZ2ljTWlz",
-            "c2lsZUF0dGFja0Nvb2xUaW1lGAggASgCEhMKC2F0dGFja1JhbmdlGAkgASgC",
-            "EhoKEmF0dGFja0hhbGZBbmdsZURlZxgKIAEoAhIUCgxhdHRhY2tIZWlnaHQY",
-            "CyABKAIqtAYKBU1zZ0lkEhQKEFNfQVNTSUdOX1VTRVJfSUQQABIUChBDX0FT",
-            "U0lHTl9VU0VSX0lEEAESEQoNU19FTlRFUl9MT0JCWRACEhEKDVNfTEVBVkVf",
-            "TE9CQlkQAxIRCg1DX0xFQVZFX0xPQkJZEAQSGAoUQ19FTlRFUl9XQUlUSU5H",
-            "X1JPT00QBRIYChRTX0VOVEVSX1dBSVRJTkdfUk9PTRAGEg4KCkNfQUREX1JP",
-            "T00QBxIOCgpTX0FERF9ST09NEAgSEQoNU19SRU1PVkVfUk9PTRAJEg8KC1Nf",
-            "RVhJVF9ST09NEAoSDwoLQ19FWElUX1JPT00QCxIRCg1DX0VOVEVSX0xPQkJZ",
-            "EAwSHgoaU19VUERBVEVfV0FJVElOR19ST09NX0lORk8QDRIQCgxDX1NUQVJU",
-            "X0dBTUUQDhIQCgxTX1NUQVJUX0dBTUUQDxIQCgxDX0VOVEVSX0dBTUUQEBIQ",
-            "CgxTX0VOVEVSX0dBTUUQERIMCghDX0FUVEFDSxASEgwKCFNfQVRUQUNLEBMS",
-            "EAoMU19MRUFWRV9HQU1FEBQSCwoHU19TUEFXThAVEg0KCVNfREVTUEFXThAW",
-            "EgoKBkNfTU9WRRAXEgoKBlNfTU9WRRAYEgkKBVNfRElFEBoSFQoRQ19TVEFS",
-            "VF9DT1VOVERPV04QGxIVChFTX1NUQVJUX0NPVU5URE9XThAcEhYKEkNfU1BB",
-            "V05fUFJPSkVDVElMRRAdEg8KC0NfVElNRVNUQU1QEGkSDwoLU19USU1FU1RB",
-            "TVAQahIbChdDX0NIQU5HRV9DUkVBVFVSRV9TVEFURRBrEhsKF1NfQ0hBTkdF",
-            "X0NSRUFUVVJFX1NUQVRFEGwSDwoLU19DT05ORUNURUQQbRILCgdDX0xPR0lO",
-            "EG4SCwoHU19MT0dJThBvEhkKFUNfUkVRVUVTVF9QTEFZRVJfTElTVBBwEhkK",
-            "FVNfUkVRVUVTVF9QTEFZRVJfTElTVBBxEhMKD0NfQ1JFQVRFX1BMQVlFUhBy",
-            "EhMKD1NfQ1JFQVRFX1BMQVlFUhBzEhMKD0NfREVMRVRFX1BMQVlFUhB0EhMK",
-            "D1NfREVMRVRFX1BMQVlFUhB1KmwKDUNyZWF0dXJlU3RhdGUSFwoTQ1JFQVRV",
-            "UkVfU1RBVEVfTk9ORRAAEggKBElETEUQARIICgRNT1ZFEAISCgoGQVRUQUNL",
-            "EAMSDgoKT05fREFNQUdFRBAEEgkKBVNLSUxMEAUSBwoDRElFEAYqVAoOR2Ft",
-            "ZU9iamVjdFR5cGUSGQoVR0FNRV9PQkpFQ1RfVFlQRV9OT05FEAASCgoGUExB",
-            "WUVSEAESCwoHTU9OU1RFUhACEg4KClBST0pFQ1RJTEUQAypICgpBdHRhY2tU",
-            "eXBlEhQKEEFUVEFDS19UWVBFX05PTkUQABIRCg1DT01NT05fQVRUQUNLEAES",
-            "EQoNUkFOR0VEX0FUVEFDSxACKi4KC01vbnN0ZXJUeXBlEhUKEU1PTlNURVJf",
-            "VFlQRV9OT05FEAASCAoEQkVBUhABKj0KDlByb2plY3RpbGVUeXBlEhgKFFBS",
-            "T0pFQ1RJTEVfVFlQRV9OT05FEAASEQoNTUFHSUNfTUlTU0lMRRABKlkKDlJv",
-            "b21FeGl0UmVhc29uEhkKFVJPT01fRVhJVF9SRUFTT05fTk9ORRAAEgwKCEdB",
-            "TUVfV0lOEAESDQoJR0FNRV9MT1NFEAISDwoLTUFOVUFMX0VYSVQQAyqzAQoL",
-            "TG9naW5TdGF0dXMSFQoRTE9HSU5fU1RBVFVTX05PTkUQABIYChRMT0dJTl9T",
-            "VEFUVVNfU1VDQ0VTUxABEhkKFUxPR0lOX1NUQVRVU19JRF9XUk9ORxACEh8K",
-            "G0xPR0lOX1NUQVRVU19QQVNTV09SRF9XUk9ORxADEiIKHkxPR0lOX1NUQVRV",
-            "U19BTFJFQURZX0xPR0dFRF9JThAEEhMKD1NJR05fVVBfU1VDQ0VTUxAFKnsK",
-            "EUNsaWVudFNlcnZlclN0YXRlEhwKGENMSUVOVF9TRVJWRVJfU1RBVEVfTk9O",
-            "RRAAEgkKBUxPR0lOEAESEQoNUExBWUVSX1NFTEVDVBACEgkKBUxPQkJZEAMS",
-            "EAoMV0FJVElOR19ST09NEAQSDQoJR0FNRV9ST09NEAUqVwoMQ3VycmVuY3lU",
-            "eXBlEhYKEkNVUlJFTkNZX1RZUEVfTk9ORRAAEhcKE0NVUlJFTkNZX1RZUEVf",
-            "SkVXRUwQARIWChJDVVJSRU5DWV9UWVBFX0dPTEQQAkIbqgIYR29vZ2xlLlBy",
-            "b3RvYnVmLlByb3RvY29sYgZwcm90bzM="));
+            "AiADKAsyGi5Qcm90b2NvbC5QbGF5ZXJTZWxlY3RJbmZvIlYKFENfVXBkYXRl",
+            "Q3VycmVuY3lEYXRhEhAKCHBsYXllcklkGAEgASgFEiwKDGN1cnJlbmN5VHlw",
+            "ZRgCIAEoDjIWLlByb3RvY29sLkN1cnJlbmN5VHlwZSJUChRTX1VwZGF0ZUN1",
+            "cnJlbmN5RGF0YRIsCgxjdXJyZW5jeVR5cGUYASABKA4yFi5Qcm90b2NvbC5D",
+            "dXJyZW5jeVR5cGUSDgoGYW1vdW50GAIgASgFIisKF0NfVXBkYXRlQ3VycmVu",
+            "Y3lEYXRhQWxsEhAKCHBsYXllcklkGAEgASgFIkcKF1NfVXBkYXRlQ3VycmVu",
+            "Y3lEYXRhQWxsEiwKDGN1cnJlbmN5RGF0YRgBIAEoCzIWLlByb3RvY29sLkN1",
+            "cnJlbmN5RGF0YSJgChBQbGF5ZXJTZWxlY3RJbmZvEhAKCHBsYXllcklkGAEg",
+            "ASgFEgwKBG5hbWUYAiABKAkSLAoMY3VycmVuY3lEYXRhGAMgASgLMhYuUHJv",
+            "dG9jb2wuQ3VycmVuY3lEYXRhInUKCFJvb21JbmZvEg4KBnJvb21JZBgBIAEo",
+            "BRIQCghyb29tTmFtZRgCIAEoCRITCgtyb29tT3duZXJJZBgDIAEoBRIaChJj",
+            "dXJyZW50UGxheWVyQ291bnQYBCABKAUSFgoObWF4UGxheWVyQ291bnQYBSAB",
+            "KAUiLwoMUHJvdG9WZWN0b3IzEgkKAXgYASABKAISCQoBeRgCIAEoAhIJCgF6",
+            "GAMgASgCIj0KD1Byb3RvUXVhdGVybmlvbhIJCgF4GAEgASgCEgkKAXkYAiAB",
+            "KAISCQoBehgDIAEoAhIJCgF3GAQgASgCIs0DCgtPYmplY3RTdGF0ZRIQCghv",
+            "YmplY3RJZBgBIAEoBRIWCg5jbGllbnRTZW5kVGltZRgCIAEoAxIaChJzZXJ2",
+            "ZXJSZWNlaXZlZFRpbWUYAyABKAMSKAoIcG9zaXRpb24YBCABKAsyFi5Qcm90",
+            "b2NvbC5Qcm90b1ZlY3RvcjMSKAoIdmVsb2NpdHkYBSABKAsyFi5Qcm90b2Nv",
+            "bC5Qcm90b1ZlY3RvcjMSKwoIcm90YXRpb24YBiABKAsyGS5Qcm90b2NvbC5Q",
+            "cm90b1F1YXRlcm5pb24SDAoEbmFtZRgHIAEoCRIuCg1jcmVhdHVyZVN0YXRl",
+            "GAggASgOMhcuUHJvdG9jb2wuQ3JlYXR1cmVTdGF0ZRIcCgRzdGF0GAkgASgL",
+            "Mg4uUHJvdG9jb2wuU3RhdBIsCgpvYmplY3RUeXBlGAogASgOMhguUHJvdG9j",
+            "b2wuR2FtZU9iamVjdFR5cGUSKgoLbW9uc3RlclR5cGUYCyABKA4yFS5Qcm90",
+            "b2NvbC5Nb25zdGVyVHlwZRIwCg5wcm9qZWN0aWxlVHlwZRgMIAEoDjIYLlBy",
+            "b3RvY29sLlByb2plY3RpbGVUeXBlEg8KB293bmVySWQYDSABKAUiMQoLRGFt",
+            "YWdlZEluZm8SEAoIb2JqZWN0SWQYASABKAUSEAoIcmVtYWluSHAYAiABKAIi",
+            "iwIKBFN0YXQSDQoFbWF4SHAYASABKAISCgoCaHAYAiABKAISDwoHZGVmZW5z",
+            "ZRgDIAEoAhIRCgltb3ZlU3BlZWQYBCABKAISGgoSY29tbW9uQXR0YWNrRGFt",
+            "YWdlGAUgASgCEhwKFGNvbW1vbkF0dGFja0Nvb2xUaW1lGAYgASgCEh8KF21h",
+            "Z2ljTWlzc2lsZUF0dGFrRGFtYWdlGAcgASgCEiIKGm1hZ2ljTWlzc2lsZUF0",
+            "dGFja0Nvb2xUaW1lGAggASgCEhMKC2F0dGFja1JhbmdlGAkgASgCEhoKEmF0",
+            "dGFja0hhbGZBbmdsZURlZxgKIAEoAhIUCgxhdHRhY2tIZWlnaHQYCyABKAIi",
+            "KwoMQ3VycmVuY3lEYXRhEg0KBWpld2VsGAEgASgFEgwKBGdvbGQYAiABKAUq",
+            "rAcKBU1zZ0lkEhQKEFNfQVNTSUdOX1VTRVJfSUQQABIUChBDX0FTU0lHTl9V",
+            "U0VSX0lEEAESEQoNU19FTlRFUl9MT0JCWRACEhEKDVNfTEVBVkVfTE9CQlkQ",
+            "AxIRCg1DX0xFQVZFX0xPQkJZEAQSGAoUQ19FTlRFUl9XQUlUSU5HX1JPT00Q",
+            "BRIYChRTX0VOVEVSX1dBSVRJTkdfUk9PTRAGEg4KCkNfQUREX1JPT00QBxIO",
+            "CgpTX0FERF9ST09NEAgSEQoNU19SRU1PVkVfUk9PTRAJEg8KC1NfRVhJVF9S",
+            "T09NEAoSDwoLQ19FWElUX1JPT00QCxIRCg1DX0VOVEVSX0xPQkJZEAwSHgoa",
+            "U19VUERBVEVfV0FJVElOR19ST09NX0lORk8QDRIQCgxDX1NUQVJUX0dBTUUQ",
+            "DhIQCgxTX1NUQVJUX0dBTUUQDxIQCgxDX0VOVEVSX0dBTUUQEBIQCgxTX0VO",
+            "VEVSX0dBTUUQERIMCghDX0FUVEFDSxASEgwKCFNfQVRUQUNLEBMSEAoMU19M",
+            "RUFWRV9HQU1FEBQSCwoHU19TUEFXThAVEg0KCVNfREVTUEFXThAWEgoKBkNf",
+            "TU9WRRAXEgoKBlNfTU9WRRAYEgkKBVNfRElFEBoSFQoRQ19TVEFSVF9DT1VO",
+            "VERPV04QGxIVChFTX1NUQVJUX0NPVU5URE9XThAcEhYKEkNfU1BBV05fUFJP",
+            "SkVDVElMRRAdEg8KC0NfVElNRVNUQU1QEGkSDwoLU19USU1FU1RBTVAQahIb",
+            "ChdDX0NIQU5HRV9DUkVBVFVSRV9TVEFURRBrEhsKF1NfQ0hBTkdFX0NSRUFU",
+            "VVJFX1NUQVRFEGwSDwoLU19DT05ORUNURUQQbRILCgdDX0xPR0lOEG4SCwoH",
+            "U19MT0dJThBvEhkKFUNfUkVRVUVTVF9QTEFZRVJfTElTVBBwEhkKFVNfUkVR",
+            "VUVTVF9QTEFZRVJfTElTVBBxEhMKD0NfQ1JFQVRFX1BMQVlFUhByEhMKD1Nf",
+            "Q1JFQVRFX1BMQVlFUhBzEhMKD0NfREVMRVRFX1BMQVlFUhB0EhMKD1NfREVM",
+            "RVRFX1BMQVlFUhB1EhoKFkNfVVBEQVRFX0NVUlJFTkNZX0RBVEEQdhIaChZT",
+            "X1VQREFURV9DVVJSRU5DWV9EQVRBEHcSHgoaQ19VUERBVEVfQ1VSUkVOQ1lf",
+            "REFUQV9BTEwQeBIeChpTX1VQREFURV9DVVJSRU5DWV9EQVRBX0FMTBB5KmwK",
+            "DUNyZWF0dXJlU3RhdGUSFwoTQ1JFQVRVUkVfU1RBVEVfTk9ORRAAEggKBElE",
+            "TEUQARIICgRNT1ZFEAISCgoGQVRUQUNLEAMSDgoKT05fREFNQUdFRBAEEgkK",
+            "BVNLSUxMEAUSBwoDRElFEAYqVAoOR2FtZU9iamVjdFR5cGUSGQoVR0FNRV9P",
+            "QkpFQ1RfVFlQRV9OT05FEAASCgoGUExBWUVSEAESCwoHTU9OU1RFUhACEg4K",
+            "ClBST0pFQ1RJTEUQAypICgpBdHRhY2tUeXBlEhQKEEFUVEFDS19UWVBFX05P",
+            "TkUQABIRCg1DT01NT05fQVRUQUNLEAESEQoNUkFOR0VEX0FUVEFDSxACKi4K",
+            "C01vbnN0ZXJUeXBlEhUKEU1PTlNURVJfVFlQRV9OT05FEAASCAoEQkVBUhAB",
+            "Kj0KDlByb2plY3RpbGVUeXBlEhgKFFBST0pFQ1RJTEVfVFlQRV9OT05FEAAS",
+            "EQoNTUFHSUNfTUlTU0lMRRABKlkKDlJvb21FeGl0UmVhc29uEhkKFVJPT01f",
+            "RVhJVF9SRUFTT05fTk9ORRAAEgwKCEdBTUVfV0lOEAESDQoJR0FNRV9MT1NF",
+            "EAISDwoLTUFOVUFMX0VYSVQQAyqzAQoLTG9naW5TdGF0dXMSFQoRTE9HSU5f",
+            "U1RBVFVTX05PTkUQABIYChRMT0dJTl9TVEFUVVNfU1VDQ0VTUxABEhkKFUxP",
+            "R0lOX1NUQVRVU19JRF9XUk9ORxACEh8KG0xPR0lOX1NUQVRVU19QQVNTV09S",
+            "RF9XUk9ORxADEiIKHkxPR0lOX1NUQVRVU19BTFJFQURZX0xPR0dFRF9JThAE",
+            "EhMKD1NJR05fVVBfU1VDQ0VTUxAFKnsKEUNsaWVudFNlcnZlclN0YXRlEhwK",
+            "GENMSUVOVF9TRVJWRVJfU1RBVEVfTk9ORRAAEgkKBUxPR0lOEAESEQoNUExB",
+            "WUVSX1NFTEVDVBACEgkKBUxPQkJZEAMSEAoMV0FJVElOR19ST09NEAQSDQoJ",
+            "R0FNRV9ST09NEAUqVwoMQ3VycmVuY3lUeXBlEhYKEkNVUlJFTkNZX1RZUEVf",
+            "Tk9ORRAAEhcKE0NVUlJFTkNZX1RZUEVfSkVXRUwQARIWChJDVVJSRU5DWV9U",
+            "WVBFX0dPTEQQAkIbqgIYR29vZ2xlLlByb3RvYnVmLlByb3RvY29sYgZwcm90",
+            "bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.AttackType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.ProjectileType), typeof(global::Google.Protobuf.Protocol.RoomExitReason), typeof(global::Google.Protobuf.Protocol.LoginStatus), typeof(global::Google.Protobuf.Protocol.ClientServerState), typeof(global::Google.Protobuf.Protocol.CurrencyType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -188,13 +199,18 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_CreatePlayer), global::Google.Protobuf.Protocol.S_CreatePlayer.Parser, new[]{ "CanCreate", "PlayerInfoList" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_DeletePlayer), global::Google.Protobuf.Protocol.C_DeletePlayer.Parser, new[]{ "PlayerId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_DeletePlayer), global::Google.Protobuf.Protocol.S_DeletePlayer.Parser, new[]{ "CanDelete", "PlayerInfoList" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PlayerSelectInfo), global::Google.Protobuf.Protocol.PlayerSelectInfo.Parser, new[]{ "PlayerId", "Name", "Jewel", "Gold" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_UpdateCurrencyData), global::Google.Protobuf.Protocol.C_UpdateCurrencyData.Parser, new[]{ "PlayerId", "CurrencyType" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_UpdateCurrencyData), global::Google.Protobuf.Protocol.S_UpdateCurrencyData.Parser, new[]{ "CurrencyType", "Amount" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_UpdateCurrencyDataAll), global::Google.Protobuf.Protocol.C_UpdateCurrencyDataAll.Parser, new[]{ "PlayerId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_UpdateCurrencyDataAll), global::Google.Protobuf.Protocol.S_UpdateCurrencyDataAll.Parser, new[]{ "CurrencyData" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PlayerSelectInfo), global::Google.Protobuf.Protocol.PlayerSelectInfo.Parser, new[]{ "PlayerId", "Name", "CurrencyData" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.RoomInfo), global::Google.Protobuf.Protocol.RoomInfo.Parser, new[]{ "RoomId", "RoomName", "RoomOwnerId", "CurrentPlayerCount", "MaxPlayerCount" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ProtoVector3), global::Google.Protobuf.Protocol.ProtoVector3.Parser, new[]{ "X", "Y", "Z" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ProtoQuaternion), global::Google.Protobuf.Protocol.ProtoQuaternion.Parser, new[]{ "X", "Y", "Z", "W" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ObjectState), global::Google.Protobuf.Protocol.ObjectState.Parser, new[]{ "ObjectId", "ClientSendTime", "ServerReceivedTime", "Position", "Velocity", "Rotation", "Name", "CreatureState", "Stat", "ObjectType", "MonsterType", "ProjectileType", "OwnerId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.DamagedInfo), global::Google.Protobuf.Protocol.DamagedInfo.Parser, new[]{ "ObjectId", "RemainHp" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.Stat), global::Google.Protobuf.Protocol.Stat.Parser, new[]{ "MaxHp", "Hp", "Defense", "MoveSpeed", "CommonAttackDamage", "CommonAttackCoolTime", "MagicMissileAttakDamage", "MagicMissileAttackCoolTime", "AttackRange", "AttackHalfAngleDeg", "AttackHeight" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.Stat), global::Google.Protobuf.Protocol.Stat.Parser, new[]{ "MaxHp", "Hp", "Defense", "MoveSpeed", "CommonAttackDamage", "CommonAttackCoolTime", "MagicMissileAttakDamage", "MagicMissileAttackCoolTime", "AttackRange", "AttackHalfAngleDeg", "AttackHeight" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.CurrencyData), global::Google.Protobuf.Protocol.CurrencyData.Parser, new[]{ "Jewel", "Gold" }, null, null, null, null)
           }));
     }
     #endregion
@@ -244,6 +260,10 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("S_CREATE_PLAYER")] SCreatePlayer = 115,
     [pbr::OriginalName("C_DELETE_PLAYER")] CDeletePlayer = 116,
     [pbr::OriginalName("S_DELETE_PLAYER")] SDeletePlayer = 117,
+    [pbr::OriginalName("C_UPDATE_CURRENCY_DATA")] CUpdateCurrencyData = 118,
+    [pbr::OriginalName("S_UPDATE_CURRENCY_DATA")] SUpdateCurrencyData = 119,
+    [pbr::OriginalName("C_UPDATE_CURRENCY_DATA_ALL")] CUpdateCurrencyDataAll = 120,
+    [pbr::OriginalName("S_UPDATE_CURRENCY_DATA_ALL")] SUpdateCurrencyDataAll = 121,
   }
 
   public enum CreatureState {
@@ -6281,6 +6301,587 @@ namespace Google.Protobuf.Protocol {
 
   }
 
+  public sealed partial class C_UpdateCurrencyData : pb::IMessage<C_UpdateCurrencyData> {
+    private static readonly pb::MessageParser<C_UpdateCurrencyData> _parser = new pb::MessageParser<C_UpdateCurrencyData>(() => new C_UpdateCurrencyData());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<C_UpdateCurrencyData> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[43]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public C_UpdateCurrencyData() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public C_UpdateCurrencyData(C_UpdateCurrencyData other) : this() {
+      playerId_ = other.playerId_;
+      currencyType_ = other.currencyType_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public C_UpdateCurrencyData Clone() {
+      return new C_UpdateCurrencyData(this);
+    }
+
+    /// <summary>Field number for the "playerId" field.</summary>
+    public const int PlayerIdFieldNumber = 1;
+    private int playerId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int PlayerId {
+      get { return playerId_; }
+      set {
+        playerId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "currencyType" field.</summary>
+    public const int CurrencyTypeFieldNumber = 2;
+    private global::Google.Protobuf.Protocol.CurrencyType currencyType_ = global::Google.Protobuf.Protocol.CurrencyType.None;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Google.Protobuf.Protocol.CurrencyType CurrencyType {
+      get { return currencyType_; }
+      set {
+        currencyType_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as C_UpdateCurrencyData);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(C_UpdateCurrencyData other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PlayerId != other.PlayerId) return false;
+      if (CurrencyType != other.CurrencyType) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PlayerId != 0) hash ^= PlayerId.GetHashCode();
+      if (CurrencyType != global::Google.Protobuf.Protocol.CurrencyType.None) hash ^= CurrencyType.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (PlayerId != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(PlayerId);
+      }
+      if (CurrencyType != global::Google.Protobuf.Protocol.CurrencyType.None) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) CurrencyType);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (PlayerId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PlayerId);
+      }
+      if (CurrencyType != global::Google.Protobuf.Protocol.CurrencyType.None) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CurrencyType);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(C_UpdateCurrencyData other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PlayerId != 0) {
+        PlayerId = other.PlayerId;
+      }
+      if (other.CurrencyType != global::Google.Protobuf.Protocol.CurrencyType.None) {
+        CurrencyType = other.CurrencyType;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            PlayerId = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            CurrencyType = (global::Google.Protobuf.Protocol.CurrencyType) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class S_UpdateCurrencyData : pb::IMessage<S_UpdateCurrencyData> {
+    private static readonly pb::MessageParser<S_UpdateCurrencyData> _parser = new pb::MessageParser<S_UpdateCurrencyData>(() => new S_UpdateCurrencyData());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<S_UpdateCurrencyData> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[44]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public S_UpdateCurrencyData() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public S_UpdateCurrencyData(S_UpdateCurrencyData other) : this() {
+      currencyType_ = other.currencyType_;
+      amount_ = other.amount_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public S_UpdateCurrencyData Clone() {
+      return new S_UpdateCurrencyData(this);
+    }
+
+    /// <summary>Field number for the "currencyType" field.</summary>
+    public const int CurrencyTypeFieldNumber = 1;
+    private global::Google.Protobuf.Protocol.CurrencyType currencyType_ = global::Google.Protobuf.Protocol.CurrencyType.None;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Google.Protobuf.Protocol.CurrencyType CurrencyType {
+      get { return currencyType_; }
+      set {
+        currencyType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "amount" field.</summary>
+    public const int AmountFieldNumber = 2;
+    private int amount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Amount {
+      get { return amount_; }
+      set {
+        amount_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as S_UpdateCurrencyData);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(S_UpdateCurrencyData other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (CurrencyType != other.CurrencyType) return false;
+      if (Amount != other.Amount) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (CurrencyType != global::Google.Protobuf.Protocol.CurrencyType.None) hash ^= CurrencyType.GetHashCode();
+      if (Amount != 0) hash ^= Amount.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (CurrencyType != global::Google.Protobuf.Protocol.CurrencyType.None) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) CurrencyType);
+      }
+      if (Amount != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Amount);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (CurrencyType != global::Google.Protobuf.Protocol.CurrencyType.None) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CurrencyType);
+      }
+      if (Amount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Amount);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(S_UpdateCurrencyData other) {
+      if (other == null) {
+        return;
+      }
+      if (other.CurrencyType != global::Google.Protobuf.Protocol.CurrencyType.None) {
+        CurrencyType = other.CurrencyType;
+      }
+      if (other.Amount != 0) {
+        Amount = other.Amount;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            CurrencyType = (global::Google.Protobuf.Protocol.CurrencyType) input.ReadEnum();
+            break;
+          }
+          case 16: {
+            Amount = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class C_UpdateCurrencyDataAll : pb::IMessage<C_UpdateCurrencyDataAll> {
+    private static readonly pb::MessageParser<C_UpdateCurrencyDataAll> _parser = new pb::MessageParser<C_UpdateCurrencyDataAll>(() => new C_UpdateCurrencyDataAll());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<C_UpdateCurrencyDataAll> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[45]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public C_UpdateCurrencyDataAll() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public C_UpdateCurrencyDataAll(C_UpdateCurrencyDataAll other) : this() {
+      playerId_ = other.playerId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public C_UpdateCurrencyDataAll Clone() {
+      return new C_UpdateCurrencyDataAll(this);
+    }
+
+    /// <summary>Field number for the "playerId" field.</summary>
+    public const int PlayerIdFieldNumber = 1;
+    private int playerId_;
+    /// <summary>
+    /// 모든 재화 정보 요청
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int PlayerId {
+      get { return playerId_; }
+      set {
+        playerId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as C_UpdateCurrencyDataAll);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(C_UpdateCurrencyDataAll other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PlayerId != other.PlayerId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PlayerId != 0) hash ^= PlayerId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (PlayerId != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(PlayerId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (PlayerId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PlayerId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(C_UpdateCurrencyDataAll other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PlayerId != 0) {
+        PlayerId = other.PlayerId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            PlayerId = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class S_UpdateCurrencyDataAll : pb::IMessage<S_UpdateCurrencyDataAll> {
+    private static readonly pb::MessageParser<S_UpdateCurrencyDataAll> _parser = new pb::MessageParser<S_UpdateCurrencyDataAll>(() => new S_UpdateCurrencyDataAll());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<S_UpdateCurrencyDataAll> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[46]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public S_UpdateCurrencyDataAll() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public S_UpdateCurrencyDataAll(S_UpdateCurrencyDataAll other) : this() {
+      currencyData_ = other.currencyData_ != null ? other.currencyData_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public S_UpdateCurrencyDataAll Clone() {
+      return new S_UpdateCurrencyDataAll(this);
+    }
+
+    /// <summary>Field number for the "currencyData" field.</summary>
+    public const int CurrencyDataFieldNumber = 1;
+    private global::Google.Protobuf.Protocol.CurrencyData currencyData_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Google.Protobuf.Protocol.CurrencyData CurrencyData {
+      get { return currencyData_; }
+      set {
+        currencyData_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as S_UpdateCurrencyDataAll);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(S_UpdateCurrencyDataAll other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(CurrencyData, other.CurrencyData)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (currencyData_ != null) hash ^= CurrencyData.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (currencyData_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(CurrencyData);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (currencyData_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CurrencyData);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(S_UpdateCurrencyDataAll other) {
+      if (other == null) {
+        return;
+      }
+      if (other.currencyData_ != null) {
+        if (currencyData_ == null) {
+          CurrencyData = new global::Google.Protobuf.Protocol.CurrencyData();
+        }
+        CurrencyData.MergeFrom(other.CurrencyData);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (currencyData_ == null) {
+              CurrencyData = new global::Google.Protobuf.Protocol.CurrencyData();
+            }
+            input.ReadMessage(CurrencyData);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public sealed partial class PlayerSelectInfo : pb::IMessage<PlayerSelectInfo> {
     private static readonly pb::MessageParser<PlayerSelectInfo> _parser = new pb::MessageParser<PlayerSelectInfo>(() => new PlayerSelectInfo());
     private pb::UnknownFieldSet _unknownFields;
@@ -6289,7 +6890,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[43]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[47]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6308,8 +6909,7 @@ namespace Google.Protobuf.Protocol {
     public PlayerSelectInfo(PlayerSelectInfo other) : this() {
       playerId_ = other.playerId_;
       name_ = other.name_;
-      jewel_ = other.jewel_;
-      gold_ = other.gold_;
+      currencyData_ = other.currencyData_ != null ? other.currencyData_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -6340,25 +6940,14 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
-    /// <summary>Field number for the "jewel" field.</summary>
-    public const int JewelFieldNumber = 3;
-    private int jewel_;
+    /// <summary>Field number for the "currencyData" field.</summary>
+    public const int CurrencyDataFieldNumber = 3;
+    private global::Google.Protobuf.Protocol.CurrencyData currencyData_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Jewel {
-      get { return jewel_; }
+    public global::Google.Protobuf.Protocol.CurrencyData CurrencyData {
+      get { return currencyData_; }
       set {
-        jewel_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "gold" field.</summary>
-    public const int GoldFieldNumber = 4;
-    private int gold_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Gold {
-      get { return gold_; }
-      set {
-        gold_ = value;
+        currencyData_ = value;
       }
     }
 
@@ -6377,8 +6966,7 @@ namespace Google.Protobuf.Protocol {
       }
       if (PlayerId != other.PlayerId) return false;
       if (Name != other.Name) return false;
-      if (Jewel != other.Jewel) return false;
-      if (Gold != other.Gold) return false;
+      if (!object.Equals(CurrencyData, other.CurrencyData)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -6387,8 +6975,7 @@ namespace Google.Protobuf.Protocol {
       int hash = 1;
       if (PlayerId != 0) hash ^= PlayerId.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
-      if (Jewel != 0) hash ^= Jewel.GetHashCode();
-      if (Gold != 0) hash ^= Gold.GetHashCode();
+      if (currencyData_ != null) hash ^= CurrencyData.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -6410,13 +6997,9 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(18);
         output.WriteString(Name);
       }
-      if (Jewel != 0) {
-        output.WriteRawTag(24);
-        output.WriteInt32(Jewel);
-      }
-      if (Gold != 0) {
-        output.WriteRawTag(32);
-        output.WriteInt32(Gold);
+      if (currencyData_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(CurrencyData);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -6432,11 +7015,8 @@ namespace Google.Protobuf.Protocol {
       if (Name.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
       }
-      if (Jewel != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Jewel);
-      }
-      if (Gold != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Gold);
+      if (currencyData_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CurrencyData);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -6455,11 +7035,11 @@ namespace Google.Protobuf.Protocol {
       if (other.Name.Length != 0) {
         Name = other.Name;
       }
-      if (other.Jewel != 0) {
-        Jewel = other.Jewel;
-      }
-      if (other.Gold != 0) {
-        Gold = other.Gold;
+      if (other.currencyData_ != null) {
+        if (currencyData_ == null) {
+          CurrencyData = new global::Google.Protobuf.Protocol.CurrencyData();
+        }
+        CurrencyData.MergeFrom(other.CurrencyData);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -6480,12 +7060,11 @@ namespace Google.Protobuf.Protocol {
             Name = input.ReadString();
             break;
           }
-          case 24: {
-            Jewel = input.ReadInt32();
-            break;
-          }
-          case 32: {
-            Gold = input.ReadInt32();
+          case 26: {
+            if (currencyData_ == null) {
+              CurrencyData = new global::Google.Protobuf.Protocol.CurrencyData();
+            }
+            input.ReadMessage(CurrencyData);
             break;
           }
         }
@@ -6502,7 +7081,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[44]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[48]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6743,7 +7322,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[45]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[49]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6928,7 +7507,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[46]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[50]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7141,7 +7720,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[47]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[51]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7669,7 +8248,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[48]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[52]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7826,7 +8405,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[49]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[53]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8228,6 +8807,163 @@ namespace Google.Protobuf.Protocol {
           }
           case 93: {
             AttackHeight = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class CurrencyData : pb::IMessage<CurrencyData> {
+    private static readonly pb::MessageParser<CurrencyData> _parser = new pb::MessageParser<CurrencyData>(() => new CurrencyData());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<CurrencyData> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[54]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CurrencyData() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CurrencyData(CurrencyData other) : this() {
+      jewel_ = other.jewel_;
+      gold_ = other.gold_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CurrencyData Clone() {
+      return new CurrencyData(this);
+    }
+
+    /// <summary>Field number for the "jewel" field.</summary>
+    public const int JewelFieldNumber = 1;
+    private int jewel_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Jewel {
+      get { return jewel_; }
+      set {
+        jewel_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "gold" field.</summary>
+    public const int GoldFieldNumber = 2;
+    private int gold_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Gold {
+      get { return gold_; }
+      set {
+        gold_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as CurrencyData);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(CurrencyData other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Jewel != other.Jewel) return false;
+      if (Gold != other.Gold) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Jewel != 0) hash ^= Jewel.GetHashCode();
+      if (Gold != 0) hash ^= Gold.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Jewel != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Jewel);
+      }
+      if (Gold != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Gold);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Jewel != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Jewel);
+      }
+      if (Gold != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Gold);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(CurrencyData other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Jewel != 0) {
+        Jewel = other.Jewel;
+      }
+      if (other.Gold != 0) {
+        Gold = other.Gold;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Jewel = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            Gold = input.ReadInt32();
             break;
           }
         }

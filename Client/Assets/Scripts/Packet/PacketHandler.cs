@@ -482,4 +482,28 @@ class PacketHandler
         Managers.UI.ShowToastPopup("캐릭터가 삭제되었습니다.");
         playerSelectUI.UpdatePlayerInfos(deletePlaerPacket.PlayerInfoList);
     }
+
+    public static void S_UpdateCurrencyDataHandler(PacketSession session, IMessage packet)
+    {
+        S_UpdateCurrencyData updateCurrencyDataPacket = packet as S_UpdateCurrencyData;
+        if (updateCurrencyDataPacket == null)
+        {
+            Debug.Log("S_UpdateCurrencyData 패킷이 null입니다");
+            return;
+        }
+
+        Managers.Currency.UpdateCurrencyData(updateCurrencyDataPacket.CurrencyType, updateCurrencyDataPacket.Amount);
+    }
+
+    public static void S_UpdateCurrencyDataAllHandler(PacketSession session, IMessage packet)
+    {
+        S_UpdateCurrencyDataAll updateCurrencyDataAllPacket = packet as S_UpdateCurrencyDataAll;
+        if (updateCurrencyDataAllPacket == null || updateCurrencyDataAllPacket.CurrencyData == null)
+        {
+            Debug.Log("S_UpdateCurrencyDataAll 패킷이 null입니다");
+            return;
+        }
+
+        Managers.Currency.UpdateCurrencyDataAll(updateCurrencyDataAllPacket.CurrencyData);
+    }
 }

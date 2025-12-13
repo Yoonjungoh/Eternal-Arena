@@ -8,6 +8,7 @@ public class Managers : MonoBehaviour
     private static Managers s_instance; // 유일성이 보장된다
     private static Managers Instance { get { Init(); return s_instance; } } // 유일한 매니저를 갖고온다
 
+    private CurrencyManager _currency = new CurrencyManager();
     private GameRoomManager _gameRoom = new GameRoomManager();
     private GameRoomObjectManager _gameRoomObject = new GameRoomObjectManager();
     private LobbyManager _lobby = new LobbyManager();
@@ -25,6 +26,7 @@ public class Managers : MonoBehaviour
     private UIManager _ui = new UIManager();
     private URLManager _url = new URLManager();
 
+    public static CurrencyManager Currency { get { return Instance._currency; } }
     public static GameRoomManager GameRoom { get { return Instance._gameRoom; } }
     public static GameRoomObjectManager GameRoomObject { get { return Instance._gameRoomObject; } }
     public static LobbyManager Lobby { get { return Instance._lobby; } }

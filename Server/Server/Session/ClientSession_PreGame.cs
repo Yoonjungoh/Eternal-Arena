@@ -17,7 +17,8 @@ using Server.Session;
 
 namespace Server
 {
-	public partial class ClientSession : PacketSession
+    // PreGame 관련 핸들러들 (로그인, 캐릭터 선택까지를 PreGame이라 칭하자)
+    public partial class ClientSession : PacketSession
 	{
 		public Player MyPlayer { get; set; }
 
@@ -95,7 +96,12 @@ namespace Server
                         {
                             PlayerId = player.PlayerId,
                             Name = player.Name,
-                            Gold = player.Gold
+                            CurrencyData = new CurrencyData()
+                            {
+                                // TODO - 재화 자동화 필요
+                                Jewel = player.Jewel,
+                                Gold = player.Gold
+                            }
                         };
                         serverDeletePlayerPacket.PlayerInfoList.Add(info);
                     }
@@ -104,8 +110,8 @@ namespace Server
             }
         }
 
-        // 만들어진 캐릭터 선택 후 로비 진입
-        public Player CreateMyPlayer(int playerId)
+        // 만들어진 캐릭터 선택 후 로비 진입 (여기서 세션의 MyPlayer 세팅함)
+        public Player EnterLobby(int playerId)
         {
             lock (_lock)
             {
@@ -215,8 +221,12 @@ namespace Server
                         {
                             PlayerId = player.PlayerId,
                             Name = player.Name,
-                            Jewel = player.Jewel,
-                            Gold = player.Gold
+                            // TODO - 재화 자동화 필요
+                            CurrencyData = new CurrencyData()
+                            {
+                                Jewel = player.Jewel,
+                                Gold = player.Gold
+                            }
                         };
 
                         serverCreatePlayerPacket.PlayerInfoList.Add(info);
@@ -264,8 +274,12 @@ namespace Server
                         {
                             PlayerId = player.PlayerId,
                             Name = player.Name,
-                            Jewel = player.Jewel,
-                            Gold = player.Gold
+                            // TODO - 재화 자동화 필요
+                            CurrencyData = new CurrencyData()
+                            {
+                                Jewel = player.Jewel,
+                                Gold = player.Gold
+                            }
                         };
 
                         serverRequestPlayerList.PlayerInfoList.Add(info);

@@ -475,7 +475,7 @@ namespace Server.Game
 
             CurrencyManager.Instance.AddCurrency
                 (winner, CurrencyType.Jewel, DataManager.Instance.VictoryJewelReward,
-                () => Console.WriteLine($"Jewel Saved({CurrencyManager.Instance.GetCurrentAmount(winner, CurrencyType.Jewel)})"),
+                () => ConsoleLogManager.Instance.Log($"PlayerId: {winner.PlayerId}: Jewel Saved({CurrencyManager.Instance.GetCurrentAmount(winner, CurrencyType.Jewel)})"),
                 reason: "Game win");
         }
 

@@ -68,7 +68,7 @@ namespace Server.Currency
                     .AsNoTracking()
                     .Where(p => p.PlayerId == player.PlayerId);
 
-                // TODO - 자동화 고려
+                // TODO - 재화 자동화 필요
                 int amount = currencyType switch
                 {
                     CurrencyType.Jewel => query.Select(p => p.Jewel).FirstOrDefault(),

@@ -19,7 +19,6 @@ namespace Server.Game
 			
         public WaitingRoom WaitingRoom;	// 방 나가면 초기화 해줘야 함
         public int PlayerId { get; set; }   // DB에 저장된 플레이어 고유 Id
-        public int Jewel { get; set; }    // 보석 재화
         public ClientSession Session { get; set; }
 
         // 플레이어 정보 초기화
