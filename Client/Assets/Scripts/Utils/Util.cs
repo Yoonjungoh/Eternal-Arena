@@ -30,11 +30,13 @@ public class Util
         // 캐시 히트
         if (nameMap.TryGetValue(name, out var cached))
         {
+            Debug.Log($"[Util] Cache Hit: {root.name} -> {name} ({typeof(T).Name})");
             return cached as T;
         }
 
         // 캐시 미스면 실제 탐색 진행
         T found = recursive ? FindRecursive<T>(root, name) : FindDirect<T>(root, name);
+        Debug.Log($"[Util] Cache Miss: {root.name} -> {name} ({typeof(T).Name})");
 
         if (found != null)
         {
@@ -79,15 +81,9 @@ public class Util
     public static void ClearCache(GameObject root)
     {
         if (root != null)
+        {
             _cache.Remove(root);
-    }
-
-    public static T GetOrAddComponent<T>(GameObject go) where T : Component
-    {
-        T component = go.GetComponent<T>();
-        if (component == null)
-            component = go.AddComponent<T>();
-        return component;
+        }
     }
 
     public static string GetGameResult(RoomExitReason leaveRoomReason)
@@ -131,36 +127,4 @@ public class Util
         
         return transform.gameObject;
     }
-
-    public static T FindChild<T>(GameObject go, string name = null, bool recursive = false) where T : UnityEngine.Object
-    {
-        if (go == null)
-            return null;
-
-        if (recursive == false)
-        {
-            for (int i = 0; i < go.transform.childCount; i++)
-            {
-                Transform transform = go.transform.GetChild(i);
-                if (string.IsNullOrEmpty(name) || transform.name == name)
-                {
-                    T component = transform.GetComponent<T>();
-                    if (component != null)
-                        return component;
-                }
-            }
-		}
-        else
-        {
-            foreach (T component in go.GetComponentsInChildren<T>())
-            {
-                if (string.IsNullOrEmpty(name) || component.name == name)
-                    return component;
-            }
-        }
-
-        return null;
-    }
-
-
 }
