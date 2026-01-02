@@ -78,6 +78,7 @@ namespace Server
             }
 
             // GameLogic Task
+            Thread.Sleep(Timeout.Infinite);
         }
 	}
 }
