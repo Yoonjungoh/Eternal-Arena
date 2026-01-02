@@ -22,6 +22,8 @@ namespace Server
 
         static void DbTask()
         {
+            Thread.CurrentThread.Name = "DB";
+
             while (true)
             {
                 DbTransaction.Instance.Flush();
@@ -31,7 +33,7 @@ namespace Server
 
         static void NetworkTask()
         {
-            Thread.CurrentThread.Name = "Network Send Worker";
+            Thread.CurrentThread.Name = "Network Send";
             
             while (true)
             {
@@ -63,14 +65,19 @@ namespace Server
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			ConsoleLogManager.Instance.Log("Server Starting...");
 
+            // DbTask
+            {
+                Task dbTask = new Task(DbTask, TaskCreationOptions.LongRunning);
+                dbTask.Start();
+            }
+
             // NetworkTask
             {
                 Task networkTask = new Task(NetworkTask, TaskCreationOptions.LongRunning);
                 networkTask.Start();
             }
 
-            // DbTask
-            DbTask();
+            // GameLogic Task
         }
 	}
 }
