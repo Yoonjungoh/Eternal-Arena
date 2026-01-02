@@ -20,6 +20,15 @@ namespace Server
 	{
 		static Listener _listener = new Listener();
 
+		static void DbTask()
+        {
+            while (true)
+            {
+                DbTransaction.Instance.Flush();
+				Thread.Sleep(0);	// 커널에게 잠깐 운영권 양도 (CPU 낭비 감소)
+            }
+        }
+		
 		static void Main(string[] args)
 		{
 			// Json 데이터 역직렬화
@@ -38,11 +47,8 @@ namespace Server
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			ConsoleLogManager.Instance.Log("Server Starting...");
 
-			while (true)
-			{
-				DbTransaction.Instance.Flush();
-                //Thread.Sleep(Timeout.Infinite);
-            }
+			// DbTask
+			DbTask();
         }
 	}
 }
