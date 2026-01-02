@@ -160,7 +160,7 @@ namespace Server.Game
             S_Move move = new S_Move();
             move.ObjectState = ObjectState;
             move.ObjectState.ServerReceivedTime = Util.GetTimestampMs();
-            GameRoom.Broadcast(move);
+            GameRoom.Broadcast(CurrentPosition, move);
         }
 
 
@@ -204,7 +204,7 @@ namespace Server.Game
                 damagedInfo.RemainHp = _target.Stat.Hp;
 
                 attackPacket.DamagedObjectList.Add(damagedInfo);
-                GameRoom.Broadcast(attackPacket);
+                GameRoom.Broadcast(CurrentPosition, attackPacket);
 
                 _nextAttackTick = Environment.TickCount64 + (long)(Stat.CommonAttackCoolTime * 1000);
                 return;
@@ -221,7 +221,7 @@ namespace Server.Game
             S_ChangeCreatureState changeCreatureStatePacket = new S_ChangeCreatureState();
             changeCreatureStatePacket.ObjectId = Id;
             changeCreatureStatePacket.CreatureState = CreatureState;
-            GameRoom.Broadcast(changeCreatureStatePacket);
+            GameRoom.Broadcast(CurrentPosition, changeCreatureStatePacket);
         }
     }
 }

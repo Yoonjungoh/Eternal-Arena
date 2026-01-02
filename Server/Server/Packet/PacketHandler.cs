@@ -214,7 +214,7 @@ class PacketHandler
         // 방에 인원 가득차면 게임 스타트를 위한 카운트다운 시작
         if (player.GameRoom.IsRoomFull)
         {
-            player.GameRoom.Push(player.GameRoom.HandleStartCountdown);
+            player.GameRoom.Push(player.GameRoom.HandleStartCountdown, player);
         }
     }
 

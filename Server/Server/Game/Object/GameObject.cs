@@ -92,7 +92,7 @@ namespace Server.Game
 
             if (GameRoom != null)
             {
-                GameRoom.Push(GameRoom.Broadcast, diePacket);
+                GameRoom.Push(GameRoom.Broadcast, CurrentPosition, diePacket);
                 GameRoom.Push(GameRoom.LeaveGame, Id);
             }
             

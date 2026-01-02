@@ -33,7 +33,7 @@ namespace Server.Game
             lock (_lock)
             {
                 GameRoom newRoom = new GameRoom();
-                newRoom.Push(newRoom.Init);
+                newRoom.Push(newRoom.Init, DataManager.Instance.DefaultCells);
                 TickRoom(newRoom);
 
                 if (_rooms.ContainsKey(roomId))
