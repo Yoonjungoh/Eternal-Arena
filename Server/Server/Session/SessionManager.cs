@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Server
@@ -12,7 +13,15 @@ namespace Server
         private int _sessionId = 0;
 		private Dictionary<int, ClientSession> _sessions = new Dictionary<int, ClientSession>();
         private object _lock = new object();
-		
+
+        public List<ClientSession> GetSessions()
+		{
+			lock (_lock)
+            {
+                return _sessions.Values.ToList();
+            }
+        }
+
         public ClientSession Generate()
 		{
 			lock (_lock)

@@ -20,6 +20,9 @@ namespace Server
     {
         #region 네트워크
 
+        private List<ArraySegment<byte>> _reserveQueue = new List<ArraySegment<byte>>();
+
+        // 예약만 하고 실질적으로 보내진 않음
         public void Send(IMessage packet)
         {
             string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
@@ -30,7 +33,28 @@ namespace Server
             Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuffer, 2, sizeof(ushort));
             Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
 
-            Send(new ArraySegment<byte>(sendBuffer));
+            lock (_lock)
+            {
+                _reserveQueue.Add(sendBuffer);
+            }
+            //Send(new ArraySegment<byte>(sendBuffer));
+        }
+
+        // 실제로 보내는 부분
+        public void FlushSend()
+        {
+            List<ArraySegment<byte>> sendList = null;
+
+            lock (_lock)
+            {
+                if (_reserveQueue.Count == 0)
+                    return;
+
+                sendList = _reserveQueue;
+                _reserveQueue = new List<ArraySegment<byte>>();
+            }
+
+            Send(sendList);
         }
 
         public override void OnConnected(EndPoint endPoint)

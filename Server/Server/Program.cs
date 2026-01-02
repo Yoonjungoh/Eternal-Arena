@@ -20,16 +20,32 @@ namespace Server
 	{
 		static Listener _listener = new Listener();
 
-		static void DbTask()
+        static void DbTask()
         {
             while (true)
             {
                 DbTransaction.Instance.Flush();
-				Thread.Sleep(0);	// 커널에게 잠깐 운영권 양도 (CPU 낭비 감소)
+                Thread.Sleep(0);	// 커널에게 잠깐 운영권 양도 (CPU 낭비 감소)
             }
         }
-		
-		static void Main(string[] args)
+
+        static void NetworkTask()
+        {
+            Thread.CurrentThread.Name = "Network Send Worker";
+            
+            while (true)
+            {
+                List<ClientSession> sessions = SessionManager.Instance.GetSessions();
+                foreach (ClientSession clientSession in sessions)
+                {
+                    clientSession.FlushSend();
+                }
+
+                Thread.Sleep(0);	// 커널에게 잠깐 운영권 양도 (CPU 낭비 감소)
+            }
+        }
+
+        static void Main(string[] args)
 		{
 			// Json 데이터 역직렬화
 			//DataManager.Instance.LoadAllData();
@@ -47,8 +63,14 @@ namespace Server
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			ConsoleLogManager.Instance.Log("Server Starting...");
 
-			// DbTask
-			DbTask();
+            // NetworkTask
+            {
+                Task networkTask = new Task(NetworkTask, TaskCreationOptions.LongRunning);
+                networkTask.Start();
+            }
+
+            // DbTask
+            DbTask();
         }
 	}
 }
