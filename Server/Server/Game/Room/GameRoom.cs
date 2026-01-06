@@ -69,9 +69,15 @@ namespace Server.Game
 
         public Zone GetZone(Vector3 pos)
         {
-            int x = ((int)(pos.X) - Map.MapData.SizeX) / ZoneCells;
-            int z = (Map.MapData.SizeZ - (int)(pos.Z)) / ZoneCells;
-            
+            // 1. 월드 좌표를 0 기반 좌표로 변경
+            int worldX = (int)(pos.X - Map.MapData.MinX);
+            int worldZ = (int)(pos.Z - Map.MapData.MinZ);
+
+            // 2. Zone 인덱스 계산
+            int x = worldX / ZoneCells;
+            int z = worldZ / ZoneCells;
+
+            // 3. 범위 체크
             if (x < 0 || x >= Zones.GetLength(0))
                 return null;
 
@@ -319,7 +325,11 @@ namespace Server.Game
             // Type 관련 분기 초기화
             if (objectType == GameObjectType.Player)
             {
-                GetZone(gameObject.CurrentPosition).Players.Add(gameObject as Player);
+                Zone zone = GetZone(gameObject.CurrentPosition);
+                if (zone != null)
+                {
+                    zone.Players.Add(gameObject as Player);
+                }
             }
             else if (objectType == GameObjectType.Monster)
             {
@@ -571,7 +581,7 @@ namespace Server.Game
 
             // 게임 시작 시간 초기화
             startCountdownPacket.GameStartCountdownTime = DataManager.Instance.GameStartCountdownTime;
-            Broadcast(player.CurrentPosition, startCountdownPacket);
+            Broadcast(startCountdownPacket);
         }
 
         public Player FindPlayer(Func<GameObject, bool> condition)
@@ -585,6 +595,7 @@ namespace Server.Game
             return null;
         }
 
+        // AOI 기반 브로드캐스트
         public void Broadcast(Vector3 pos, IMessage packet)
         {
             List<Zone> adjacentZones = GetAdjacentZones(pos);
@@ -608,6 +619,7 @@ namespace Server.Game
             //}
         }
 
+        // AOI 기반 브로드캐스트 (제외자 있음)
         public void Broadcast(Vector3 pos, IMessage packet, int exceptId)
         {
             List<Zone> adjacentZones = GetAdjacentZones(pos);
@@ -622,17 +634,33 @@ namespace Server.Game
                     p.Session.Send(packet);
                 }
             }
+        }
 
-            //foreach (Player p in _players.Values)
-            //{
-            //    if (p.Id == exceptId)
-            //        continue;
+        // 전체 브로드캐스트
+        public void Broadcast(IMessage packet)
+        {
+            foreach (Player p in _players.Values)
+            {
+                if (p.Session == null)
+                    continue;
 
-            //    if (p.Session == null)
-            //        continue;
+                p.Session.Send(packet);
+            }
+        }
 
-            //    p.Session.Send(packet);
-            //}
+        // 전체 브로드캐스트 (제외자 있음)
+        public void Broadcast(IMessage packet, int exceptId)
+        {
+            foreach (Player p in _players.Values)
+            {
+                if (p.Id == exceptId)
+                    continue;
+
+                if (p.Session == null)
+                    continue;
+
+                p.Session.Send(packet);
+            }
         }
 
         private void AddObject(GameObject gameObject)

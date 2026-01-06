@@ -76,6 +76,7 @@ namespace Server.Game
         public long ProcessStartTime = Util.GetTimestampMs();
 
         public int VictoryJewelReward { get; set; } = 100;
-        public int DefaultCells { get; set; } = 10;
+
+        public int DefaultCells { get; set; } = 200;
     }
 }

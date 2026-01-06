@@ -46,6 +46,9 @@ namespace Server.Game
 
             Player target = GameRoom.FindPlayer(p =>
             {
+                if (p == null)
+                    return false;
+                
                 Vector3 playerPos = p.CurrentPosition;
                 Vector3 dir = playerPos - CurrentPosition;
                 float cellDist = Math.Abs(dir.X) + Math.Abs(dir.Y);

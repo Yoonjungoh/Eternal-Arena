@@ -13,6 +13,14 @@ namespace Server
 
         public float[,] Height;  // float 로 유지
         public bool[,] CanGo;
+        
+        public int MinX { get { return -(SizeX / 2); } }
+
+        public int MaxX { get { return (SizeX / 2); } }
+
+        public int MinZ { get { return -(SizeZ / 2); } }
+
+        public int MaxZ { get { return (SizeZ / 2); } }
     }
 
     public class MapManager
