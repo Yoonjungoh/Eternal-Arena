@@ -97,8 +97,14 @@ namespace Server.Game
 
         private void UpdateMonsters()
         {
+            if (_monsters == null || _monsters.Count == 0)
+                return;
+
             foreach (Monster monster in _monsters.Values)
             {
+                if (monster == null)
+                    continue;
+
                 monster.Update();
             }
         }

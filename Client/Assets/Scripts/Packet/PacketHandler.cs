@@ -367,6 +367,7 @@ class PacketHandler
         }
         cc.CreatureState = diePacket.CreatureState;
         Managers.GameRoomObject.Remove(diePacket.DamagedObjectId);
+        cc.OnDead();
     }
 
     public static void S_StartCountdownHandler(PacketSession session, IMessage packet)

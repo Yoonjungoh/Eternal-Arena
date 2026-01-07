@@ -41,6 +41,9 @@ public class GameRoomObjectManager
         if (MyPlayer != null && MyPlayer.Id == objectState.ObjectId)
             return;
 
+        if (_objects.ContainsKey(objectState.ObjectId))
+            return;
+
         GameObjectType objectType = GetObjectTypeById(objectState.ObjectId);
         Vector3 position = new Vector3(objectState.Position.X, objectState.Position.Y, objectState.Position.Z);
         Quaternion rotation = new Quaternion(objectState.Rotation.X, objectState.Rotation.Y, objectState.Rotation.Z, objectState.Rotation.W);
@@ -116,6 +119,9 @@ public class GameRoomObjectManager
         if (MyPlayer != null && MyPlayer.Id == id)
             return;
 
+        if (_objects.ContainsKey(id) == false)
+            return;
+
         GameObject go = FindById(id);
         if (go == null)
             return;
@@ -132,7 +138,7 @@ public class GameRoomObjectManager
         {
             _projectileOwners.Remove(id);
         }
-        cc.OnDead();
+        //cc.OnDead();
     }
 
     public GameObject FindById(int id)

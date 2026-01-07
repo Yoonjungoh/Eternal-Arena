@@ -108,7 +108,7 @@ namespace Server.Game.Room
             return ConvertToWorldPath(InternalFindPath(start, dest));
         }
 
-        private List<Pos> InternalFindPath(Cell start, Cell dest)
+        private List<Pos> InternalFindPath(Cell start, Cell dest, int maxDist = 50)
         {
             HashSet<Pos> closeList = new HashSet<Pos>();
             Dictionary<Pos, int> openList = new Dictionary<Pos, int>();
@@ -144,6 +144,10 @@ namespace Server.Game.Room
 
                     Pos next = new Pos(ny, nx);
                     Cell nextCell = new Cell(nx, ny);
+
+                    // 너무 멀면 스킵
+                    if (MathF.Abs(pos.X - next.X) + MathF.Abs(pos.Y - next.Y) > maxDist)
+                        continue;
 
                     if (!IsValidCell(nextCell))
                         continue;
