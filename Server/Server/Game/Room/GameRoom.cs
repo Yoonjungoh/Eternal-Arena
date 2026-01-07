@@ -394,45 +394,36 @@ namespace Server.Game
                 Player player = gameObject as Player;
                 // 본인한테 맵안의 플레이어 정보 전송
                 player.AOI.Update();
-                //S_Spawn spawnToMePacket = new S_Spawn();
-                //// 나를 제외하고 접속한 플레이어를 spawnPacket에 저장
-                //foreach (GameObject go in _gameObjects.Values)
-                //{
-                //    if (go == null || player == go)
-                //        continue;
-
-                //    go.ObjectState.ServerReceivedTime = serverReceivedTime;
-                //    spawnToMePacket.ObjectStateList.Add(go.ObjectState);
-                //}
-                //if (player.Session != null)
-                //{
-                //    player.Session.Send(spawnToMePacket);
-                //}
             }
 
-            //// 다른 플레이어에게 게임 오브젝트가 접속한 걸 알려주기
-            //S_Spawn spawnToOthersPacket = new S_Spawn();
-            //spawnToOthersPacket.ObjectStateList.Add(gameObject.ObjectState);
-            //foreach (Player p in _players.Values)
-            //{
-            //    if (p == null || p.Session == null || gameObject.Id == p.Id)
-            //        continue;
+            // 다른 플레이어에게 게임 오브젝트가 접속한 걸 알려주기
+            foreach (Player p in _players.Values)
+            {
+                if (p == null || p.Session == null || gameObject.Id == p.Id)
+                    continue;
 
-            //    p.ObjectState.ServerReceivedTime = serverReceivedTime;
-            //    p.Session.Send(spawnToOthersPacket);
-            //    ConsoleLogManager.Instance.Log($"[GameRoom Update] Player {p.Id} Pos({p.Position.X}, {p.Position.Y}, {p.Position.Z})");
-            //}
+                p.ObjectState.ServerReceivedTime = serverReceivedTime;
+                ConsoleLogManager.Instance.Log($"[GameRoom Update] Player {p.Id} Pos({p.Position.X}, {p.Position.Y}, {p.Position.Z})");
+            }
+            
+            S_Spawn spawnToOthersPacket = new S_Spawn();
+            spawnToOthersPacket.ObjectStateList.Add(gameObject.ObjectState);
+            Broadcast(gameObject.CurrentPosition, spawnToOthersPacket);
         }
 
         public void LeaveGame(int objectId)
         {
             GameObjectType type = ObjectManager.Instance.GetObjectTypeById(objectId);
 
+            Vector3 pos = Vector3.Zero;
+
             if (type == GameObjectType.Player)
             {
                 Player player = null;
                 if (_players.TryGetValue(objectId, out player) == false)
                     return;
+
+                pos = player.CurrentPosition;
 
                 Zone zone = GetZone(player.CurrentPosition);
                 if (zone != null)
@@ -455,6 +446,9 @@ namespace Server.Game
                 Monster monster = null;
                 if (_monsters.TryGetValue(objectId, out monster) == false)
                     return;
+
+                pos = monster.CurrentPosition;
+
                 Zone zone = GetZone(monster.CurrentPosition);
                 if (zone != null)
                 {
@@ -466,6 +460,9 @@ namespace Server.Game
                 Projectile projectile = null;
                 if (_projectiles.TryGetValue(objectId, out projectile) == false)
                     return;
+
+                pos = projectile.CurrentPosition;
+
                 Zone zone = GetZone(projectile.CurrentPosition);
                 if (zone != null)
                 {
@@ -475,20 +472,13 @@ namespace Server.Game
 
             RemoveObject(objectId);
 
-            //// 타인한테 정보 전송
-            //{
-            //    S_Despawn despawnPacket = new S_Despawn();
-            //    despawnPacket.ObjectIdList.Add(objectId);
-            //    despawnPacket.PlayerCount = _players.Count;
-
-            //    foreach (Player p in _players.Values)
-            //    {
-            //        if (p.Id != objectId)
-            //        {
-            //            p.Session.Send(despawnPacket);
-            //        }
-            //    }
-            //}
+            // 타인한테 정보 전송
+            {
+                S_Despawn despawnPacket = new S_Despawn();
+                despawnPacket.ObjectIdList.Add(objectId);
+                despawnPacket.PlayerCount = _players.Count;
+                Broadcast(pos, despawnPacket);
+            }
         }
 
         public void HandleMove(Player player, C_Move movePacket)
@@ -663,10 +653,10 @@ namespace Server.Game
             {
                 foreach (Player p in zone.Players)
                 {
-                    if (p.Id == exceptId)
+                    if (p == null || p.Session == null)
                         continue;
 
-                    if (p == null || p.Session == null)
+                    if (p.Id == exceptId)
                         continue;
 
                     // 인접한 존에 있다고 무조건 브로드캐스트 대상은
@@ -702,10 +692,10 @@ namespace Server.Game
         {
             foreach (Player p in _players.Values)
             {
-                if (p.Id == exceptId)
+                if (p == null || p.Session == null)
                     continue;
 
-                if (p.Session == null)
+                if (p.Id == exceptId)
                     continue;
 
                 p.Session.Send(packet);

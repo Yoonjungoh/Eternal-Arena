@@ -80,9 +80,9 @@ namespace Server.Game
         public int DefaultCells { get; set; } = 200;
 
         // GameRoom의 GetAdjacentZones에 쓰이는 Cell 단위
-        public int AdjacentZonesCells { get; set; } = 10;
+        public int AdjacentZonesCells { get; set; } = 100;
 
         // AOIController의 GatherGameObjects에 쓰이는 Cell 단위
-        public int AOICells { get; set; } = 10;
+        public int AOICells { get; set; } = 100;
     }
 }
