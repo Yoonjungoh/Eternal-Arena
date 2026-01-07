@@ -38,6 +38,9 @@ public class GameRoomObjectManager
 
     public void Add(ObjectState objectState, bool isMyPlayer = false)
     {
+        if (MyPlayer != null && MyPlayer.Id == objectState.ObjectId)
+            return;
+
         GameObjectType objectType = GetObjectTypeById(objectState.ObjectId);
         Vector3 position = new Vector3(objectState.Position.X, objectState.Position.Y, objectState.Position.Z);
         Quaternion rotation = new Quaternion(objectState.Rotation.X, objectState.Rotation.Y, objectState.Rotation.Z, objectState.Rotation.W);
@@ -110,6 +113,9 @@ public class GameRoomObjectManager
     // 게임룸에서 사라질 때 반드시 호출하는 함수 (이것만 호출하면 됨)
     public void Remove(int id)
     {
+        if (MyPlayer != null && MyPlayer.Id == id)
+            return;
+
         GameObject go = FindById(id);
         if (go == null)
             return;

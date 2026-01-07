@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using Server.DB;
 using Server.Game;
 using System;
 using System.Collections.Generic;
@@ -154,11 +155,28 @@ namespace Server.Game
                 newPos.Y = currentY + diff * 0.35f;
             }
 
+            // Zone에 적용
+            Zone nowZone = GameRoom.GetZone(CurrentPosition);
+            Zone afterZone = GameRoom.GetZone(newPos);
+
+            if (nowZone != afterZone)
+            {
+                if (nowZone != null)
+                {
+                    nowZone.Remove(this);
+                }
+                if (afterZone != null)
+                {
+                    afterZone.Add(this);
+                }
+            }
+
             ObjectState.Position.X = newPos.X;
             ObjectState.Position.Y = newPos.Y;
             ObjectState.Position.Z = newPos.Z;
 
             ObjectState.Rotation = MovementHelper.LookAt(dir);
+
 
             S_Move move = new S_Move();
             move.ObjectState = ObjectState;

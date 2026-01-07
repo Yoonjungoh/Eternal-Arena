@@ -78,5 +78,11 @@ namespace Server.Game
         public int VictoryJewelReward { get; set; } = 100;
 
         public int DefaultCells { get; set; } = 200;
+
+        // GameRoom의 GetAdjacentZones에 쓰이는 Cell 단위
+        public int AdjacentZonesCells { get; set; } = 10;
+
+        // AOIController의 GatherGameObjects에 쓰이는 Cell 단위
+        public int AOICells { get; set; } = 10;
     }
 }

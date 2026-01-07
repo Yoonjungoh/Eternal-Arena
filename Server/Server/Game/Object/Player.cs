@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Server.DB;
+using Server.Game.Room;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,6 +21,7 @@ namespace Server.Game
         public WaitingRoom WaitingRoom;	// 방 나가면 초기화 해줘야 함
         public int PlayerId { get; set; }   // DB에 저장된 플레이어 고유 Id
         public ClientSession Session { get; set; }
+        public AOIController AOI { get; set; }
 
         // 플레이어 정보 초기화
         public void Init()
@@ -27,6 +29,7 @@ namespace Server.Game
             ObjectType = GameObjectType.Player;
             Name = $"NameNull_Player_{ObjectState.ObjectId}";
             ObjectState.CreatureState = CreatureState.Idle;
+            AOI = new AOIController(this);
 
             InitStat();
         }

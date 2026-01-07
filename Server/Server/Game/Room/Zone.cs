@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,40 @@ namespace Server.Game
         {
             IndexX = x;
             IndexZ = z;
+        }
+
+        public void Add(GameObject gameObject)
+        {
+            if (gameObject.ObjectType == GameObjectType.Player)
+            {
+                Players.Add(gameObject as Player);
+            }
+            else if (gameObject.ObjectType == GameObjectType.Monster)
+            {
+                Monsters.Add(gameObject as Monster);
+            }
+            else if (gameObject.ObjectType == GameObjectType.Projectile)
+            {
+                Projectiles.Add(gameObject as Projectile);
+            }
+        }
+
+        public bool Remove(GameObject gameObject)
+        {
+            if (gameObject.ObjectType == GameObjectType.Player)
+            {
+                return Players.Remove(gameObject as Player);
+            }
+            else if (gameObject.ObjectType == GameObjectType.Monster)
+            {
+                return Monsters.Remove(gameObject as Monster);
+            }
+            else if (gameObject.ObjectType == GameObjectType.Projectile)
+            {
+                return Projectiles.Remove(gameObject as Projectile);
+            }
+
+            return false;
         }
     }
 }

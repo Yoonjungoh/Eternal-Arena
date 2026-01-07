@@ -27,14 +27,14 @@ namespace Server.Game
         public Map Map { get; set; } = new Map();
 
         public Zone[,] Zones { get; private set; }  // x, z
-        
+
         public int ZoneCells { get; private set; }
 
         private Dictionary<int, GameObject> _gameObjects = new Dictionary<int, GameObject>();
         private Dictionary<int, Player> _players = new Dictionary<int, Player>();
         private Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
         private Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
-        
+
         public bool IsRoomFull { get { return _players.Count == DataManager.Instance.MaxRoomPlayerCount; } }
 
         public event Action<int> OnEmptyRoom; // 방이 비었을 때 알림 (roomId)
@@ -52,9 +52,9 @@ namespace Server.Game
             int countX = (Map.MapData.SizeX / zoneCells) + 1;
             int countZ = (Map.MapData.SizeZ / zoneCells) + 1;
             Zones = new Zone[countX, countZ];
-            for(int x = 0; x < countX; x++)
+            for (int x = 0; x < countX; x++)
             {
-                for(int z = 0; z < countZ; z++)
+                for (int z = 0; z < countZ; z++)
                 {
                     Zones[x, z] = new Zone(x, z);
                 }
@@ -125,7 +125,7 @@ namespace Server.Game
                 LeaveGame(id);
             }
         }
-        
+
         public void SpawnMonster(MonsterType monsterType, Vector3 spawnPos)
         {
             Monster monster = MonsterFactory.Create(monsterType);
@@ -194,7 +194,7 @@ namespace Server.Game
         private void HandleProjectileAttack(int instigatorId, int damagedObjectId)
         {
             _gameObjects.TryGetValue(instigatorId, out GameObject instigator);
-            if (instigator == null) 
+            if (instigator == null)
                 return;
 
             // 이미 데미지 입힌 투사체면 return
@@ -236,7 +236,7 @@ namespace Server.Game
         private void HandleCommonAttack(int instigatorId)
         {
             _gameObjects.TryGetValue(instigatorId, out GameObject instigator);
-            if (instigator == null) 
+            if (instigator == null)
                 return;
 
             // 서버 기준 공격 시간 (플레이어 위치, 방향 예상하기 위함)
@@ -323,13 +323,18 @@ namespace Server.Game
             enteGamePacket.ObjectState.CreatureState = CreatureState.Idle;
 
             // Type 관련 분기 초기화
+            Zone zone = GetZone(gameObject.CurrentPosition);
+            if (zone != null)
+            {
+                zone.Add(gameObject);
+            }
+
+            if (zone != null)
+            {
+                // TODO
+            }
             if (objectType == GameObjectType.Player)
             {
-                Zone zone = GetZone(gameObject.CurrentPosition);
-                if (zone != null)
-                {
-                    zone.Players.Add(gameObject as Player);
-                }
             }
             else if (objectType == GameObjectType.Monster)
             {
@@ -363,10 +368,11 @@ namespace Server.Game
             gameObject.Position.X = startPos.X;
             gameObject.Position.Y = startPos.Y;
             gameObject.Position.Z = startPos.Z;
+
             enteGamePacket.ObjectState.Position.X = gameObject.ObjectState.Position.X;
             enteGamePacket.ObjectState.Position.Y = gameObject.ObjectState.Position.Y;
             enteGamePacket.ObjectState.Position.Z = gameObject.ObjectState.Position.Z;
-            
+
             // stat 초기화
             enteGamePacket.ObjectState.Stat = gameObject.Stat;
 
@@ -387,34 +393,35 @@ namespace Server.Game
             {
                 Player player = gameObject as Player;
                 // 본인한테 맵안의 플레이어 정보 전송
-                S_Spawn spawnToMePacket = new S_Spawn();
-                // 나를 제외하고 접속한 플레이어를 spawnPacket에 저장
-                foreach (GameObject go in _gameObjects.Values)
-                {
-                    if (go == null || player == go)
-                        continue;
+                player.AOI.Update();
+                //S_Spawn spawnToMePacket = new S_Spawn();
+                //// 나를 제외하고 접속한 플레이어를 spawnPacket에 저장
+                //foreach (GameObject go in _gameObjects.Values)
+                //{
+                //    if (go == null || player == go)
+                //        continue;
 
-                    go.ObjectState.ServerReceivedTime = serverReceivedTime;
-                    spawnToMePacket.ObjectStateList.Add(go.ObjectState);
-                }
-                if (player.Session != null)
-                {
-                    player.Session.Send(spawnToMePacket);
-                }
+                //    go.ObjectState.ServerReceivedTime = serverReceivedTime;
+                //    spawnToMePacket.ObjectStateList.Add(go.ObjectState);
+                //}
+                //if (player.Session != null)
+                //{
+                //    player.Session.Send(spawnToMePacket);
+                //}
             }
 
-            // 다른 플레이어에게 게임 오브젝트가 접속한 걸 알려주기
-            S_Spawn spawnToOthersPacket = new S_Spawn();
-            spawnToOthersPacket.ObjectStateList.Add(gameObject.ObjectState);
-            foreach (Player p in _players.Values)
-            {
-                if (p == null || p.Session == null || gameObject.Id == p.Id)
-                    continue;
+            //// 다른 플레이어에게 게임 오브젝트가 접속한 걸 알려주기
+            //S_Spawn spawnToOthersPacket = new S_Spawn();
+            //spawnToOthersPacket.ObjectStateList.Add(gameObject.ObjectState);
+            //foreach (Player p in _players.Values)
+            //{
+            //    if (p == null || p.Session == null || gameObject.Id == p.Id)
+            //        continue;
 
-                p.ObjectState.ServerReceivedTime = serverReceivedTime;
-                p.Session.Send(spawnToOthersPacket);
-                ConsoleLogManager.Instance.Log($"[GameRoom Update] Player {p.Id} Pos({p.Position.X}, {p.Position.Y}, {p.Position.Z})");
-            }
+            //    p.ObjectState.ServerReceivedTime = serverReceivedTime;
+            //    p.Session.Send(spawnToOthersPacket);
+            //    ConsoleLogManager.Instance.Log($"[GameRoom Update] Player {p.Id} Pos({p.Position.X}, {p.Position.Y}, {p.Position.Z})");
+            //}
         }
 
         public void LeaveGame(int objectId)
@@ -427,8 +434,12 @@ namespace Server.Game
                 if (_players.TryGetValue(objectId, out player) == false)
                     return;
 
-                GetZone(player.CurrentPosition).Players.Remove(player);
-                
+                Zone zone = GetZone(player.CurrentPosition);
+                if (zone != null)
+                {
+                    zone.Remove(player);
+                }
+
                 player.OnLeaveGame();
                 player.GameRoom = null;
 
@@ -439,29 +450,52 @@ namespace Server.Game
                     player.Session.Send(leavePacket);
                 }
             }
-            RemoveObject(objectId);
-
-            // 타인한테 정보 전송
+            else if (type == GameObjectType.Monster)
             {
-                S_Despawn despawnPacket = new S_Despawn();
-                despawnPacket.ObjectIdList.Add(objectId);
-                despawnPacket.PlayerCount = _players.Count;
-
-                foreach (Player p in _players.Values)
+                Monster monster = null;
+                if (_monsters.TryGetValue(objectId, out monster) == false)
+                    return;
+                Zone zone = GetZone(monster.CurrentPosition);
+                if (zone != null)
                 {
-                    if (p.Id != objectId)
-                    {
-                        p.Session.Send(despawnPacket);
-                    }
+                    zone.Remove(monster);
                 }
             }
+            else if (type == GameObjectType.Projectile)
+            {
+                Projectile projectile = null;
+                if (_projectiles.TryGetValue(objectId, out projectile) == false)
+                    return;
+                Zone zone = GetZone(projectile.CurrentPosition);
+                if (zone != null)
+                {
+                    zone.Remove(projectile);
+                }
+            }
+
+            RemoveObject(objectId);
+
+            //// 타인한테 정보 전송
+            //{
+            //    S_Despawn despawnPacket = new S_Despawn();
+            //    despawnPacket.ObjectIdList.Add(objectId);
+            //    despawnPacket.PlayerCount = _players.Count;
+
+            //    foreach (Player p in _players.Values)
+            //    {
+            //        if (p.Id != objectId)
+            //        {
+            //            p.Session.Send(despawnPacket);
+            //        }
+            //    }
+            //}
         }
 
         public void HandleMove(Player player, C_Move movePacket)
         {
             if (player == null || movePacket == null)
                 return;
-            
+
             // 서버에서 상태 업데이트
             player.ObjectState = movePacket.ObjectState;
 
@@ -483,17 +517,16 @@ namespace Server.Game
                     // Zone 이동 확인
                     Zone nowZone = GetZone(player.CurrentPosition);
                     Zone afterZone = GetZone(clientPos);
-                    
+
                     if (nowZone != afterZone)
                     {
                         if (nowZone != null)
                         {
-                            nowZone.Players.Remove(player);
+                            nowZone.Remove(player);
                         }
-
                         if (afterZone != null)
                         {
-                            afterZone.Players.Add(player);
+                            afterZone.Add(player);
                         }
                     }
 
@@ -606,17 +639,20 @@ namespace Server.Game
                     if (p == null || p.Session == null)
                         continue;
 
+                    // 인접한 존에 있다고 무조건 브로드캐스트 대상은
+                    // 아닐 수 있으니 거리 확인
+                    float dx = p.CurrentPosition.X - pos.X;
+                    float dz = p.CurrentPosition.Z - pos.Z;
+
+                    if (MathF.Abs(dx) > DataManager.Instance.AOICells)
+                        continue;
+
+                    if (MathF.Abs(dz) > DataManager.Instance.AOICells)
+                        continue;
+
                     p.Session.Send(packet);
                 }
             }
-
-            //foreach (Player p in _players.Values)
-            //{
-            //    if (p.Session == null)
-            //        continue;
-
-            //    p.Session.Send(packet);
-            //}
         }
 
         // AOI 기반 브로드캐스트 (제외자 있음)
@@ -629,8 +665,21 @@ namespace Server.Game
                 {
                     if (p.Id == exceptId)
                         continue;
+
                     if (p == null || p.Session == null)
                         continue;
+
+                    // 인접한 존에 있다고 무조건 브로드캐스트 대상은
+                    // 아닐 수 있으니 거리 확인
+                    float dx = p.CurrentPosition.X - pos.X;
+                    float dz = p.CurrentPosition.Z - pos.Z;
+
+                    if (MathF.Abs(dx) > DataManager.Instance.AOICells)
+                        continue;
+
+                    if (MathF.Abs(dz) > DataManager.Instance.AOICells)
+                        continue;
+
                     p.Session.Send(packet);
                 }
             }
@@ -710,11 +759,13 @@ namespace Server.Game
 
             return false;
         }
-        
-        public List<Zone> GetAdjacentZones(Vector3 pos, int cells = 10)
+
+        public List<Zone> GetAdjacentZones(Vector3 pos)
         {
             HashSet<Zone> zones = new HashSet<Zone>();
-
+            // cells -> 현재 위치(pos)를 기준으로,
+            // 얼마나 떨어진 좌표까지 검사해서 Zone을 가져올 것인가를 의미
+            int cells = DataManager.Instance.AdjacentZonesCells;
             int[] delta = new int[2] { -cells, +cells };
             foreach (int dx in delta)
             {
