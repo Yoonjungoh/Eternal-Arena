@@ -115,8 +115,8 @@ namespace Server.Game.Room
                     objectState.MergeFrom(go.ObjectState);
                     spawnPacket.ObjectStateList.Add(objectState);
 
-                    Owner.Session.Send(spawnPacket);
                 }
+                Owner.Session.Send(spawnPacket);
             }
 
             // 기존엔 있었는데 지금은 없으면 Despawn 처리
@@ -132,8 +132,8 @@ namespace Server.Game.Room
                         continue;
 
                     despawnPacket.ObjectIdList.Add(go.Id);
-                    Owner.Session.Send(despawnPacket);
                 }
+                Owner.Session.Send(despawnPacket);
             }
 
             PreviousGameObjects = currentGameObjects;

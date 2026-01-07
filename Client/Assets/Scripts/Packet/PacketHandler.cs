@@ -274,7 +274,7 @@ class PacketHandler
         {
             foreach (int id in despawnPacket.ObjectIdList)
             {
-                Managers.GameRoomObject.Remove(id);
+                Managers.GameRoomObject.Remove(id, isDead: false);
             }
         }
     }
@@ -366,7 +366,7 @@ class PacketHandler
             return;
         }
         cc.CreatureState = diePacket.CreatureState;
-        Managers.GameRoomObject.Remove(diePacket.DamagedObjectId);
+        Managers.GameRoomObject.Remove(diePacket.DamagedObjectId, isDead: true);
         cc.OnDead();
     }
 

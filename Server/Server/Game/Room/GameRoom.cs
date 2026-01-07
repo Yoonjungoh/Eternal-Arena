@@ -60,11 +60,8 @@ namespace Server.Game
                 }
             }
 
-            // TODO
-            SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 527));
-            SpawnMonster(MonsterType.Bear, new Vector3(80, -27, 500));
-            SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 420));
-            //SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 480));
+            // Monster 초반 Spawn
+            InitMonsters();
         }
 
         public Zone GetZone(Vector3 pos)
@@ -778,6 +775,19 @@ namespace Server.Game
             }
 
             return zones.ToList();
+        }
+
+        private void InitMonsters()
+        {
+            //// TODO
+            //for (int i = 0; i < 50; i++)
+            //{
+            //    SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 527 + (i * 2)));
+            //}
+            SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 527));
+            SpawnMonster(MonsterType.Bear, new Vector3(80, -27, 500));
+            SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 420));
+            SpawnMonster(MonsterType.Bear, new Vector3(100, -26, 480));
         }
     }
 }

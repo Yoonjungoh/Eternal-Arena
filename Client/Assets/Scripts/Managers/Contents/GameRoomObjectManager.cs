@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -114,7 +115,7 @@ public class GameRoomObjectManager
     }
 
     // 게임룸에서 사라질 때 반드시 호출하는 함수 (이것만 호출하면 됨)
-    public void Remove(int id)
+    public void Remove(int id, bool isDead)
     {
         if (MyPlayer != null && MyPlayer.Id == id)
             return;
@@ -138,7 +139,11 @@ public class GameRoomObjectManager
         {
             _projectileOwners.Remove(id);
         }
-        //cc.OnDead();
+
+        if (isDead == false)
+        {
+            Managers.Resource.Destroy(go);
+        }
     }
 
     public GameObject FindById(int id)

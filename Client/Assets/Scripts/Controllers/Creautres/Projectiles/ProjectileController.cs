@@ -36,8 +36,8 @@ public class ProjectileController : BaseController
         // 2. 데미지를 입을 수 없는 레이어면 바로 탈출
         if (!Managers.GameRoomObject.IsDamageable(layer))
         {
-            // 데미지 불가 → 그냥 삭제
-            Managers.GameRoomObject.Remove(Id);
+            // 데미지 불가 -> 그냥 삭제
+            Managers.GameRoomObject.Remove(Id, isDead: false);
             return;
         }
 
@@ -46,7 +46,7 @@ public class ProjectileController : BaseController
         CreatureController creature = other.gameObject.GetComponent<CreatureController>();
         if (creature == null)
         {
-            Managers.GameRoomObject.Remove(Id);
+            Managers.GameRoomObject.Remove(Id, isDead: false);
             return;
         }
 
