@@ -62,7 +62,7 @@ public class UI_Currency : UI_Scene
             {
                 int value = (int)property.GetValue(currencyData);
                 _currencyDataDictionary[currencyType] = value;
-                _currencyTextDictionary[currencyType].text = $"{currencyType.ToString()}: {value.ToString()}";
+                _currencyTextDictionary[currencyType].text = value.ToString();
             }
             else
             {
