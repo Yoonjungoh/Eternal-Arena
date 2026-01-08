@@ -30,13 +30,11 @@ public class Util
         // 캐시 히트
         if (nameMap.TryGetValue(name, out var cached))
         {
-            Debug.Log($"[Util] Cache Hit: {root.name} -> {name} ({typeof(T).Name})");
             return cached as T;
         }
 
         // 캐시 미스면 실제 탐색 진행
         T found = recursive ? FindRecursive<T>(root, name) : FindDirect<T>(root, name);
-        Debug.Log($"[Util] Cache Miss: {root.name} -> {name} ({typeof(T).Name})");
 
         if (found != null)
         {

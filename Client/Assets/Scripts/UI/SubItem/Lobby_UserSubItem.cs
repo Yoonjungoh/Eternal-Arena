@@ -14,7 +14,7 @@ public class Lobby_UserSubItem : UI_SubItem<LobbyUserSubItemData>
 {
     enum Texts
     {
-        UserIdText,
+        UserNameText,
     }
 
     public override void Init()
@@ -31,6 +31,6 @@ public class Lobby_UserSubItem : UI_SubItem<LobbyUserSubItemData>
 
     protected override void UpdateUI()
     {
-        GetTextMeshProUGUI((int)Texts.UserIdText).text = $"´Ð³×ÀÓ: {_data.UserName}";
+        GetTextMeshProUGUI((int)Texts.UserNameText).text = _data.UserName;
     }
 }
